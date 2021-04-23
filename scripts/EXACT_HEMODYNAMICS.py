@@ -21,13 +21,13 @@ class EXACT_HEMODYNAMICS():
     @staticmethod
     def run(output_path, input_path, func, name=NAME,
             contexts=CONTEXTS, graphs=GRAPHS, timepoints=[], seeds=[]):
-        outfile = output_path + name + "/" + name
+        outfile = f"{output_path}{name}/{name}"
 
         for context, suffix, exclude in contexts:
             for g, graph in graphs:
-                code = "_" + "_".join([context + suffix, graph])
-                infile = input_path + "_".join([name + "/" + name, context, g + graph]) + ".pkl"
-                print(name + " : " + code)
+                code = f"_{context}{suffix}_{graph}"
+                infile = f"{input_path}{name}/{name}_{context}_{g}{graph}.pkl"
+                print(f"{name} : {code}")
 
                 loaded = load(infile)
                 func(*loaded, outfile, code, exclude=exclude, timepoints=timepoints, seeds=seeds)
@@ -35,27 +35,27 @@ class EXACT_HEMODYNAMICS():
     @staticmethod
     def loop(output_path, func1, func2, metric, name=NAME,
              contexts=CONTEXTS, graphs=GRAPHS, timepoints=[]):
-        outfile = output_path + name + "/" + name
+        outfile = f"{output_path}{name}/{name}"
         out = { "data": [] }
 
         for context, suffix, exclude in contexts:
             for t in timepoints:
                 for g, graph in graphs:
-                    code = "_" + "_".join([context + suffix, graph])
+                    code = f"_{context}{suffix}_{graph}"
                     func1(outfile, out, { "time": t, "context": context + suffix, "graphs": graph }, metric, code)
 
-        func2(outfile + "_" + metric, out)
+        func2(f"{outfile}_{metric}", out)
 
     @staticmethod
     def load(output_path, input_path, func, extension="", name=NAME,
              contexts=CONTEXTS, graphs=GRAPHS, timepoints=[], seeds=[]):
-        outfile = output_path + name + "/" + name + extension
+        outfile = f"{output_path}{name}/{name}{extension}"
 
-        for context, suffix, exclude in contexts:
+        for context, _, exclude in contexts:
             for g, graph in graphs:
-                code = "_" + "_".join([context, graph])
-                infile = input_path + "_".join([name + extension + "/" + name, context, g + graph]) + extension + ".tar.xz"
-                print(name + " : " + code)
+                code = f"_{context}_{graph}"
+                infile = f"{input_path}{name}{extension}/{name}_{context}_{g}{graph}{extension}.tar.xz"
+                print(f"{name} : {code}")
 
-                data = tar.open(infile)
+                data = tarfile.open(infile)
                 func(data, timepoints, { "context": context, "graphs": graph }, outfile, code)

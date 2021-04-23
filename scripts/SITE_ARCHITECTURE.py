@@ -38,19 +38,19 @@ class SITE_ARCHITECTURE():
     @staticmethod
     def run(output_path, input_path, func, name=NAME,
             contexts=CONTEXTS, sites=SITES, layouts=LAYOUTS, timepoints=[], seeds=[]):
-        outfile = output_path + name + "/" + name
+        outfile = f"{output_path}{name}/{name}"
 
         for context, suffix, exclude in contexts:
             for site in sites:
                 for layout in layouts[site]:
                     if layout == "":
-                        code = "_" + "_".join([context + suffix, site])
-                        infile = input_path + "_".join([name + "/" + name, context, site]) + ".pkl"
+                        code = f"_{context}{suffix}_{site}"
+                        infile = f"{input_path}{name}/{name}_{context}_{site}.pkl"
                     else:
-                        code = "_" + "_".join([context + suffix, site, layout])
-                        infile = input_path + "_".join([name + "/" + name, context, site, layout]) + ".pkl"
+                        code = f"_{context}{suffix}_{site}_{layout}"
+                        infile = f"{input_path}{name}/{name}_{context}_{site}_{layout}.pkl"
 
-                    print(name + " : " + code)
+                    print(f"{name} : {code}")
 
                     loaded = load(infile)
                     func(*loaded, outfile, code, exclude=exclude, timepoints=timepoints, seeds=seeds)
@@ -58,42 +58,42 @@ class SITE_ARCHITECTURE():
     @staticmethod
     def loop(output_path, func1, func2, metric, name=NAME,
              contexts=CONTEXTS, sites=SITES, layouts=LAYOUTS, timepoints=[]):
-        outfile = output_path + name + "/" + name
+        outfile = f"{output_path}{name}/{name}"
         out = { "data": [] }
-        
+
         for context, suffix, exclude in contexts:
             for t in timepoints:
                 for site in sites:
                     for layout in layouts[site]:
                         if layout == "":
-                            code = "_" + "_".join([context + suffix, site])
+                            code = f"_{context}{suffix}_{site}"
                             s = site
                         else:
-                            code = "_" + "_".join([context + suffix, site, layout])
-                            s = site + "_" + layout
+                            code = f"_{context}{suffix}_{site}_{layout}"
+                            s = f"{site}_{layout}"
 
                         func1(outfile, out, { "time": t, "context": context + suffix, "sites": s }, metric, code)
 
-        func2(outfile + "_" + metric, out)
+        func2(f"{outfile}_{metric}", out)
 
     @staticmethod
     def load(output_path, input_path, func, extension="", name=NAME,
              contexts=CONTEXTS, sites=SITES, layouts=LAYOUTS, timepoints=[], seeds=[]):
-        outfile = output_path + name + "/" + name + extension
+        outfile = f"{output_path}{name}/{name}{extension}"
 
-        for context, suffix, exclude in contexts:
+        for context, _, exclude in contexts:
             for site in sites:
                 for layout in layouts[site]:
                     if layout == "":
-                        code = "_" + "_".join([context, site])
-                        infile = input_path + "_".join([name + extension + "/" + name, context, site]) + extension + ".tar.xz"
+                        code = f"_{context}_{site}"
+                        infile = f"{input_path}{name}{extension}/{name}_{context}_{site}{extension}.tar.xz"
                         s = site
                     else:
-                        code = "_" + "_".join([context, site, layout])
-                        infile = input_path + "_".join([name + extension + "/" + name, context, site, layout]) + extension + ".tar.xz"
-                        s = site + "_" + layout
-                    
-                    print(name + " : " + code)
+                        code = f"_{context}_{site}_{layout}"
+                        infile = f"{input_path}{name}{extension}/{name}_{context}_{site}_{layout}{extension}.tar.xz"
+                        s = f"{site}_{layout}"
+
+                    print(f"{name} : {code}")
 
                     data = tarfile.open(infile)
                     func(data, timepoints, { "context": context, "sites": s }, outfile, code)

@@ -1,7 +1,7 @@
 import time
 import numpy as np
 import networkx as nx
-from utilities import *
+from .utilities import *
 
 # ANALYSIS UTILITY FUNCTIONS ===================================================
 

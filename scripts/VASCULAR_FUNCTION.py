@@ -1,4 +1,4 @@
-from utilities import load
+from .utilities import load
 import tarfile
 
 class VASCULAR_FUNCTION():

@@ -1,5 +1,6 @@
 import time
 import numpy as np
+import networkx as nx
 from utilities import *
 
 # ANALYSIS UTILITY FUNCTIONS ===================================================
@@ -521,10 +522,7 @@ def analyze_concentrations(data, timepoints, keys, outfile, code):
         seed = int(re.findall(r'_([0-9]{2})\.json', member.name)[0])
         json = load_tar(data, member)
 
-        json_time_inds = [t for t, tp in enumerate(json["timepoints"])
-            if format_time(tp['time']) in timepoints]
-
-        for t, tind in enumerate(json_time_inds):
+        for t, tind in enumerate(timepoints):
             for c, conc in enumerate(concentrations):
                 concs = json['timepoints'][tind]['molecules'][conc]
 
@@ -538,7 +536,7 @@ def analyze_concentrations(data, timepoints, keys, outfile, code):
         i = i + 1
 
     out['_X'] = [x for x in range(0,radius)]
-    out['_T'] = [json['timepoints'][tind]["time"] for tind in json_time_inds]
+    out['_T'] = [json['timepoints'][tind]["time"] for tind in timepoints]
 
     for c, conc in enumerate(concentrations):
         out[conc] = {
@@ -555,30 +553,78 @@ def analyze_centers(data, timepoints, keys, outfile, code):
 
     concentrations = ["glucose", "oxygen", "tgfa"]
     out = {}
-    arr = np.zeros((10, 31, len(concentrations)))
+    arr = np.zeros((10, len(concentrations)))
 
     i = 0
     for member in data.getmembers():
         seed = int(re.findall(r'_([0-9]{2})\.json', member.name)[0])
         json = load_tar(data, member)
 
-        for t, jn in enumerate(json["timepoints"]):
-            for c, conc in enumerate(concentrations):
-                concs = jn['molecules'][conc]
+        for c, conc in enumerate(concentrations):
+            concs = json['timepoints'][timepoints]['molecules'][conc]
 
-                if len(concs) > 1:
-                    mid = int((len(concs) - 1)/2)
-                    cc = concs[mid]
-                    arr[i,t,c] = cc[0]
-                else:
-                    arr[i,t,c] = concs[0][0]
+            if len(concs) > 1:
+                mid = int((len(concs) - 1)/2)
+                cc = concs[mid]
+                arr[i,c] = cc[0]
+            else:
+                arr[i,c] = concs[0][0]
 
         i = i + 1
 
     for c, conc in enumerate(concentrations):
-        out[conc] = arr[:,-1,c].tolist()
+        out[conc] = arr[:,c].transpose().tolist()
 
     save_json(f"{outfile}{code}", out, ".CENTERS")
+
+def analyze_graphs(data, timepoints, keys, outfile, code):
+    """Analyze vascular graphs."""
+
+    out = []
+
+    assert(len(data.getmembers()) == 10)
+
+    tps = set()
+
+    for member in data.getmembers():
+        seed = int(re.findall(r'_([0-9]{2})\.GRAPH\.json', member.name)[0])
+        json = load_tar(data, member)
+
+        tp = [json['timepoints'][t] for t in timepoints]
+
+        for g in tp:
+            tps.add(g["time"])
+            flat = [[g['time'], seed] + [z for y in x for z in y] for x in g['graph']]
+            out = out + flat
+
+    header = ','.join(['seed', 'fromx', 'fromy', 'fromz', 'frompressure', 'fromoxygen',
+        'tox', 'toy', 'toz', 'topressure', 'tooxygen',
+        'CODE', 'RADIUS', 'LENGTH', 'WALL', 'SHEAR', 'CIRCUM', 'FLOW'])
+    for t in list(tps):
+        filtered = [row[1:] for row in out if row[0] == t]
+        save_csv(f"{outfile}{code}", header + "\n", zip(*filtered), f".GRAPH.{format_time(t)}")
+
+def analyze_measures(data, timepoints, keys, outfile, code):
+    """Analyze graph measures."""
+
+    out = []
+
+    assert(len(data.getmembers()) == 10)
+
+    for member in data.getmembers():
+        seed = int(re.findall(r'_([0-9]{2})\.GRAPH\.json', member.name)[0])
+        json = load_tar(data, member)
+
+        for t, tind in enumerate(timepoints):
+            graph = json['timepoints'][tind]['graph']
+            measures = _analyze_measures(graph)
+            out = out + [[format_time(json['timepoints'][tind]["time"]), seed] + measures]
+
+    header = ','.join(['time', 'seed',
+        'edges', 'nodes', 'gradius', 'gdiameter', 'indegree', 'outdegree', 'degree',
+        'eccentricity', 'shortpath', 'clustering',
+        'closeness', 'betweenness', 'components'])
+    save_csv(f"{outfile}{code}", header + "\n", zip(*out), ".MEASURES")
 
 # ------------------------------------------------------------------------------
 
@@ -620,3 +666,70 @@ def _analyze_seeds_list(data, T, lst, filename, times, extension):
             out.append({ "_": [x[i] for x in data[l]], "time": t })
         _out.append(out)
     save_json(filename, _out, extension)
+
+def _analyze_measures(data):
+    """Calculate graph measures."""
+
+    G = nx.DiGraph()
+
+    if (len(data) == 0):
+        return ["nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan"]
+
+    for edge in data:
+        if np.isnan(edge[2][-1]):
+            continue
+        fromnode = tuple(edge[0][0:3])
+        tonode = tuple(edge[1][0:3])
+        G.add_edge(fromnode, tonode)
+
+    if (len(G.edges()) == 0):
+        return ["nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan", "nan"]
+
+    H = nx.Graph(G)
+
+    if not nx.is_connected(H):
+        Hc = [H.subgraph(h) for h in nx.connected_components(H)]
+        Gc = [G.subgraph(g) for g in nx.connected_components(H)]
+
+        radii = [nx.radius(h) for h in Hc]
+        diameters = [nx.diameter(h) for h in Hc]
+        eccs = [nx.eccentricity(h) for h in Hc]
+        paths = [nx.average_shortest_path_length(g) for g in Gc]
+
+        radius = np.mean(radii)
+        diameter = np.mean(diameters)
+        avg_ecc = np.mean([np.mean(list(ecc.values())) for ecc in eccs])
+        path = np.mean(paths)
+
+        avg_in_degrees = np.mean(list(G.in_degree().values()))
+        avg_out_degrees = np.mean(list(G.out_degree().values()))
+        avg_degree = np.mean(list(H.degree().values()))
+        # tri = nx.triangles(H)
+        # avg_tri = np.mean(list(tri.values()))
+        clust = nx.average_clustering(H)
+        closeness = nx.closeness_centrality(G)
+        betweenness = nx.betweenness_centrality(G)
+        avg_clos = np.mean(list(closeness.values()))
+        avg_betw = np.mean(list(betweenness.values()))
+
+        comps = len(Hc)
+    else:
+        radius = nx.radius(H)
+        diameter = nx.diameter(H)
+        avg_in_degrees = np.mean(list(G.in_degree().values()))
+        avg_out_degrees = np.mean(list(G.out_degree().values()))
+        avg_degree = np.mean(list(H.degree().values()))
+        ecc = nx.eccentricity(H)
+        avg_ecc = np.mean(list(ecc.values()))
+        path = nx.average_shortest_path_length(G)
+        # tri = nx.triangles(H)
+        # avg_tri = np.mean(list(tri.values()))
+        clust = nx.average_clustering(H)
+        closeness = nx.closeness_centrality(G)
+        betweenness = nx.betweenness_centrality(G)
+        avg_clos = np.mean(list(closeness.values()))
+        avg_betw = np.mean(list(betweenness.values()))
+        comps = 1
+
+    return [len(G.edges()), len(G.nodes()), radius, diameter, avg_in_degrees, avg_out_degrees,
+        avg_degree, avg_ecc, path, clust, avg_clos, avg_betw, comps]

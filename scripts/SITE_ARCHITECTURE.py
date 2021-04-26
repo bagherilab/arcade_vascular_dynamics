@@ -79,7 +79,7 @@ class SITE_ARCHITECTURE():
     @staticmethod
     def load(output_path, input_path, func, extension="", name=NAME,
              contexts=CONTEXTS, sites=SITES, layouts=LAYOUTS, timepoints=[], seeds=[]):
-        outfile = f"{output_path}{name}/{name}{extension}"
+        outfile = f"{output_path}{name}/{name}"
 
         for context, _, exclude in contexts:
             for site in sites:

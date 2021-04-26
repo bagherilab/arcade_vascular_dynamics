@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="../general.js"></script>
+        <script type="text/javascript" src="../options.js"></script>
+        <script type="text/javascript" src="../processors.js"></script>
+        <script type="text/javascript" src="../plotters.js"></script>
+        <script type="text/javascript" src="../labelers.js"></script>
+        <script type="text/javascript" src="../decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "outline_graph"
+            var SIZE = { "width": 800, "height": 250 }
+            var OPTIONS = [ ]
+            var SELECTED = { }
+
+            initialize()
+
+            function PROCESSOR() {
+                let selected = {
+                    "context": ["C", "CHX"],
+                    "sites": ["SOURCE_constant", "PATTERN", "GRAPH_Lav", "GRAPH_Lava", "GRAPH_Lvav", "GRAPH_Sav", "GRAPH_Savav"],
+                }
+
+                let name = function(arr) {
+                    return "SITE_ARCHITECTURE/SITE_ARCHITECTURE_" + arr[1] + "_" + arr[0] + ".OUTLINES.150.csv";
+                }
+                
+                let layout = ["sites", "context"]
+                let make = processMake(layout, selected, [0, 1], name)
+                let p = processGrid(layout, selected, make)
+                
+                return {
+                    "selected": selected,
+                    "layout": layout,
+                    "files": p.files,
+                    "margin": { "left": p.marginLeft, "top": p.marginTop, "right": 5, "bottom": 5, "axis": AXIS_EMPTY },
+                    "cols": p.nCols,
+                    "rows": p.nRows,
+                    "axis": {
+                        "x": { "bounds": [0, 14] },
+                        "y": { "bounds": [0, 14] },
+                        "c": { "bounds": [0, 1] }
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let A = S.axis
+                let data = []
+                let d = D.data.filter(e => e.z == "0")
+                let cx = d.map(e => Number(e.x)*Math.sqrt(3))
+                let cy = d.map(e => Number(e.y))
+                
+                let colors = COLORMAPS['grayscale']
+                let cmap = d3.scaleLinear().domain(linspace(A.c.bounds[0], A.c.bounds[1], colors.length)).range(colors)
+                    
+                let links = d.map(e => "#hexline" + e.DIRECTION)
+                let fill = d.map(e => "none")
+                let stroke = d.map(e => cmap(e["WEIGHT"]))
+
+                let symbols = [{ "id": "hex", "points": makeHex() }]
+                let points = [0, 1, 2, 3, 4, 5].map(function(f) {
+                    return {
+                        "id": "hexline" + f,
+                        "points": makeHexLine(f)
+                    }
+                })
+                
+                data.push(
+                    {
+                        "*": "symbol",
+                        "link": links,
+                        "cx": cx,
+                        "cy": cy,
+                        "fill": fill,
+                        "stroke": stroke
+                    }
+                )
+                
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data,
+                    "symbols": symbols.concat(points) }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelNone(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                if (i.reduce((a, b) => a + b) == 0) {
+                    let diam = S.axis.x.bounds[1]*2
+                    let scale = Math.min(S.subpanel.h/(diam + 1)/2, S.subpanel.w/(diam + 1)/2)
+                    let DEFS = S.G.append("defs")
+
+                    p.symbols.map(function(sym) {
+                        let path = sym.points.map((e,i) => (i == 0 ? "m" : "l") + " " + scale*e[0] + "," + scale*e[1])
+                        DEFS.append("path")
+                            .attr("id", sym.id)
+                            .attr("d", path.join(" ").toUpperCase())
+                    })
+                }
+            }
+        </script>
+    </body>
+</html>

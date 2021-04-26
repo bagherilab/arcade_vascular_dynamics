@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="../general.js"></script>
+        <script type="text/javascript" src="../options.js"></script>
+        <script type="text/javascript" src="../processors.js"></script>
+        <script type="text/javascript" src="../plotters.js"></script>
+        <script type="text/javascript" src="../labelers.js"></script>
+        <script type="text/javascript" src="../decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "point_distances"
+            var SIZE = { "width": 1000, "height": 400 }
+            var OPTIONS = [ ]
+            var SELECTED = { }
+
+            initialize()
+
+            function PROCESSOR() {
+                let selected = {
+                    "context": ["C", "CHX"],
+                    "x": [""],
+                    "group": ["active", "inactive"],
+                }
+
+                let name = function(arr) { return "SITE_ARCHITECTURE/SITE_ARCHITECTURE.DISTANCES.csv" }
+
+                let layout = ["context", "x", "group"]
+                let make = processMake(layout, selected, [0, 1, 2], name)
+                let p = processGrid(layout, selected, make)
+
+                let xaxis = {
+                    "scale": 30/1000.0, // hexagons => mm
+                    "bounds": [0, 1.2],
+                    "n": 5,
+                    "padding": 0.05,
+                    "title": "Point Distance from Center (mm)"
+                }
+
+                let yaxis = {
+                    "scale": 30, // hexagons => um
+                    "bounds": [0, 120],
+                    "n": 5,
+                    "padding": 5,
+                    "title": "Occupied Distance from Center (&#956;m)"
+                }
+
+                return {
+                    "selected": selected,
+                    "layout": layout,
+                    "files": p.files,
+                    "margin": { "left": p.marginLeft, "top": p.marginTop, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": p.nCols,
+                    "rows": p.nRows,
+                    "axis": { "x": xaxis, "y": yaxis }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+                let context = S.selected.context[D.i[S.layout.indexOf("context")]]
+                let group = S.selected.group[D.i[S.layout.indexOf("group")]]
+                let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                
+                let d = D.data
+                    .filter(e => e.context == context)
+                    .filter(e => e.group == group)
+
+                let x = d.map(e => Number(e.point)*S.axis.x.scale)
+                let y = d.map(e => Number(e.index)*S.axis.y.scale)
+
+                data.push({
+                    "*": "circle",
+                    "r": 1.25,
+                    "x": x,
+                    "y": y,
+                    "stroke": null,
+                    "fill": shadeColor(color, 0.2)
+                })
+
+                let midpoints = linspace(x.reduce((a, b) => Math.min(a, b)), x.reduce((a, b) => Math.max(a, b)), 100)
+                let smooth = kernelSmooth(x, y, (S.selected.case == "POINT" ? 0.1 : 0.1), midpoints)
+
+                data.push({
+                    "*": "path",
+                    "x": midpoints,
+                    "y": smooth,
+                    "stroke": color,
+                    "width": 1.5
+                })
+                
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelNone(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                decorateTicks(g, S, i, p)
+
+                // from yoshii_1988_intercapillary
+
+                g.insert("g",":first-child")
+                    .append("rect")
+                    .attr("width", S.subpanel.w)
+                    .attr("height", S.yscale(61.9) - S.yscale(93.7))
+                    .attr("x", 0)
+                    .attr("y", S.yscale(93.7))
+                    .attr("fill", "url(#stripe)")
+
+                S.G.append("defs").append("pattern")
+                    .attr("id",  "stripe")
+                    .attr("width", 5)
+                    .attr("height", 5)
+                    .attr("patternTransform", "rotate(45)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 5)
+                        .attr("height", 2)
+                        .attr("fill", "#eee")
+            }
+        </script>
+    </body>
+</html>

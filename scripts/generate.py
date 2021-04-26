@@ -3,6 +3,71 @@ import numpy as np
 from .utilities import *
 from .analyze import *
 
+# GENERAL ANALYSIS FUNCTIONS ===================================================
+
+def merge_seeds(file, out, keys, extension, code, tar=None):
+    """Merge seed files across conditions."""
+    filepath = f"{file}{code}{extension}.json"
+
+    if tar:
+        D = load_json(filepath.split("/")[-1], tar=tar)
+    else:
+        D = load_json(filepath)
+
+    keys.pop('time', None)
+    metric = extension.split(".")[-1]
+
+    if metric == "POPS" or metric == "TYPES":
+        timepoints = []
+
+        for i, d in enumerate(D):
+            for key in keys.keys():
+                for dd in d:
+                    dd[key] = keys[key]
+
+            if i == 0:
+                for dd in d:
+                    dd['_'] = [dd['_']]
+                timepoints = timepoints + d
+            else:
+                for tp, dd in zip(timepoints, d):
+                    tp['_'].append(dd['_'])
+                pass
+
+        out['data'] = out['data'] + timepoints
+    else:
+        for key in keys.keys():
+            for d in D:
+                d[key] = keys[key]
+        out['data'] = out['data'] + D
+
+def merge_centers(file, out, keys, extension, code, tar=None):
+    """Merge center concentrations across conditions."""
+    code = code.replace("_CHX_", "_CH_")
+    filepath = f"{file}{code}{extension}.json"
+
+    if tar:
+        D = load_json(filepath.split("/")[-1], tar=tar)
+    else:
+        D = load_json(filepath)
+
+    keys['glucose'] = D['glucose']
+    keys['oxygen'] = D['oxygen']
+
+    keys.pop('time', None)
+    out['data'].append(keys)
+
+    if "_X" in D:
+        out['_X'] = D['_X']
+
+# ------------------------------------------------------------------------------
+
+def save_seeds(file, extension, out):
+    save_json(file, out, extension)
+
+def save_centers(file, extension, out):
+    save_json(file, out, extension)
+
 # SITE ARCHITECTURE: POINT DISTANCES ===========================================
 
 def get_type_index(type):

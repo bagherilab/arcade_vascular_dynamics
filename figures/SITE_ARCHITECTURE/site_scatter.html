@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="../general.js"></script>
+        <script type="text/javascript" src="../options.js"></script>
+        <script type="text/javascript" src="../processors.js"></script>
+        <script type="text/javascript" src="../plotters.js"></script>
+        <script type="text/javascript" src="../labelers.js"></script>
+        <script type="text/javascript" src="../decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div>
+            <div id="cases">
+                <strong>CASE</strong>
+                <label class="inputs"><input type="radio" name="case" id="case_POINT">point sources</label>
+                <label class="inputs"><input type="radio" name="case" id="case_GRID">grid sources</label>
+            </div>
+            <div id="metrics">
+                <strong>METRIC</strong>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GROWTH">growth rate</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_SYMMETRY">symmetry</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_CYCLES">cycle length</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_ACTIVITY">activity</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GLUCOSE">glucose</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_OXYGEN">oxygen</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_TYPES">types (<em>select below</em>)</label>
+            </div>
+            <div id="types">
+                <strong>TYPES</strong>
+                <label class="inputs"><input type="radio" name="type" id="type_1">apoptotic</label>
+                <label class="inputs"><input type="radio" name="type" id="type_2">quiescent</label>
+                <label class="inputs"><input type="radio" name="type" id="type_3">migratory</label>
+                <label class="inputs"><input type="radio" name="type" id="type_4">proliferative</label>
+                <label class="inputs"><input type="radio" name="type" id="type_6">necrotic</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "site_scatter"
+            var SIZE = { "width": 300, "height": 300 }
+            var OPTIONS = ["cases", "metrics", "types"]
+            var SELECTED = {
+                "radios": {
+                    "case": "POINT",
+                    "metric": "GROWTH",
+                    "type": "3",
+                }  
+            }
+
+            initialize()
+
+            var BOUNDS = {
+                "GROWTH": {
+                    "scale": 30, // hexagon/day => um/day
+                    "bounds": [0, 60], // um/day
+                    "title": 'Growth Rate (\u03BCm/day)',
+                    "n": 4,
+                    "padding": 5
+                },
+                "SYMMETRY": {
+                    "scale": 1,
+                    "bounds": [0, 1], // unitless
+                    "title": 'Symmetry',
+                    "n": 6,
+                    "padding": 0.02
+                },
+                "CYCLES": {
+                    "scale": 1/60.0, // min => hours
+                    "bounds": [10, 35], // hours
+                    "title": 'Average Cell Cycle Length (hours)',
+                    "n": 6,
+                    "padding": 0.5
+                },
+                "ACTIVITY": {
+                    "scale": 1,
+                    "bounds": [-1, 1], // unitless
+                    "title": 'Relative Activity',
+                    "n": 5,
+                    "padding": 0.05
+                },
+                "TYPES": {
+                    "scale": 1,
+                    "bounds": [0, 1],
+                    "title": 'Fraction of Cells',
+                    "n": 3,
+                    "padding": 0.03
+                },
+                "GLUCOSE": {
+                    "scale": 1000, // fmol/um^3 => mmol/L
+                    "bounds": [0, 5], // mmol/L
+                    "title": "Glucose Concentration (mmol/L)",
+                    "n": 6,
+                    "padding": 0.05
+                },
+                "OXYGEN": {
+                    "scale": 1,
+                    "bounds": [0, 100], // mmHg
+                    "title": "Oxygen Concentration (mmHg)",
+                    "n": 6,
+                    "padding": 2
+                }
+            }
+
+            function PROCESSOR() {
+                let selected = {
+                    "contexts": ["C", "CHX"],
+                    "case": SELECTED.radios.case,
+                    "metric": SELECTED.radios.metric,
+                    "type": SELECTED.radios.type
+                }
+
+                let xaxis, yaxis, file
+
+                if (selected.case == "POINT") {
+                    selected.sites = ["SOURCE_constant",
+                        "SOURCE_point0", "SOURCE_point2", "SOURCE_point4", "SOURCE_point6", "SOURCE_point8",
+                        "SOURCE_point10","SOURCE_point12","SOURCE_point14","SOURCE_point16","SOURCE_point18",
+                        "SOURCE_point20","SOURCE_point22","SOURCE_point24","SOURCE_point26","SOURCE_point28",
+                        "SOURCE_point30","SOURCE_point32","SOURCE_point34","SOURCE_point36","SOURCE_point38"]
+                    xaxis = {
+                        "scale": 30/1000.0, // hexagons => mm
+                        "bounds": [0, 1.2],
+                        "n": 5,
+                        "padding": 0.05,
+                        "title": "Point Distance from Center (mm)"
+                    }
+                } else {
+                    selected.sites = [
+                        "SOURCE_constant","SOURCE_x2y1","SOURCE_x1y2","SOURCE_x1y3","SOURCE_x3y1","SOURCE_x1y4",
+                        "SOURCE_x4y1","SOURCE_grid2","SOURCE_x1y5","SOURCE_x5y1","SOURCE_x2y3",
+                        "SOURCE_x3y2","SOURCE_x2y4","SOURCE_x4y2","SOURCE_grid3","SOURCE_x2y5",
+                        "SOURCE_x5y2","SOURCE_x4y3","SOURCE_x3y4","SOURCE_x5y3","SOURCE_x3y5",
+                        "SOURCE_grid4","SOURCE_x4y5","SOURCE_x5y4","SOURCE_grid5","SOURCE_grid6",
+                        "SOURCE_grid7","SOURCE_grid8","SOURCE_grid9","SOURCE_grid10","SOURCE_grid11",
+                        "SOURCE_grid12","SOURCE_grid13","SOURCE_grid14","SOURCE_grid15","SOURCE_grid16",
+                        "SOURCE_grid17","SOURCE_grid18","SOURCE_grid19","SOURCE_grid20","SOURCE_grid30",
+                        "SOURCE_grid40","SOURCE_grid50","SOURCE_grid100","SOURCE_grid200","SOURCE_nosite"
+                    ]
+                    xaxis = {
+                        "scale": 0.001, // cap/mm^2 => 10^3 cap/mm^2
+                        "bounds": [0, Math.sqrt(4)], // 10^3 cap/mm^2
+                        "labels": [0, 4],
+                        "n": 41,
+                        "padding": 0.05,
+                        "title": "Capillary Density (10" + EXP(3) + " capillaries/mm" + EXP(2) + ")"
+                    }
+                }
+
+                switch (selected.metric) {
+                    case "GLUCOSE": case "OXYGEN":
+                        yaxis = BOUNDS[selected.metric]
+                        file = "SITE_ARCHITECTURE/SITE_ARCHITECTURE.CENTERS.json"
+                        break
+                    default:
+                        yaxis = BOUNDS[selected.metric]
+                        file = "SITE_ARCHITECTURE/SITE_ARCHITECTURE.SEEDS." + selected.metric + ".json"
+                }
+
+                return {
+                    "selected": selected,
+                    "layout": [],
+                    "files": [ { "x": 0, "y": 0, "i": [0], "file": file } ],
+                    "margin": { "left": 5, "top": 5, "right": 5, "bottom": 5,
+                        "axis": AXIS_PADDING },
+                    "cols": 1,
+                    "rows": 1,
+                    "axis": {
+                        "x": xaxis,
+                        "y": yaxis
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+                let allInds = linrange(0, 51)
+
+                // calculations for area
+                let r = 40
+                let length = 6*r - 3
+                let width = 4*r - 2
+                let triheight = 15
+                let triside = triheight*2/Math.sqrt(3)
+                let area = ((length + 1)/2*triside/1000)*(width*triheight/1000) // mm^2
+
+                if (S.selected.case == "GRID") {
+                    // (avg 641.25) 459 to 1468, 123 to 515 capillaries/mm2 (McGuire and Secomb, 2003)
+                    // (avg 625.5) 640 +/- 54.5, 611 +/- 28.3 capillaries/mm2 (Hermansen and Wachtlova, 1971)
+                    // (avg 600) 2,500-3,OOO/mm3, 300-400/mm3, 100/mm3 (Witzleb, Human Physiology, 2nd ed, pp 480-542, 1989)
+                    
+                    data.push({
+                        "*": "rect",
+                        "width": [(Math.sqrt(3000*S.axis.x.scale) - Math.sqrt(100*S.axis.x.scale))],
+                        "height": [(S.axis.y.bounds[1] - S.axis.y.bounds[0]) + 2*S.axis.y.padding],
+                        "x": [Math.sqrt(100*S.axis.x.scale)],
+                        "y": [S.axis.y.bounds[1] + S.axis.y.padding],
+                        "fill": "url(#stripe)"
+                    })
+                    
+                    data.push({
+                        "*": "path",
+                        "x": [Math.sqrt(600*S.axis.x.scale), Math.sqrt(600*S.axis.x.scale)],
+                        "y": [S.axis.y.bounds[0] - S.axis.y.padding, S.axis.y.bounds[1] + S.axis.y.padding],
+                        "stroke": "#ddd",
+                        "width": 3
+                    })
+                }
+
+                S.selected.contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                    let allx = []
+                    let ally = []
+
+                    S.selected.sites.map(function(site, index) {
+                        let d = D.data.data.filter(e => e.sites == site)
+
+                        if (S.selected.metric == "GLUCOSE" || S.selected.metric == "OXYGEN") {
+                            d = d.filter(e => e.context == context)[0][S.selected.metric.toLowerCase()]
+                        } else {
+                            d = d
+                                .filter(e => e.context == context)
+                                .filter(e => e.time == 15)[0]["_"]
+                        }
+
+                        if (S.selected.metric == "TYPES") {
+                            let total = d[0].map(e => 0)
+                            d.map(e => e.map((f, i) => total[i] = total[i] + f))
+                            d = d[Number(S.selected.type)].map((e, i) => e/total[i])
+                        }
+
+                        let layout = site.split("_")[1]
+                        let x, y
+
+                        if (layout == "constant") {
+                            let y = d.map(e => e*S.axis.y.scale)
+                            let mean = y.reduce((a, b) => a + b)/y.length
+
+                            data.push({
+                                "*": "path",
+                                "x": [S.axis.x.bounds[0] - S.axis.x.padding, S.axis.x.bounds[1] + S.axis.x.padding],
+                                "y": [mean, mean],
+                                "stroke": color,
+                                "width": 0.5
+                            })
+                            return
+                        }
+
+                        if (S.selected.case == "POINT") {
+                            let pointdist = Number(layout.replace("point",""))
+                            y = d.map(e => e*S.axis.y.scale)
+                            x = d.map(e => pointdist*S.axis.x.scale)
+                        } else if (layout == "nosite") {
+                            y = d.map(e => e*S.axis.y.scale)
+                            x = d.map(e => 0*S.axis.x.scale)
+                        } else {
+                            let a, b
+
+                            if (layout.includes("grid")) {
+                                let num = Number(layout.replace("grid", ""))
+                                a = num
+                                b = num
+                            } else {
+                                a = Number(layout[1])
+                                b = Number(layout[3])
+                            }
+
+                            let numa = Math.ceil(length/a)
+                            let numb = Math.ceil(width/b)
+                            let capdens = (numa*numb)/area
+
+                            // console.log(numa, numb, layout, capdens)
+
+                            y = d.map(e => e*S.axis.y.scale)
+                            x = d.map(e => Math.sqrt(capdens*S.axis.x.scale))
+                        }
+
+                        let remove = findNaNs(y)
+                        y = removeNaNs(y, remove)
+                        x = removeNaNs(x, remove)
+
+                        data.push({
+                            "*": "circle",
+                            "r": 1.5,
+                            "x": x,
+                            "y": y,
+                            "stroke": (context != "C" ? shadeColor(color, 0.2) : null),
+                            "fill": (context != "C" ? "none" : shadeColor(color, 0.2))
+                        })
+
+                        allx = allx.concat(x)
+                        ally = ally.concat(y)
+                    })
+
+                    let midpoints = linspace(allx.reduce((a, b) => Math.min(a, b)), allx.reduce((a, b) => Math.max(a, b)), 100)
+                    let smooth = kernelSmooth(allx, ally, 0.1, midpoints)
+
+                    data.push({
+                        "*": "path",
+                        "x": midpoints,
+                        "y": smooth,
+                        "stroke": color,
+                        "width": 1.5
+                    })
+                })
+
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelNone(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                addBorder(g, S.subpanel.w, S.subpanel.h, "#ccc")
+
+                // Create and align groups for ticks.
+                let dx = alignHorzAxis(S, i)
+                let dy = alignVertAxis(S, i)
+
+                // Create group to hold ticks.
+                let G = S.G.append("g")
+                    .attr("id", "ticks")
+                    .attr("transform", "translate(" + dx + "," + dy + ")")
+
+                let A = S.axis
+
+                // Create ticks.
+                let ticks = []
+                ticks.push(makeVertTicks(S, 0, 0, A.y))
+
+                if (S.selected.case == "GRID") {
+                    let bounds = A.x.bounds
+                    let t = linspace(A.x.labels[0], A.x.labels[1], A.x.n).map(d => (Math.abs(d) < 10E-10 ? 0 : d))
+                    let xticks = []
+                    let scale = d3.scaleLinear().range([0, S.subpanel.w]).domain([bounds[0] - A.x.padding, bounds[1] + A.x.padding])
+
+                    for (let i = 0; i < t.length; i++) {
+                        if (t[i] > 1 && (t[i]%0.5 != 0)) { continue }
+                        
+                        xticks.push({
+                            "tx": scale(Math.sqrt(t[i])),
+                            "ty": S.subpanel.h + 5 + FONT_SIZE - 2 + FONT_PADDING,
+                            "y1": S.subpanel.h,
+                            "y2": S.subpanel.h + (Number.isInteger(t[i]) ? 5 : 3),
+                            "x1": scale(Math.sqrt(t[i])),
+                            "x2": scale(Math.sqrt(t[i])),
+                            "text": (Number.isInteger(t[i]) ? t[i] : ""),
+                        })
+                    }
+
+                    ticks.push(xticks)
+                } else { ticks.push(makeHorzTicks(S, 0, S.subpanel.h, A.x)) }
+
+                // Create axis labels.
+                let labels = []
+                labels.push(makeHorzLabel(S.subpanel.w, 0, alignHorzText(S), A.x.title, "none"))
+                labels.push(makeVertLabel(S.subpanel.h, alignVertText(S), 0, A.y.title, "none"))
+
+                addTicks(G, ticks)
+                addLabels(G, labels)
+                
+                S.G.append("defs").append("pattern")
+                    .attr("id",  "stripe")
+                    .attr("width", 5)
+                    .attr("height", 5)
+                    .attr("patternTransform", "rotate(45)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 5)
+                        .attr("height", 2)
+                        .attr("fill", "#eee")
+            }
+        </script>
+    </body>
+</html>

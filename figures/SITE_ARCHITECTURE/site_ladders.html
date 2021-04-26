@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="../general.js"></script>
+        <script type="text/javascript" src="../options.js"></script>
+        <script type="text/javascript" src="../processors.js"></script>
+        <script type="text/javascript" src="../plotters.js"></script>
+        <script type="text/javascript" src="../labelers.js"></script>
+        <script type="text/javascript" src="../decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div>
+            <div id="metrics">
+                <strong>METRIC</strong>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GROWTH">growth rate</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_SYMMETRY">symmetry</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_CYCLES">cycle length</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_ACTIVITY">activity</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GLUCOSE">glucose</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_OXYGEN">oxygen</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "site_scatter"
+            var SIZE = { "width": 300, "height": 300 }
+            var OPTIONS = ["metrics"]
+            var SELECTED = {
+                "radios": {
+                    "metric": "GROWTH",
+                }  
+            }
+
+            initialize()
+
+            var Y_AXIS = {
+                "GROWTH": {
+                    "scale": 30, // hexagon/day => um/day
+                    "bounds": [10, 60], // mm/day
+                    "title": 'Growth Rate (\u03BCm/day)',
+                    "n": 6,
+                    "padding": 1
+                },
+                "SYMMETRY": {
+                    "scale": 1,
+                    "bounds": [0.2, 1], // unitless
+                    "title": 'Symmetry',
+                    "n": 5,
+                    "padding": 0.02
+                },
+                "CYCLES": {
+                    "scale": 1/60.0, // min => hours
+                    "bounds": [20, 24], // hours
+                    "title": 'Average Cell Cycle Length (hours)',
+                    "n": 5,
+                    "padding": 0.1
+                },
+                "ACTIVITY": {
+                    "scale": 1,
+                    "bounds": [-1, 1], // unitless
+                    "title": 'Relative Activity',
+                    "n": 5,
+                    "padding": 0.05
+                },
+                "GLUCOSE": {
+                    "scale": 1000, // fmol/um^3 => mmol/L
+                    "bounds": [0, 5], // mmol/L
+                    "title": "Glucose Concentration (mmol/L)",
+                    "n": 6,
+                    "padding": 0.1
+                },
+                "OXYGEN": {
+                    "scale": 1,
+                    "bounds": [0, 60], // mmHg
+                    "title": "Oxygen Concentration (mmHg)",
+                    "n": 4,
+                    "padding": 2
+                }
+            }
+
+            function PROCESSOR() {
+                let selected = {
+                    "contexts": ["C", "CHX"],
+                    "sites": ["SOURCE_constant", "PATTERN", "GRAPH_Lav", "GRAPH_Lava", "GRAPH_Lvav", "GRAPH_Sav", "GRAPH_Savav"],
+                    "metric": SELECTED.radios.metric,
+                }
+
+                let file
+
+                switch (selected.metric) {
+                    case "GLUCOSE": case "OXYGEN":
+                        file = "SITE_ARCHITECTURE/SITE_ARCHITECTURE.CENTERS.json"
+                        break
+                    default:
+                        file = "SITE_ARCHITECTURE/SITE_ARCHITECTURE.SEEDS." + selected.metric + ".json"
+                }
+
+                return {
+                    "selected": selected,
+                    "layout": [],
+                    "files": [{ "x": 0, "y": 0, "i": [0], "file": file }],
+                    "margin": { "left": 5, "top": 5, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": 1,
+                    "rows": 1,
+                    "axis": {
+                        "x": {
+                            "bounds": [0, 6],
+                            "n": 7,
+                            "labels": function(e) {
+                                let labels = ["C", "P", "Lav", "Lava", "Lvav", "Sav", "Savav"]
+                                return labels[e]
+                            },
+                            "padding": 0.5
+                        },
+                        "y": Y_AXIS[selected.metric]
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+                let allInds = linrange(0, 7)
+                let metric = S.selected.metric
+
+                let offsets = [
+                    {
+                        "left": -0.5,
+                        "right": 0,
+                        "center": -0.25
+                    },
+                    {
+                        "left": 0,
+                        "right": 0.5,
+                        "center": 0.25
+                    }
+                ]
+
+                let getValues = function(D, metric, site, context) {
+                    let d = D.data.data.filter(e => e.sites == site)
+                        
+                    if (metric == "GLUCOSE" || metric == "OXYGEN") {
+                        d = d.filter(e => e.context == context)[0][metric.toLowerCase()]
+                    } else {
+                        d = d.filter(e => e.context == context)
+                            .filter(e => e.time == 15)[0]["_"]
+                    }
+
+                    let y = d.map(e => e*S.axis.y.scale)
+                    let remove = findNaNs(y)
+                    y = removeNaNs(y, remove)
+
+                    return y
+                }
+
+                // Draw lines for each replicate
+                S.selected.contexts.map(function(context, contextIndex) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+
+                    S.selected.sites.map(function(site, siteIndex) {
+                        let y = getValues(D, metric, site, context)
+
+                        y.map(function(v) {
+                            data.push({
+                                "*": "path",
+                                "x": [siteIndex + offsets[contextIndex].left, siteIndex + offsets[contextIndex].right],
+                                "y": [v, v],
+                                "stroke": shadeColor(color, 0.5),
+                                "width": 0.5
+                            })
+                        })
+                    })
+                })
+
+                // Draw mean and confidene interval
+                S.selected.contexts.map(function(context, contextIndex) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+
+                    S.selected.sites.map(function(site, siteIndex) {
+                        let y = getValues(D, metric, site, context)
+                        let stats = calcStats(y)
+                        let mean = stats.mean
+                        let interval = stats.interval
+                        let center = offsets[contextIndex].center
+
+                        data.push({
+                            "*": "path",
+                            "y": [mean - interval, mean + interval],
+                            "x": [siteIndex + center, siteIndex + center],
+                            "width": 2,
+                            "stroke": color
+                        })
+
+                         data.push({
+                            "*": "circle",
+                            "r": 2,
+                            "x": [siteIndex + center],
+                            "y": [mean],
+                            "fill": color,
+                            "stroke": null
+                        })
+                    })
+                })
+
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelNone(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                addBorder(g, S.subpanel.w, S.subpanel.h, "#ccc")
+
+                // Create and align groups for ticks.
+                let dx = alignHorzAxis(S, i)
+                let dy = alignVertAxis(S, i)
+
+                // Create group to hold ticks.
+                let G = S.G.append("g")
+                    .attr("id", "ticks")
+                    .attr("transform", "translate(" + dx + "," + dy + ")")
+
+                let A = S.axis
+
+                // Create ticks.
+                let ticks = []
+                ticks.push(makeHorzTicks(S, 0, S.subpanel.h, A.x))
+                ticks.push(makeVertTicks(S, 0, 0, A.y))
+
+                // Create axis labels.
+                let labels = []
+                labels.push(makeHorzLabel(S.subpanel.w, 0, alignHorzText(S), A.x.title, "none"))
+                labels.push(makeVertLabel(S.subpanel.h, alignVertText(S), 0, A.y.title, "none"))
+
+                addTicks(G, ticks)
+                addLabels(G, labels)
+
+                // Add dividing lines.
+                let gg = g.append("g")
+
+                for (let i = 0; i < 6; i++) {
+                    if (i == 0 || i == 1) { addLine(gg, S.xscale(i + 0.5), S.xscale(i + 0.5), 0, S.subpanel.h, "#ccc", 0.5) }
+                    else { addLine(gg, S.xscale(i + 0.5), S.xscale(i + 0.5), 0, S.subpanel.h, "#ccc", 0.5).attr("stroke-dasharray", "2,2") }
+                }
+            }
+        </script>
+    </body>
+</html>

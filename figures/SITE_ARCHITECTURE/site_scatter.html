@@ -56,7 +56,7 @@
 
             initialize()
 
-            var BOUNDS = {
+            var Y_AXIS = {
                 "GROWTH": {
                     "scale": 30, // hexagon/day => um/day
                     "bounds": [0, 60], // um/day
@@ -108,6 +108,24 @@
                 }
             }
 
+            var X_AXIS = {
+                "POINT": {
+                    "scale": 30/1000.0, // hexagons => mm
+                    "bounds": [0, 1.2],
+                    "n": 5,
+                    "padding": 0.05,
+                    "title": "Point Distance from Center (mm)"
+                },
+                "GRID": {
+                    "scale": 0.001, // cap/mm^2 => 10^3 cap/mm^2
+                    "bounds": [0, Math.sqrt(4)], // 10^3 cap/mm^2
+                    "labels": [0, 4],
+                    "n": 41,
+                    "padding": 0.05,
+                    "title": "Capillary Density (10" + EXP(3) + " capillaries/mm" + EXP(2) + ")"
+                }
+            }
+
             function PROCESSOR() {
                 let selected = {
                     "contexts": ["C", "CHX"],
@@ -116,21 +134,12 @@
                     "type": SELECTED.radios.type
                 }
 
-                let xaxis, yaxis, file
-
                 if (selected.case == "POINT") {
                     selected.sites = ["SOURCE_constant",
                         "SOURCE_point0", "SOURCE_point2", "SOURCE_point4", "SOURCE_point6", "SOURCE_point8",
                         "SOURCE_point10","SOURCE_point12","SOURCE_point14","SOURCE_point16","SOURCE_point18",
                         "SOURCE_point20","SOURCE_point22","SOURCE_point24","SOURCE_point26","SOURCE_point28",
                         "SOURCE_point30","SOURCE_point32","SOURCE_point34","SOURCE_point36","SOURCE_point38"]
-                    xaxis = {
-                        "scale": 30/1000.0, // hexagons => mm
-                        "bounds": [0, 1.2],
-                        "n": 5,
-                        "padding": 0.05,
-                        "title": "Point Distance from Center (mm)"
-                    }
                 } else {
                     selected.sites = [
                         "SOURCE_constant","SOURCE_x2y1","SOURCE_x1y2","SOURCE_x1y3","SOURCE_x3y1","SOURCE_x1y4",
@@ -143,23 +152,15 @@
                         "SOURCE_grid17","SOURCE_grid18","SOURCE_grid19","SOURCE_grid20","SOURCE_grid30",
                         "SOURCE_grid40","SOURCE_grid50","SOURCE_grid100","SOURCE_grid200","SOURCE_nosite"
                     ]
-                    xaxis = {
-                        "scale": 0.001, // cap/mm^2 => 10^3 cap/mm^2
-                        "bounds": [0, Math.sqrt(4)], // 10^3 cap/mm^2
-                        "labels": [0, 4],
-                        "n": 41,
-                        "padding": 0.05,
-                        "title": "Capillary Density (10" + EXP(3) + " capillaries/mm" + EXP(2) + ")"
-                    }
                 }
+
+                let file
 
                 switch (selected.metric) {
                     case "GLUCOSE": case "OXYGEN":
-                        yaxis = BOUNDS[selected.metric]
                         file = "SITE_ARCHITECTURE/SITE_ARCHITECTURE.CENTERS.json"
                         break
                     default:
-                        yaxis = BOUNDS[selected.metric]
                         file = "SITE_ARCHITECTURE/SITE_ARCHITECTURE.SEEDS." + selected.metric + ".json"
                 }
 
@@ -172,8 +173,8 @@
                     "cols": 1,
                     "rows": 1,
                     "axis": {
-                        "x": xaxis,
-                        "y": yaxis
+                        "x": X_AXIS[selected.case],
+                        "y": Y_AXIS[selected.metric]
                     }
                 }
             }

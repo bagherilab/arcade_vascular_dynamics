@@ -508,7 +508,7 @@ def analyze_outlines(D, R, H, T, N, C, POPS, TYPES, outfile, code, exclude=[-1],
         header = "x,y,z,DIRECTION,WEIGHT\n"
         save_csv(f"{outfile}{code}", header, list(zip(*out)), f".OUTLINES.{format_time(t)}")
 
-def analyze_concentrations(data, timepoints, keys, outfile, code):
+def analyze_concentrations(tar, timepoints, keys, outfile, code):
     """Analyzes concentration profiles."""
 
     concentrations = ["glucose", "oxygen", "tgfa"]
@@ -518,9 +518,9 @@ def analyze_concentrations(data, timepoints, keys, outfile, code):
     arr = np.zeros((seeds, len(timepoints), radius, len(concentrations)))
 
     i = 0
-    for member in data.getmembers():
+    for member in tar.getmembers():
         seed = int(re.findall(r'_([0-9]{2})\.json', member.name)[0])
-        json = load_tar(data, member)
+        json = load_json(member, tar=tar)
 
         for t, tind in enumerate(timepoints):
             for c, conc in enumerate(concentrations):
@@ -548,7 +548,7 @@ def analyze_concentrations(data, timepoints, keys, outfile, code):
 
     save_json(f"{outfile}{code}", out, ".CONCENTRATIONS")
 
-def analyze_centers(data, timepoints, keys, outfile, code):
+def analyze_centers(tar, timepoints, keys, outfile, code):
     """Analyze concentrations at the center of environment."""
 
     concentrations = ["glucose", "oxygen", "tgfa"]
@@ -556,9 +556,9 @@ def analyze_centers(data, timepoints, keys, outfile, code):
     arr = np.zeros((10, len(concentrations)))
 
     i = 0
-    for member in data.getmembers():
+    for member in tar.getmembers():
         seed = int(re.findall(r'_([0-9]{2})\.json', member.name)[0])
-        json = load_tar(data, member)
+        json = load_json(member, tar=tar)
 
         for c, conc in enumerate(concentrations):
             concs = json['timepoints'][timepoints]['molecules'][conc]
@@ -577,18 +577,18 @@ def analyze_centers(data, timepoints, keys, outfile, code):
 
     save_json(f"{outfile}{code}", out, ".CENTERS")
 
-def analyze_graphs(data, timepoints, keys, outfile, code):
+def analyze_graphs(tar, timepoints, keys, outfile, code):
     """Analyze vascular graphs."""
 
     out = []
 
-    assert(len(data.getmembers()) == 10)
+    assert(len(tar.getmembers()) == 10)
 
     tps = set()
 
-    for member in data.getmembers():
+    for member in tar.getmembers():
         seed = int(re.findall(r'_([0-9]{2})\.GRAPH\.json', member.name)[0])
-        json = load_tar(data, member)
+        json = load_json(member, tar=tar)
 
         tp = [json['timepoints'][t] for t in timepoints]
 
@@ -604,16 +604,16 @@ def analyze_graphs(data, timepoints, keys, outfile, code):
         filtered = [row[1:] for row in out if row[0] == t]
         save_csv(f"{outfile}{code}", header + "\n", zip(*filtered), f".GRAPH.{format_time(t)}")
 
-def analyze_measures(data, timepoints, keys, outfile, code):
+def analyze_measures(tar, timepoints, keys, outfile, code):
     """Analyze graph measures."""
 
     out = []
 
-    assert(len(data.getmembers()) == 10)
+    assert(len(tar.getmembers()) == 10)
 
-    for member in data.getmembers():
+    for member in tar.getmembers():
         seed = int(re.findall(r'_([0-9]{2})\.GRAPH\.json', member.name)[0])
-        json = load_tar(data, member)
+        json = load_json(member, tar=tar)
 
         for t, tind in enumerate(timepoints):
             graph = json['timepoints'][tind]['graph']

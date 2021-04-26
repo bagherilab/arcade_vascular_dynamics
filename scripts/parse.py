@@ -81,7 +81,7 @@ def parse_simulations(name, data_path, result_path, exclude):
                     continue
                     
                 print(f"   > {member.name}")
-                parse_simulation(load_tar(tar, member), container)
+                parse_simulation(load_json(member, tar=tar), container)
         else:
             # Parse .json file
             parse_simulation(load_json(file), container)

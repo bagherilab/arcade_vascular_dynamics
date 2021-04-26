@@ -30,19 +30,25 @@ class ESTIMATED_HEMODYNAMICS():
                     func(*loaded, outfile, code, exclude=exclude, timepoints=timepoints, seeds=seeds)
 
     @staticmethod
-    def loop(output_path, func1, func2, metric, name=NAME,
+    def loop(output_path, func1, func2, extension, name=NAME,
              contexts=CONTEXTS, weights=WEIGHTS, scales=SCALES, timepoints=[]):
         outfile = f"{output_path}{name}/{name}"
         out = { "data": [] }
+
+        # Open compressed files, if they exist.
+        try:
+            tar = tarfile.open(f"{outfile}{extension}.tar.xz")
+        except:
+            tar = None
 
         for context, suffix, exclude in contexts:
             for t in timepoints:
                 for weight in weights:
                     for scale in scales:
                         code = f"_{context}{suffix}_{weight}_{scale}"
-                        func1(outfile, out, { "time": t, "context": context + suffix, "weight": weight, "scale": scale }, metric, code)
+                        func1(outfile, out, { "time": t, "context": context + suffix, "weight": weight, "scale": scale }, extension, code, tar=tar)
 
-        func2(f"{outfile}_{metric}", out)
+        func2(outfile, extension, out)
 
     @staticmethod
     def load(output_path, input_path, func, extension="", name=NAME,
@@ -56,5 +62,5 @@ class ESTIMATED_HEMODYNAMICS():
                     infile = f"{input_path}{name}{extension}/{name}_{context}_{weight}_{scale}{extension}.tar.xz"
                     print(f"{name} : {code}")
 
-                    data = tarfile.open(infile)
-                    func(data, timepoints, { "context": context, "weight": weight, "scale": scale }, outfile, code)
+                    tar = tarfile.open(infile)
+                    func(tar, timepoints, { "context": context, "weight": weight, "scale": scale }, outfile, code)

@@ -33,18 +33,24 @@ class EXACT_HEMODYNAMICS():
                 func(*loaded, outfile, code, exclude=exclude, timepoints=timepoints, seeds=seeds)
 
     @staticmethod
-    def loop(output_path, func1, func2, metric, name=NAME,
+    def loop(output_path, func1, func2, extension, name=NAME,
              contexts=CONTEXTS, graphs=GRAPHS, timepoints=[]):
         outfile = f"{output_path}{name}/{name}"
         out = { "data": [] }
+
+        # Open compressed files, if they exist.
+        try:
+            tar = tarfile.open(f"{outfile}{extension}.tar.xz")
+        except:
+            tar = None
 
         for context, suffix, exclude in contexts:
             for t in timepoints:
                 for g, graph in graphs:
                     code = f"_{context}{suffix}_{graph}"
-                    func1(outfile, out, { "time": t, "context": context + suffix, "graphs": graph }, metric, code)
+                    func1(outfile, out, { "time": t, "context": context + suffix, "graphs": graph }, extension, code, tar=tar)
 
-        func2(f"{outfile}_{metric}", out)
+        func2(outfile, extension, out)
 
     @staticmethod
     def load(output_path, input_path, func, extension="", name=NAME,
@@ -57,5 +63,5 @@ class EXACT_HEMODYNAMICS():
                 infile = f"{input_path}{name}{extension}/{name}_{context}_{g}{graph}{extension}.tar.xz"
                 print(f"{name} : {code}")
 
-                data = tarfile.open(infile)
-                func(data, timepoints, { "context": context, "graphs": graph }, outfile, code)
+                tar = tarfile.open(infile)
+                func(tar, timepoints, { "context": context, "graphs": graph }, outfile, code)

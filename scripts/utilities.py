@@ -15,15 +15,26 @@ def load(filename):
     TYPES = D['setup']['types']
     return D, R, H, T, N, C, POPS, TYPES
 
-def load_tar(tar, member):
-    """Load member of .tar.xz. file."""
-    file = tar.extractfile(member)
-    contents = [line.decode("utf-8") for line in file.readlines()]
-    return json.loads("".join(contents))
-
-def load_json(json_file):
+def load_json(json_file, tar=None):
     """Load .json file."""
-    return json.load(open(json_file, "r"))
+    if tar:
+        file = tar.extractfile(json_file)
+        contents = [line.decode("utf-8") for line in file.readlines()]
+        return json.loads("".join(contents))
+    else:
+        return json.load(open(json_file, "r"))
+
+def load_csv(csv_file, tar=None):
+    """Load .csv file."""
+    if tar:
+        file = tar.extractfile(csv_file)
+        contents = [line.decode("utf-8") for line in file.readlines()]
+        return [row.strip().split(",") for row in contents]
+    else:
+        with open(csv_file, 'r') as file:
+            reader = csv.reader(file)
+            contents = [row for row in reader]
+        return contents
 
 def save_json(filename, out, extension):
     """Save contents as json."""

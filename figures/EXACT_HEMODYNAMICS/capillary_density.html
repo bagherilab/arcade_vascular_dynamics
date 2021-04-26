@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="../general.js"></script>
+        <script type="text/javascript" src="../options.js"></script>
+        <script type="text/javascript" src="../processors.js"></script>
+        <script type="text/javascript" src="../plotters.js"></script>
+        <script type="text/javascript" src="../labelers.js"></script>
+        <script type="text/javascript" src="../decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "capillary_density"
+            var SIZE = { "width": 300, "height": 300 }
+            var OPTIONS = [ ]
+            var SELECTED = { }
+
+            initialize()
+
+            function PROCESSOR() {
+                let selected = {
+                    "graphs": ["PATTERN", "Lav", "Lava", "Lvav", "Sav", "Savav"],
+                }
+
+                return {
+                    "selected": selected,
+                    "layout": [],
+                    "files": [
+                        { "x": 0, "y": 0, "i": [0], "file": "EXACT_HEMODYNAMICS/EXACT_HEMODYNAMICS.GRAPH.DENSITY.json" }
+                    ],
+                    "margin": { "left": 5, "top": 5, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": 1,
+                    "rows": 1,
+                    "axis": {
+                        "x": {
+                            "bounds": [0, 5],
+                            "n": 6,
+                            "labels": function(e) {
+                                let labels = ["P", "L11", "L21", "L12", "S11", "S22"]
+                                return labels[e]
+                            },
+                            "padding": 0.5
+                        },
+                        "y": {
+                            "scale": 1,
+                            "bounds": [0, 900], // cap/mm^2
+                            "log": false,
+                            "title": 'Capillary Density (caps/mm' + EXP(2) + ')',
+                            "n": 4,
+                            "padding": 50
+                        }
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+
+                data.push({
+                    "*": "rect",
+                    "width": [6],
+                    "height": [S.axis.y.bounds[1] - 100 + S.axis.y.padding],
+                    "x": [-0.5],
+                    "y": [S.axis.y.bounds[1] + S.axis.y.padding],
+                    "fill": "url(#stripe)"
+                })
+                
+                data.push({
+                    "*": "path",
+                    "x": [-1, 7],
+                    "y": [600, 600],
+                    "stroke": "#ddd",
+                    "width": 3
+                })
+                    
+                S.selected.graphs.map(function(graph, index) {
+                    let d = D.data
+                        .filter(e => e.graphs == graph)
+                        .filter(e => e.time == "150" && e.context == "C")[0]["_"]["mean"]
+
+                    d.map(function(v) {
+                        data.push({
+                            "*": "path",
+                            "x": [index - 0.5, index + 0.5],
+                            "y": [v, v],
+                            "stroke": "#888",
+                            "width": 0.5
+                        })
+                    })
+
+                    let stats = calcStats(d)
+                    let mean = stats.mean
+                    let interval = stats.interval
+
+                    data.push({
+                        "*": "path",
+                        "y": [mean - interval, mean + interval],
+                        "x": [index, index],
+                        "width": 2,
+                        "stroke": "#000"
+                    })
+
+                     data.push({
+                        "*": "circle",
+                        "r": 2,
+                        "x": [index],
+                        "y": [mean],
+                        "fill": "#000",
+                        "stroke": null
+                    })
+                })
+                
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelNone(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                addBorder(g, S.subpanel.w, S.subpanel.h, "#ccc")
+
+                // Create and align groups for ticks.
+                let dx = alignHorzAxis(S, i)
+                let dy = alignVertAxis(S, i)
+
+                // Create group to hold ticks.
+                let G = S.G.append("g")
+                    .attr("id", "ticks")
+                    .attr("transform", "translate(" + dx + "," + dy + ")")
+
+                let A = S.axis
+
+                // Create ticks.
+                let ticks = []
+                ticks.push(makeHorzTicks(S, 0, S.subpanel.h, A.x))
+                ticks.push(makeVertTicks(S, 0, 0, A.y))
+
+                // Create axis labels.
+                let labels = []
+                labels.push(makeHorzLabel(S.subpanel.w, 0, alignHorzText(S), A.x.title, "none"))
+                labels.push(makeVertLabel(S.subpanel.h, alignVertText(S), 0, A.y.title, "none"))
+
+                addTicks(G, ticks)
+                addLabels(G, labels)
+
+                // Add dividing lines.
+                let gg = g.append("g")
+
+                for (let i = 0; i < 5; i++) {
+                    if (i == 0) { addLine(gg, S.xscale(i + 0.5), S.xscale(i + 0.5), 0, S.subpanel.h, "#ccc", 0.5) }
+                    else { addLine(gg, S.xscale(i + 0.5), S.xscale(i + 0.5), 0, S.subpanel.h, "#ccc", 0.5).attr("stroke-dasharray", "2,2") }
+                }
+
+                S.G.append("defs").append("pattern")
+                    .attr("id",  "stripe")
+                    .attr("width", 5)
+                    .attr("height", 5)
+                    .attr("patternTransform", "rotate(45)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 5)
+                        .attr("height", 2)
+                        .attr("fill", "#eee")
+            }
+        </script>
+    </body>
+</html>

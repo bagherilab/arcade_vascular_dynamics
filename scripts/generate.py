@@ -2,6 +2,8 @@ import time
 import numpy as np
 from .utilities import *
 from .analyze import *
+from collections import Counter
+from math import sqrt
 
 # GENERAL ANALYSIS FUNCTIONS ===================================================
 
@@ -60,13 +62,149 @@ def merge_centers(file, out, keys, extension, code, tar=None):
     if "_X" in D:
         out['_X'] = D['_X']
 
+def merge_graph(file, out, keys, extension, code, tar=None):
+    """Merge graph files across conditions."""
+    code = code.replace("_CHX_", "_CH_")
+    filepath = f"{file}{code}.GRAPH.{keys['time']}.csv"
+    metric = extension.split(".")[-1]
+    print(code, keys['time'])
+
+    if tar:
+        D = load_csv(filepath.split("/")[-1], tar=tar)
+    else:
+        D = load_csv(filepath)
+
+    seeds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    header = D[0]
+    d = D[1:]
+
+    ind_seed = header.index('seed')
+    ind_fromx = header.index('fromx')
+    ind_tox = header.index('tox')
+    ind_fromy = header.index('fromy')
+    ind_toy = header.index('toy')
+    ind_flow = header.index('FLOW')
+
+    time = unformat_time(keys['time'])
+    d_time = np.array([[float(e) for e in edge] for edge in d if edge[-1] != "nan"])
+
+    all_means = np.empty((10,18))
+    all_stds = np.empty((10,18))
+    all_mins = np.empty((10,18))
+    all_maxs = np.empty((10,18))
+    all_medians = np.empty((10,18))
+    all_uppers = np.empty((10,18))
+    all_lowers = np.empty((10,18))
+    all_totals = np.empty(10)
+    all_density = np.empty(10)
+    all_perfusion = np.empty(10)
+
+    all_means[:] = np.nan
+    all_stds[:] = np.nan
+    all_mins[:] = np.nan
+    all_maxs[:] = np.nan
+    all_medians[:] = np.nan
+    all_uppers[:] = np.nan
+    all_lowers[:] = np.nan
+    all_totals[:] = np.nan
+    all_density[:] = np.nan
+    all_perfusion[:] = np.nan
+
+    ind_pressure_from = header.index('frompressure')
+    ind_pressure_to = header.index('topressure')
+
+    # simulation size
+    radius = 40
+    length = 4*radius - 2
+    width = (6*radius - 3 + 1)/2
+    depth = 8.7
+    side = 15
+
+    if len(d_time) != 0:
+        for i, seed in enumerate(seeds):
+            d_time_seed = d_time[d_time[:,ind_seed] == int(seed),:]
+            if len(d_time_seed) == 0:
+                continue
+
+            all_means[i,:] = np.mean(d_time_seed, axis=0)
+            all_stds[i,:] = np.std(d_time_seed, axis=0, ddof=1)
+            all_mins[i,:] = np.min(d_time_seed, axis=0)
+            all_maxs[i,:] = np.max(d_time_seed, axis=0)
+
+            all_medians[i,:] = np.percentile(d_time_seed, 50, axis=0)
+            all_lowers[i,:] = np.percentile(d_time_seed, 25, axis=0)
+            all_uppers[i,:] = np.percentile(d_time_seed, 75, axis=0)
+
+            all_totals[i] = d_time_seed.shape[0]
+
+            # calculate capillary density
+            coords = d_time_seed[:,[ind_fromx,ind_tox]]
+            slices = [i for fromx, tox in coords for i in range(int(min(tox,fromx)) + 1, int(max(tox, fromx)))]
+            counts = dict(Counter(slices))
+            area = length*side*depth*2 # slice is two layers, um^2
+            count_values = [counts[k]/area*1E6 for k in counts] # units of cap/mm^2
+            all_density[i] = np.mean(count_values)
+
+            # calculate perfusion
+            mean_flow = all_means[i,ind_flow]/60 # um^3/sec
+            volume = (length*side)*(width*2*side/sqrt(3))*(depth*2) # um^3
+            all_perfusion[i] = mean_flow/volume
+
+    if metric == "NUMBER":
+        keys["_"] = { "mean" : all_totals.tolist() }
+    elif metric == "DENSITY":
+        keys["_"] = { "mean" : all_density.tolist() }
+    elif metric == "PERFUSION":
+        keys["_"] = { "mean" : all_perfusion.tolist() }
+    elif metric == "PRESSURE":
+        keys["_"] = {
+            "mean": np.divide(np.add(all_means[:,ind_pressure_from], all_means[:,ind_pressure_to]), 2).tolist(),
+            "std": np.divide(np.add(all_stds[:,ind_pressure_from], all_stds[:,ind_pressure_to]), 2).tolist(),
+            "min": np.divide(np.add(all_mins[:,ind_pressure_from], all_mins[:,ind_pressure_to]), 2).tolist(),
+            "max": np.divide(np.add(all_maxs[:,ind_pressure_from], all_maxs[:,ind_pressure_to]), 2).tolist(),
+            "median": np.divide(np.add(all_medians[:,ind_pressure_from], all_medians[:,ind_pressure_to]), 2).tolist(),
+            "lower": np.divide(np.add(all_lowers[:,ind_pressure_from], all_lowers[:,ind_pressure_to]), 2).tolist(),
+            "upper": np.divide(np.add(all_uppers[:,ind_pressure_from], all_uppers[:,ind_pressure_to]), 2).tolist(),
+        };
+    elif metric == "OXYGEN":
+        ind_oxygen_from = header.index('fromoxygen')
+        ind_oxygen_to = header.index('tooxygen')
+        keys["_"] = {
+            "mean": np.divide(np.add(all_means[:,ind_oxygen_from], all_means[:,ind_oxygen_to]), 2).tolist(),
+            "std": np.divide(np.add(all_stds[:,ind_oxygen_from], all_stds[:,ind_oxygen_to]), 2).tolist(),
+            "min": np.divide(np.add(all_mins[:,ind_oxygen_from], all_mins[:,ind_oxygen_to]), 2).tolist(),
+            "max": np.divide(np.add(all_maxs[:,ind_oxygen_from], all_maxs[:,ind_oxygen_to]), 2).tolist(),
+            "median": np.divide(np.add(all_medians[:,ind_oxygen_from], all_medians[:,ind_oxygen_to]), 2).tolist(),
+            "lower": np.divide(np.add(all_lowers[:,ind_oxygen_from], all_lowers[:,ind_oxygen_to]), 2).tolist(),
+            "upper": np.divide(np.add(all_uppers[:,ind_oxygen_from], all_uppers[:,ind_oxygen_to]), 2).tolist(),
+        };
+    else:
+        ind = header.index(metric)
+        keys["_"] = {
+            "mean": all_means[:,ind].tolist(),
+            "std": all_stds[:,ind].tolist(),
+            "min": all_mins[:,ind].tolist(),
+            "max": all_maxs[:,ind].tolist(),
+            "median": all_medians[:,ind].tolist(),
+            "lower": all_lowers[:,ind].tolist(),
+            "upper": all_uppers[:,ind].tolist(),
+        };
+
+    out['data'].append(keys)
+
 # ------------------------------------------------------------------------------
 
 def save_seeds(file, extension, out):
+    """Save merged seed files."""
     save_json(file, out, extension)
 
 def save_centers(file, extension, out):
+    """Save merged center concentrations."""
     save_json(file, out, extension)
+
+def save_graph(file, extension, out):
+    """Save merged graph files."""
+    save_json(file, out['data'], extension)
 
 # SITE ARCHITECTURE: POINT DISTANCES ===========================================
 
@@ -161,3 +299,4 @@ def merge_type_grid_borders(file, out, keys, extension, code, tar=None):
 def save_type_grid_borders(file, extension, out):
     """Save merged type grid border files."""
     save_csv(file, ','.join(out['header']) + "\n", zip(*out['data']), extension)
+

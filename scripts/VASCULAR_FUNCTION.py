@@ -1,4 +1,4 @@
-from .utilities import load
+from .utilities import load, load_tar
 import tarfile
 
 class VASCULAR_FUNCTION():
@@ -37,12 +37,7 @@ class VASCULAR_FUNCTION():
              contexts=CONTEXTS, graphs=GRAPHS, timepoints=[]):
         outfile = f"{output_path}{name}/{name}"
         out = { "data": [] }
-
-        # Open compressed files, if they exist.
-        try:
-            tar = tarfile.open(f"{outfile}{extension}.tar.xz")
-        except:
-            tar = None
+        tar = load_tar(outfile, extension)
 
         for context, suffix, exclude in contexts:
             for t in timepoints:

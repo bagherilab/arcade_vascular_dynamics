@@ -2,6 +2,7 @@ import pickle
 import json
 import csv
 import re
+import tarfile
 
 def load(filename):
     """Load contents of parsed results file."""
@@ -14,6 +15,22 @@ def load(filename):
     POPS = D['setup']['pops']
     TYPES = D['setup']['types']
     return D, R, H, T, N, C, POPS, TYPES
+
+def load_tar(outfile, extension):
+    # Open compressed files, if they exist. Start by trying full extension.
+    try:
+        tar = tarfile.open(f"{outfile}{extension}.tar.xz")
+    except:
+        tar = None
+
+    # Also try opening upper level extension.
+    try:
+        first = extension.split(".")[1]
+        tar = tarfile.open(f"{outfile}.{first}.tar.xz")
+    except:
+        tar = None
+
+    return tar
 
 def load_json(json_file, tar=None):
     """Load .json file."""

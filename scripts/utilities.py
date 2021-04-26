@@ -21,6 +21,10 @@ def load_tar(tar, member):
     contents = [line.decode("utf-8") for line in file.readlines()]
     return json.loads("".join(contents))
 
+def load_json(json_file):
+    """Load .json file."""
+    return json.load(open(json_file, "r"))
+
 def save_json(filename, out, extension):
     """Save contents as json."""
     with open(filename + extension + ".json", "w") as f:
@@ -47,3 +51,15 @@ def format_json(jn):
 def format_time(time):
     """Format time as string."""
     return str(time).replace(".", "").zfill(3)
+
+def is_tar(file):
+    """Check if file has .tar.xz extension."""
+    return file[-7:] == ".tar.xz"
+
+def is_json(file):
+    """Check if file has .json extension."""
+    return file[-5:] == ".json"
+
+def is_pkl(file):
+    """Check if file has .pkl extension."""
+    return file[-4:] == ".pkl"

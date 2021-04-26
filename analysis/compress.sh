@@ -48,6 +48,7 @@ fi
 # Iterate through all JSON files to compress.
 for JSON in ${JSONS[@]}; do
     JSON_DIRECTORY=$NAME/_$NAME${JSON}
+    JSON_TAR=$NAME${JSON}.tar.xz
 
     if [[ -d "$JSON_DIRECTORY" ]]
     then
@@ -55,16 +56,23 @@ for JSON in ${JSONS[@]}; do
         continue
     fi
 
+    if [[ -f "$NAME/$JSON_TAR" ]]
+    then
+        echo "$JSON_TAR already exists. Please remove."
+        continue
+    fi
+
     mkdir $JSON_DIRECTORY
-    mv $NAME/$NAME*${JSON}.json $JSON_DIRECTORY
+    mv $NAME/$NAME\_*${JSON}.json $JSON_DIRECTORY
     cd $JSON_DIRECTORY
-    COPYFILE_DISABLE=1 tar cJvf ../$NAME${JSON}.tar.xz *.json
+    COPYFILE_DISABLE=1 tar cJvf ../${JSON_TAR} *.json
     cd ../..
 done
 
 # Iterate through all CSV files to compress.
 for CSV in ${CSVS[@]}; do
     CSV_DIRECTORY=$NAME/_$NAME${CSV}
+    CSV_TAR=$NAME${CSV}.tar.xz
 
     if [[ -d "$CSV_DIRECTORY" ]]
     then
@@ -72,9 +80,15 @@ for CSV in ${CSVS[@]}; do
         continue
     fi
 
+    if [[ -f "$NAME/$CSV_TAR" ]]
+    then
+        echo "$CSV_TAR already exists. Please remove."
+        continue
+    fi
+
     mkdir $CSV_DIRECTORY
-    mv $NAME/$NAME*${CSV}*.csv $CSV_DIRECTORY
+    mv $NAME/$NAME\_*${CSV}*.csv $CSV_DIRECTORY
     cd $CSV_DIRECTORY
-    COPYFILE_DISABLE=1 tar cJvf ../$NAME${CSV}.tar.xz *.csv
+    COPYFILE_DISABLE=1 tar cJvf ../${CSV_TAR} *.csv
     cd ../..
 done

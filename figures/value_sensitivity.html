@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="js/general.js"></script>
+        <script type="text/javascript" src="js/options.js"></script>
+        <script type="text/javascript" src="js/processors.js"></script>
+        <script type="text/javascript" src="js/plotters.js"></script>
+        <script type="text/javascript" src="js/labelers.js"></script>
+        <script type="text/javascript" src="js/decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div>
+            <div id="cases">
+                <strong>CASE</strong>
+                <label class="inputs"><input type="radio" name="case" id="case_WEIGHT">hemodynamic factors</label>
+                <label class="inputs"><input type="radio" name="case" id="case_FRAC">vascular damage</label>
+            </div>
+            <div id="metrics">
+                <strong>METRIC</strong>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GROWTH">growth rate</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_SYMMETRY">symmetry</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_CYCLES">cycle length</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_ACTIVITY">activity</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GLUCOSE">glucose</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_OXYGEN">oxygen</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "value_sensitivity"
+            var SIZE = { "width": 800, "height": 300 }
+            var OPTIONS = ["cases", "metrics"]
+            var SELECTED = {
+                "radios": {
+                    "case": "WEIGHT",
+                    "metric": "GROWTH",
+                }  
+            }
+            var LABELS = {
+                "weight": {
+                    "weight_flow": "Flow",
+                    "weight_gradient": "Gradient",
+                    "weight_local": "Local",
+                },
+                "frac": {
+                    "000": "f = 0.0",
+                    "100": "f = 1.0",
+                }
+            }
+
+            initialize()
+
+            var Y_AXIS = {
+                "WEIGHT": {
+                    "GROWTH": {
+                        "scale": 30, // hexagon/day => um/day
+                        "bounds": [40, 52], // mm/day
+                        "title": 'Growth Rate (\u03BCm/day)',
+                        "n": 4,
+                        "padding": 0.5
+                    },
+                    "SYMMETRY": {
+                        "scale": 1,
+                        "bounds": [0.75, 0.95], // unitless
+                        "title": 'Symmetry',
+                        "n": 3,
+                        "padding": 0.01
+                    },
+                    "CYCLES": {
+                        "scale": 1/60.0, // min => hours
+                        "bounds": [21, 24], // hours
+                        "title": 'Average Cell Cycle Length (hours)',
+                        "n": 4,
+                        "padding": 0.1
+                    },
+                    "ACTIVITY": {
+                        "scale": 1,
+                        "bounds": [-1, 1], // unitless
+                        "title": 'Relative Activity',
+                        "n": 5,
+                        "padding": 0.05
+                    },
+                    "GLUCOSE": {
+                        "scale": 1000, // fmol/um^3 => mmol/L
+                        "bounds": [3, 5], // mmol/L
+                        "title": "[Glucose] (mmol/L)",
+                        "n": 3,
+                        "padding": 0.1
+                    },
+                    "OXYGEN": {
+                        "scale": 1,
+                        "bounds": [20, 40], // mmHg
+                        "title": "[Oxygen] (mmHg)",
+                        "n": 3,
+                        "padding": 2
+                    },
+                },
+                "FRAC": {
+                    "GROWTH": {
+                        "scale": 30, // hexagon/day => um/day
+                        "bounds": [0, 50], // mm/day
+                        "title": 'Growth Rate (\u03BCm/day)',
+                        "n": 3,
+                        "padding": 5
+                    },
+                    "SYMMETRY": {
+                        "scale": 1,
+                        "bounds": [0, 1], // unitless
+                        "title": 'Symmetry',
+                        "n": 3,
+                        "padding": 0.02
+                    },
+                    "CYCLES": {
+                        "scale": 1/60.0, // min => hours
+                        "bounds": [18, 26], // hours
+                        "title": 'Average Cell Cycle Length (hours)',
+                        "n": 3,
+                        "padding": 0.2
+                    },
+                    "ACTIVITY": {
+                        "scale": 1,
+                        "bounds": [-1, 1], // unitless
+                        "title": 'Relative Activity',
+                        "n": 5,
+                        "padding": 0.05
+                    },
+                    "GLUCOSE": {
+                        "scale": 1000, // fmol/um^3 => mmol/L
+                        "bounds": [0, 4], // mmol/L
+                        "title": "[Glucose] (mmol/L)",
+                        "n": 3,
+                        "padding": 0.1
+                    },
+                    "OXYGEN": {
+                        "scale": 1,
+                        "bounds": [0, 30], // mmHg
+                        "title": "[Oxygen] (mmHg)",
+                        "n": 3,
+                        "padding": 2
+                    },
+                }
+            }
+
+            var X_AXIS = {
+                "WEIGHT": {
+                    "bounds": [-1, 1],
+                    "padding": 0.05,
+                    "n": 5,
+                    "title": "Relative Change in Weight"
+                },
+                "FRAC": {
+                    "bounds": [0, 1.0],
+                    "padding": 0.01,
+                    "n": 3,
+                    "title": "Damage Parameter"
+                },
+            }
+
+            function PROCESSOR() {
+                let selected = {
+                    "case": SELECTED.radios.case,
+                    "metric": SELECTED.radios.metric,
+                    "weight": ["weight_flow", "weight_gradient", "weight_local"],
+                    "frac": ["000", "100"],
+                }
+
+                let name = function(arr) {
+                    if (selected.case == "WEIGHT") {
+                        switch (selected.metric) {
+                            case "GLUCOSE": case "OXYGEN":
+                                return "ESTIMATED_HEMODYNAMICS/ESTIMATED_HEMODYNAMICS.CENTERS.json"
+                                    + "~EXACT_HEMODYNAMICS/EXACT_HEMODYNAMICS.CENTERS.json"
+                            default:
+                                return "ESTIMATED_HEMODYNAMICS/ESTIMATED_HEMODYNAMICS.SEEDS." + selected.metric + ".json"
+                                    + "~EXACT_HEMODYNAMICS/EXACT_HEMODYNAMICS.SEEDS." + selected.metric + ".json"
+                        }
+                    } else {
+                        switch (selected.metric) {
+                            case "GLUCOSE": case "OXYGEN":
+                                return "VASCULAR_DAMAGE/VASCULAR_DAMAGE.CENTERS.json"
+                                    + "~VASCULAR_FUNCTION/VASCULAR_FUNCTION.CENTERS.json"
+                            default:
+                                return "VASCULAR_DAMAGE/VASCULAR_DAMAGE.SEEDS." + selected.metric + ".json"
+                                    + "~VASCULAR_FUNCTION/VASCULAR_FUNCTION.SEEDS." + selected.metric + ".json"
+                        }
+                    }
+                }
+
+                let layout = [selected.case.toLowerCase()]
+                let make = processMake(layout, selected, [], name)
+                let p = processGrid(layout, selected, make)
+                
+                return {
+                    "selected": selected,
+                    "layout": layout,
+                    "files": p.files,
+                    "margin": { "left": p.marginLeft, "top": LABEL_SIZE, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": p.nCols,
+                    "rows": p.nRows,
+                    "axis": {
+                        "x": X_AXIS[selected.case],
+                        "y": Y_AXIS[selected.case][selected.metric]
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+                let time = 15
+                let contexts = ["C", "CHX"]
+                let x, scales
+
+                if (S.selected.case == "WEIGHT") {
+                    x = linrange(0,21).map(e => (e - 10)/10)
+                    scales = linrange(0,21).map(e => (e == 0 ? "0" : "") + (10*e >= 100 ? "" : "0") + 10*e)
+                } else {
+                    x = linrange(0,11).map(e => e/10)
+                    values = linrange(0,11).map(e => (e > 9 ? "" : "0") + e + "0")
+                }
+
+                let getData = function(context) {
+                    let dEstimated
+
+                    if (S.selected.case == "WEIGHT") {
+                        dEstimated = D.data1.data
+                            .filter(e => e.weight == S.selected.weight[D.i[0]])
+                            .filter(e => e.context == context)
+                    } else {
+                        dEstimated = D.data1.data
+                            .filter(e => e.frac ==  S.selected.frac[D.i[0]])
+                            .filter(e => e.context == context)
+                    }
+
+                    let dExact = D.data2.data
+                        .filter(e => e.graphs == "PATTERN")
+                        .filter(e => e.context == context)
+
+                    let field
+                    if (S.selected.metric == "GLUCOSE" || S.selected.metric == "OXYGEN") {
+                        field = S.selected.metric.toLowerCase()
+                    } else {
+                        dEstimated = dEstimated.filter(e => e.time == time)
+                        dExact = dExact.filter(e => e.time == time)
+                        field = "_"
+                    }
+
+                    if (S.selected.case == "WEIGHT") {
+                        yEstimated = scales.map(function(scale) {
+                            let y = dEstimated.filter(e => e.scale == scale)[0][field].map(e => e*S.axis.y.scale)
+                            let stats = calcStats(y)
+                            return [stats.mean, stats.mean + stats.interval, stats.mean - stats.interval]
+                        })
+                    } else {
+                        yEstimated = values.map(function(value) {
+                            let y = dEstimated.filter(e => e.value == value)[0][field].map(e => e*S.axis.y.scale)
+                            let stats = calcStats(y)
+                            return [stats.mean, stats.mean + stats.interval, stats.mean - stats.interval]
+                        })
+                    }
+
+                    let ddExact = dExact[0][field].map(e => e*S.axis.y.scale)
+                    let stats = calcStats(ddExact)
+                    let yExact = [stats.mean, stats.interval]
+
+                    return { "estimated": yEstimated, "exact": yExact }
+                }
+
+                contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                    let y = getData(context)
+                    let mean = y.exact[0]
+                    let interval = y.exact[1]
+                    
+                    data.push({
+                        "*": "area",
+                        "x": [-2, 2],
+                        "min": [mean + interval, mean + interval],
+                        "max": [mean - interval, mean - interval],
+                        "fill": "url(#stripe-" + (context == "C" ? "C" : "CHX") + ")"
+                    })
+                    
+                    data.push({
+                        "*": "path",
+                        "y": [mean - interval, mean - interval],
+                        "x": [-2, 2],
+                        "width": 0.5,
+                        "stroke": shadeColor(color, 0.5)
+                    })
+                    
+                    data.push({
+                        "*": "path",
+                        "y": [mean + interval, mean + interval],
+                        "x": [-2, 2],
+                        "width": 0.5,
+                        "stroke": shadeColor(color, 0.5)
+                    })
+                })
+                
+                contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                    let y = getData(context)
+
+                    data.push({
+                        "*": "area",
+                        "x": x,
+                        "min": y.estimated.map(e => e[1]),
+                        "max": y.estimated.map(e => e[2]),
+                        "fill": "url(#shade-" + (context == "C" ? "C" : "CHX") + ")"
+                    })
+                })
+
+                contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                    let y = getData(context)
+                    let mean = y.exact[0]
+
+                    data.push({
+                        "*": "path",
+                        "y": [mean, mean],
+                        "x": [-2, 2],
+                        "width": 2,
+                        "stroke": shadeColor(color, 0.1),
+                    })
+                })
+
+                contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                    let y = getData(context)
+                    let mean = y.exact[0]
+                    
+                    data.push({
+                        "*": "path",
+                        "y": y.estimated.map(e => e[0]),
+                        "x": x,
+                        "width": 0.5,
+                        "stroke": shadeColor(color, -0.1)
+                    })
+                    
+                    data.push({
+                        "*": "circle",
+                        "y": y.estimated.map(e => e[0]),
+                        "x": x,
+                        "r": 1.5,
+                        "stroke": "none",
+                        "fill": shadeColor(color, -0.1)
+                    })
+                })
+                
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelGrid(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                decorateTicks(g, S, i, p)
+    
+                if (S.selected.case == "WEIGHT") {
+                    addLine(g.insert("g",":first-child"), S.xscale(0), S.xscale(0), 0, S.subpanel.h, "#ccc", "1px")
+                }
+
+                if (i.reduce((a, b) => a + b) == 0) {
+                    let colors = COLORS["context"]
+                    let defs = S.G.append("defs")
+                    
+                    defs.append("pattern")
+                        .attr("id",  "stripe-C")
+                        .attr("width", 3)
+                        .attr("height", 3)
+                        .attr("patternTransform", "rotate(45)")
+                        .attr("patternUnits", "userSpaceOnUse")
+                        .append("rect")
+                            .attr("width", 3)
+                            .attr("height", 0.5)
+                            .attr("fill", shadeColor(colors[0], 0.6))
+                    
+                    defs.append("pattern")
+                        .attr("id",  "stripe-CHX")
+                        .attr("width", 3)
+                        .attr("height", 3)
+                        .attr("patternTransform", "rotate(45)")
+                        .attr("patternUnits", "userSpaceOnUse")
+                        .append("rect")
+                            .attr("width", 3)
+                            .attr("height", 0.5)
+                            .attr("y", 1.5)
+                            .attr("fill", shadeColor(colors[1], 0.6))
+
+                    defs.append("pattern")
+                        .attr("id",  "shade-C")
+                        .attr("width", 1)
+                        .attr("height", 1)
+                        .attr("patternTransform", "rotate(90)")
+                        .attr("patternUnits", "userSpaceOnUse")
+                        .append("rect")
+                            .attr("width", 1)
+                            .attr("height", 0.5)
+                            .attr("fill", shadeColor(colors[0], 0.4))
+
+                    defs.append("pattern")
+                        .attr("id",  "shade-CHX")
+                        .attr("width", 1)
+                        .attr("height", 1)
+                        .attr("patternTransform", "rotate(90)")
+                        .attr("patternUnits", "userSpaceOnUse")
+                        .append("rect")
+                            .attr("width", 1)
+                            .attr("height", 0.5)
+                            .attr("y", 0.5)
+                            .attr("fill", shadeColor(colors[1], 0.4))
+                }
+            }
+        </script>
+    </body>
+</html>

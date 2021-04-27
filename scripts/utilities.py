@@ -20,6 +20,7 @@ def load_tar(outfile, extension):
     # Open compressed files, if they exist. Start by trying full extension.
     try:
         tar = tarfile.open(f"{outfile}{extension}.tar.xz")
+        return tar
     except:
         tar = None
 

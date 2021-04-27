@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="js/general.js"></script>
+        <script type="text/javascript" src="js/options.js"></script>
+        <script type="text/javascript" src="js/processors.js"></script>
+        <script type="text/javascript" src="js/plotters.js"></script>
+        <script type="text/javascript" src="js/labelers.js"></script>
+        <script type="text/javascript" src="js/decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div>
+            <div id="cases">
+                <strong>CASE</strong>
+                <label class="inputs"><input type="radio" name="case" id="case_WEIGHT">hemodynamic factors</label>
+                <label class="inputs"><input type="radio" name="case" id="case_FRAC">vascular damage</label>
+            </div>
+            <div id="values">
+                <strong>CASE</strong>
+                <label class="inputs"><input type="radio" name="value" id="value_ABSOLUTE">absolute values</label>
+                <label class="inputs"><input type="radio" name="value" id="value_DELTA">delta values</label>
+            </div>
+            <div id="metrics">
+                <strong>METRIC</strong>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GROWTH">growth rate</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_SYMMETRY">symmetry</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_CYCLES">cycle length</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_ACTIVITY">activity</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GLUCOSE">glucose</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_OXYGEN">oxygen</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "pattern_compare"
+            var SIZE = { "width": 300, "height": 300 }
+            var OPTIONS = ["cases", "values", "metrics"]
+            var SELECTED = {
+                "radios": {
+                    "case": "WEIGHT",
+                    "value": "ABSOLUTE",
+                    "metric": "GROWTH",
+                }  
+            }
+            var LABELS = { }
+
+            initialize()
+
+            var Y_AXIS = {
+                "WEIGHT": {
+                    "ABSOLUTE": {
+                        "GROWTH": {
+                            "scale": 30, // hexagon/day => um/day
+                            "bounds": [30, 50], // mm/day
+                            "title": 'Growth Rate (\u03BCm/day)',
+                            "n": 3,
+                            "padding": 1
+                        },
+                        "SYMMETRY": {
+                            "scale": 1,
+                            "bounds": [0.6, 1], // unitless
+                            "title": 'Symmetry',
+                            "n": 3,
+                            "padding": 0.02
+                        },
+                        "CYCLES": {
+                            "scale": 1/60.0, // min => hours
+                            "bounds": [18, 26], // hours
+                            "title": 'Average Cell Cycle Length (hours)',
+                            "n": 3,
+                            "padding": 0.1
+                        },
+                        "ACTIVITY": {
+                            "scale": 1,
+                            "bounds": [-1, 1], // unitless
+                            "title": 'Relative Activity',
+                            "n": 3,
+                            "padding": 0.05
+                        },
+                        "GLUCOSE": {
+                            "scale": 1000, // fmol/um^3 => mmol/L
+                            "bounds": [3, 5], // mmol/L
+                            "title": "Glucose Concentration (mmol/L)",
+                            "n": 3,
+                            "padding": 0.1
+                        },
+                        "OXYGEN": {
+                            "scale": 1,
+                            "bounds": [20, 100], // mmHg
+                            "title": "Oxygen Concentration (mmHg)",
+                            "n": 3,
+                            "padding": 2
+                        },
+                    },
+                    "DELTA": {
+                        "GROWTH": {
+                            "scale": 30, // hexagon/day => um/day
+                            "bounds": [-10, 10], // um/day
+                            "title": '\u0394 Growth Rate (\u03BCm/day)',
+                            "n": 5,
+                            "padding": 0.5
+                        },
+                        "SYMMETRY": {
+                            "scale": 1,
+                            "bounds": [-0.2, 0.2],
+                            "title": '\u0394 Symmetry',
+                            "n": 5,
+                            "padding": 0.02
+                        },
+                        "CYCLES": {
+                            "scale": 1/60.0, // min => hours
+                            "bounds": [-4, 4], // hours
+                            "title": "\u0394 Average Cell Cycle Length (hours)",
+                            "n": 5,
+                            "padding": 0.2
+                        },
+                        "ACTIVITY": {
+                            "scale": 1,
+                            "bounds": [-0.2, 0.2],
+                            "title": '\u0394 Activity',
+                            "n": 5,
+                            "padding": 0.01
+                        },
+                        "GLUCOSE": {
+                            "scale": 1000, // fmol/um^3 => mmol/L
+                            "bounds": [-0.6, 0.6], // mmol/L
+                            "title": "&Delta; [Glucose] (mmol/L)",
+                            "n": 5,
+                            "padding": 0.02
+                        },
+                        "OXYGEN": {
+                            "scale": 1,
+                            "bounds": [-20, 20], // mmHg
+                            "title": "&Delta; [Oxygen] (mmHg)",
+                            "n": 5,
+                            "padding": 2
+                        },
+                    }
+                },
+                "FRAC": {
+                    "ABSOLUTE": {
+                        "GROWTH": {
+                            "scale": 30, // hexagon/day => um/day
+                            "bounds": [-10, 50], // mm/day
+                            "title": 'Growth Rate (\u03BCm/day)',
+                            "n": 3,
+                            "padding": 1
+                        },
+                        "SYMMETRY": {
+                            "scale": 1,
+                            "bounds": [0.3, 0.9], // unitless
+                            "title": 'Symmetry',
+                            "n": 3,
+                            "padding": 0.05
+                        },
+                        "CYCLES": {
+                            "scale": 1/60.0, // min => hours
+                            "bounds": [18, 26], // hours
+                            "title": 'Average Cell Cycle Length (hours)',
+                            "n": 3,
+                            "padding": 0.1
+                        },
+                        "ACTIVITY": {
+                            "scale": 1,
+                            "bounds": [-1, 1], // unitless
+                            "title": 'Relative Activity',
+                            "n": 3,
+                            "padding": 0.05
+                        },
+                        "GLUCOSE": {
+                           "scale": 1000, // fmol/um^3 => mmol/L
+                            "bounds": [0, 5], // mmol/L
+                            "title": "Glucose Concentration (mmol/L)",
+                            "n": 3,
+                            "padding": 0.1
+                        },
+                        "OXYGEN": {
+                            "scale": 1,
+                            "bounds": [0, 100], // mmHg
+                            "title": "Oxygen Concentration (mmHg)",
+                            "n": 3,
+                            "padding": 2
+                        },
+                    },
+                    "DELTA": {
+                        "GROWTH": {
+                            "scale": 30, // hexagon/day => um/day
+                            "bounds": [-80, 80], // um/day
+                            "title": '\u0394 Growth Rate (\u03BCm/day)',
+                            "n": 5,
+                            "padding": 0.5
+                        },
+                        "SYMMETRY": {
+                            "scale": 1,
+                            "bounds": [-0.6, 0.6],
+                            "title": '\u0394 Symmetry',
+                            "n": 5,
+                            "padding": 0.02
+                        },
+                        "CYCLES": {
+                            "scale": 1/60.0, // min => hours
+                            "bounds": [-4, 4], // hours
+                            "title": "\u0394 Average Cell Cycle Length (hours)",
+                            "n": 5,
+                            "padding": 0.2
+                        },
+                        "ACTIVITY": {
+                           "scale": 1,
+                            "bounds": [-2, 2],
+                            "title": '\u0394 Activity',
+                            "n": 5,
+                            "padding": 0.1
+                        },
+                        "GLUCOSE": {
+                            "scale": 1000, // fmol/um^3 => mmol/L
+                            "bounds": [-4, 4], // mmol/L
+                            "title": "&Delta; [Glucose] (mmol/L)",
+                            "n": 5,
+                            "padding": 0.1
+                        },
+                        "OXYGEN": {
+                            "scale": 1,
+                            "bounds": [-80, 80], // mmHg
+                            "title": "&Delta; [Oxygen] (mmHg)",
+                            "n": 5,
+                            "padding": 2
+                        },
+                    }
+                },
+            }
+
+            function PROCESSOR() {
+                let selected = {
+                    "case": SELECTED.radios.case,
+                    "value": SELECTED.radios.value,
+                    "metric": SELECTED.radios.metric,
+                }
+
+                let name = function(arr) { return "_/PATTERN_COMPARE." + selected.metric + ".json" }
+
+                let layout = []
+                let make = processMake(layout, selected, [], name)
+                let p = processGrid(layout, selected, make)
+                
+                return {
+                    "selected": selected,
+                    "layout": layout,
+                    "files": p.files,
+                    "margin": { "left": p.marginLeft, "top": p.marginTop, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": p.nCols,
+                    "rows": p.nRows,
+                    "axis": {
+                        "x": {
+                            "scale": 1.0/7,
+                            "bounds": [0, 2],
+                            "title": "Time (weeks)",
+                            "n": 3,
+                            "padding": 0.05
+                        },
+                        "y": Y_AXIS[selected.case][selected.value][selected.metric]
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+                let contexts = ["C", "CHX"]
+                if (S.selected.metric == "GLUCOSE" || S.selected.metric == "OXYGEN") { contexts[1] = "CH" }
+
+                let x = D.data["_X"].map(e => (e - 1)*S.axis.x.scale)
+
+                contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+
+                    if (S.selected.case == "WEIGHT") {
+                        let dStatic = D.data["VASCULAR_DAMAGE"]
+                            .filter(e => e.context == context)
+                            .filter(e => e.frac == "000")
+                            .filter(e => e.value == "000")[0][ "_Y"]
+                            .map(e => e*S.axis.y.scale)
+
+                        let dEstimated = D.data["VASCULAR_DAMAGE"]
+                            .filter(e => e.context == context)
+                            .filter(e => e.frac == "100")
+                            .filter(e => e.value == "000")[0][ "_Y"]
+                            .map(e => e*S.axis.y.scale)
+
+                        let dExact = D.data["EXACT_HEMODYNAMICS"]
+                            .filter(e => e.context == context)
+                            .filter(e => e.graphs == "PATTERN")[0][ "_Y"]
+                            .map(e => e*S.axis.y.scale)
+
+                        if (S.selected.value == "DELTA") {
+                            let static_estimated = dStatic.map((e, i) => e - dEstimated[i])
+                            let static_exact = dStatic.map((e, i) => e - dExact[i])
+                            let estimated_exact = dEstimated.map((e, i) => e - dExact[i])
+
+                            let remove = findNaNs(static_estimated)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(static_estimated, remove),
+                                "width": 1.5,
+                                "stroke": color
+                            })
+
+                            remove = findNaNs(static_exact)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(static_exact, remove),
+                                "width": 1.5,
+                                "stroke": color,
+                                "dash": "3,1.5"
+                            })
+                            
+                            remove = findNaNs(estimated_exact)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(estimated_exact, remove),
+                                "width": 1,
+                                "stroke": shadeColor(color, 0.2),
+                                "dash": "1,2"
+                            })
+                        } else {
+                            let remove = findNaNs(dStatic)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(dStatic, remove),
+                                "width": 1,
+                                "stroke": shadeColor(color, 0.2),
+                                "dash": "1,2"
+                            })
+
+                            remove = findNaNs(dEstimated)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(dEstimated, remove),
+                                "width": 1.5,
+                                "stroke": color,
+                                "dash": "3,1.5"
+                            })
+
+                            remove = findNaNs(dExact)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(dExact, remove),
+                                "width": 1.5,
+                                "stroke": color
+                            })
+                        }
+                    } else {
+                        let dEstimated = D.data["VASCULAR_DAMAGE"]
+                            .filter(e => e.context == context)
+                            .filter(e => e.frac == "100")
+                            .filter(e => e.value == "000")[0][ "_Y"]
+                            .map(e => e*S.axis.y.scale)
+
+                        let dExact = D.data["EXACT_HEMODYNAMICS"]
+                            .filter(e => e.context == context)
+                            .filter(e => e.graphs == "PATTERN")[0][ "_Y"]
+                            .map(e => e*S.axis.y.scale)
+
+                        let dDamage = D.data["VASCULAR_DAMAGE"]
+                            .filter(e => e.context == context)
+                            .filter(e => e.frac == "100")
+                            .filter(e => e.value == "100")[0][ "_Y"]
+                            .map(e => e*S.axis.y.scale)
+
+                        let dFunction = D.data["VASCULAR_FUNCTION"]
+                            .filter(e => e.context == context)[0][ "_Y"]
+                            .map(e => e*S.axis.y.scale)
+
+                        if (S.selected.value == "DELTA") {
+                            let estimated_damage = dEstimated.map((e, i) => e - dDamage[i])
+                            let exact_function = dExact.map((e, i) => e - dFunction[i])
+                            let damage_function = dDamage.map((e, i) => e - dFunction[i])
+
+                            let remove = findNaNs(estimated_damage)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(estimated_damage, remove),
+                                "width": 1.5,
+                                "stroke": color
+                            })
+
+                            remove = findNaNs(exact_function)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(exact_function, remove),
+                                "width": 1.5,
+                                "stroke": color,
+                                "dash": "3,1.5"
+                            })
+                            
+                            remove = findNaNs(damage_function)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(damage_function, remove),
+                                "width": 1,
+                                "stroke": shadeColor(color, 0.2),
+                                "dash": "1,2"
+                            })
+                        } else {
+                            let remove = findNaNs(dEstimated)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(dEstimated, remove),
+                                "width": 1,
+                                "stroke": shadeColor(color, 0.2),
+                            })
+
+                            remove = findNaNs(dExact)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(dExact, remove),
+                                "width": 1.5,
+                                "stroke": color,
+                            })
+                            
+                            remove = findNaNs(dDamage)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(dDamage, remove),
+                                "width": 1,
+                                "stroke": shadeColor(color, 0.2),
+                                "dash": "2,2"
+                            })
+                            
+                            remove = findNaNs(dFunction)
+                            data.push({
+                                "*": "path",
+                                "x": removeNaNs(x, remove),
+                                "y": removeNaNs(dFunction, remove),
+                                "width": 1.5,
+                                "stroke": color,
+                                "dash": "3,1.5"
+                            })
+                        }
+                    }
+                })
+
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelGrid(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+               decorateTicks(g, S, i, p)
+    
+                if (S.selected.value == "DELTA") {
+                    addLine(g.insert("g",":first-child"), 0, S.subpanel.w, S.yscale(0), S.yscale(0), "#ccc", "1px")
+                }
+            }
+        </script>
+    </body>
+</html>

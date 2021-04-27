@@ -206,7 +206,7 @@ def save_graph(file, extension, out):
     """Save merged graph files."""
     save_json(file, out['data'], extension)
 
-# SITE ARCHITECTURE: POINT DISTANCES ===========================================
+# POINT DISTANCES ==============================================================
 
 def get_type_index(type):
     """Denote cell type as active (0) or inactive (1)."""
@@ -258,7 +258,7 @@ def save_point_distances(file, extension, out):
     """Save merged point distances file."""
     save_csv(file, ','.join(out['header']) + "\n", zip(*out['data']), extension)
 
-# SITE ARCHITECTURE: TYPE GRID =================================================
+# TYPE GRID ====================================================================
 
 def make_type_grid_borders(D, R, H, T, N, C, POPS, TYPES, outfile, code, exclude=[-1], timepoints=[], seeds=[]):
     """Extract type grid borders."""
@@ -300,3 +300,98 @@ def save_type_grid_borders(file, extension, out):
     """Save merged type grid border files."""
     save_csv(file, ','.join(out['header']) + "\n", zip(*out['data']), extension)
 
+# PATTERN COMPARE ==============================================================
+
+def make_pattern_compare_metrics(file, metric, names, contexts, cases):
+    """Compiles selected metrics for pattern layout."""
+    out = {}
+
+    for name in names:
+        outfile = f"{file}{name}/{name}"
+        extension = f".METRICS.{metric}"
+        tar = load_tar(outfile, extension)
+
+        selected = []
+
+        for context in contexts:
+            for case in cases[name]:
+                code = "_".join([value for key, value in case])
+                filepath = f"{outfile}_{context}_{code}{extension}.json"
+
+                # Try loading from tar.
+                if tar:
+                    D = load_json(filepath.split("/")[-1], tar=tar)
+                else:
+                    D = load_json(filepath)
+
+                keys = {key: value for key, value in case}
+                keys["_Y"] = D["mean"]
+                keys["context"] = context
+
+                selected.append(keys)
+
+        out["_X"] = D["_X"]
+        out[name] = selected
+
+    save_json(f"{file}_/PATTERN_COMPARE", out, f".{metric}")
+
+def make_pattern_compare_concentrations(input_path, output_path, names, contexts, cases):
+    """Compiles selected metrics for pattern layout."""
+    out = {
+        "glucose": { }, "oxygen": { }
+    }
+
+    for name in names:
+        outfile = f"{output_path}{name}/{name}"
+        out["glucose"][name] = []
+        out["oxygen"][name] = []
+
+        for context in contexts:
+            for case in cases[name]:
+                add = "damage" if name == "VASCULAR_DAMAGE" else ""
+                code = "_".join([value for key, value in case])
+                infile = f"{input_path}{name}/{name}_{context}_{add}{code}.tar.xz"
+                tar = tarfile.open(infile)
+
+                keys = {key: value for key, value in case}
+                keys["context"] = context
+                get_pattern_compare_concentrations(tar, out, keys, name)
+
+    glucose = out["glucose"]
+    glucose["_X"] = out["_X"]
+
+    oxygen = out["oxygen"]
+    oxygen["_X"] = out["_X"]
+
+    save_json(f"{output_path}_/PATTERN_COMPARE", glucose, f".GLUCOSE")
+    save_json(f"{output_path}_/PATTERN_COMPARE", oxygen, f".OXYGEN")
+
+def get_pattern_compare_concentrations(tar, out, keys, name):
+    """Extract center concentration over time."""
+
+    concentrations = ["glucose", "oxygen"]
+    arr = np.zeros((31, len(concentrations)))
+
+    seeds = 0
+    for member in tar.getmembers():
+        seed = int(re.findall(r'_([0-9]{2})\.json', member.name)[0])
+        json = load_json(member, tar=tar)
+
+        for t, jn in enumerate(json["timepoints"]):
+            for c, conc in enumerate(concentrations):
+                concs = jn['molecules'][conc]
+
+                if len(concs) > 1:
+                    mid = int((len(concs) - 1)/2)
+                    cc = concs[mid]
+                    arr[t,c] += cc[0]
+                else:
+                    arr[t,c] += concs[0][0]
+
+        seeds = seeds + 1
+
+    out['_X'] = [x['time'] for x in json["timepoints"]]
+    for c, conc in enumerate(concentrations):
+        entry = dict(keys)
+        entry["_Y"] = np.divide(arr[:,c], seeds).tolist()
+        out[conc][name].append(entry)

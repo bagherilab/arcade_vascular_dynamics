@@ -22,6 +22,21 @@
             var SIZE = { "width": 800, "height": 250 }
             var OPTIONS = [ ]
             var SELECTED = { }
+            var LABELS = {
+                "context": {
+                    "C": "colony",
+                    "CHX": "tissue",
+                },
+                "sites": {
+                    "SOURCE_constant": "Constant",
+                    "PATTERN": "Pattern",
+                    "GRAPH_Lav": "Graph (L11)",
+                    "GRAPH_Lava": "Graph (L21)",
+                    "GRAPH_Lvav": "Graph (L12)",
+                    "GRAPH_Sav": "Graph (S11)",
+                    "GRAPH_Savav": "Graph (S22)",
+                }
+            }
 
             initialize()
 
@@ -91,7 +106,7 @@
                     "symbols": symbols.concat(points) }], "rows": 1, "cols": 1 }
             }
 
-            function LABELLER(S, P) { return labelNone(S, P) }
+            function LABELLER(S, P) { return labelGrid(S, P) }
 
             function DECORATOR(g, S, i, p) {
                 if (i.reduce((a, b) => a + b) == 0) {

@@ -121,7 +121,7 @@
                 return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
             }
 
-            function LABELLER(S, P) { return labelNone(S, P) }
+            function LABELLER(S, P) { return labelGrid(S, P) }
 
             function DECORATOR(g, S, i, p) {
                 addBorder(g, S.subpanel.w, S.subpanel.h, "#ccc")

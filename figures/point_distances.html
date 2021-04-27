@@ -22,6 +22,17 @@
             var SIZE = { "width": 1000, "height": 400 }
             var OPTIONS = [ ]
             var SELECTED = { }
+            var LABELS = {
+                "x": { "": "" },
+                "context": {
+                    "C": "colony",
+                    "CHX": "tissue",
+                },
+                "group" : {
+                    "active": "active",
+                    "inactive": "inactive",
+                },
+            }
 
             initialize()
 
@@ -101,7 +112,7 @@
                 return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
             }
 
-            function LABELLER(S, P) { return labelNone(S, P) }
+            function LABELLER(S, P) { return labelGrid(S, P) }
 
             function DECORATOR(g, S, i, p) {
                 decorateTicks(g, S, i, p)

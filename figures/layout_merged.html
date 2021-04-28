@@ -4,19 +4,17 @@
         <meta charset="utf-8">
         <link rel="stylesheet" href="css/style.css" />
         <script src="https://d3js.org/d3.v4.min.js"></script>
-        <script type="text/javascript" src="js/general.js"></script>
-        <script type="text/javascript" src="js/options.js"></script>
-        <script type="text/javascript" src="js/processors.js"></script>
-        <script type="text/javascript" src="js/plotters.js"></script>
-        <script type="text/javascript" src="js/labelers.js"></script>
-        <script type="text/javascript" src="js/decorators.js"></script>
+        <script type="text/javascript" src="js/browser.js"></script>
+        <script type="text/javascript" src="js/functions.js"></script>
+        <script type="text/javascript" src="js/utilities.js"></script>
     </head>
     <body>
-        <div>
-            <button id="generate" onclick="generate()">GENERATE</button>
+        <h1>layout merged</h1>
+        <div id="buttons">
+            <button id="generate">GENERATE</button>
             <button id="save">SAVE</button>
         </div>
-        <div>
+        <div id="options">
             <div id="metrics">
                 <strong>METRIC</strong>
                 <label class="inputs"><input type="radio" name="metric" id="metric_GROWTH">growth rate</label>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="js/browser.js"></script>
+        <script type="text/javascript" src="js/functions.js"></script>
+        <script type="text/javascript" src="js/utilities.js"></script>
+    </head>
+    <body>
+        <h1>linear regression</h1>
+        <div id="buttons">
+            <button id="generate">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div id="options">
+            <div id="cases">
+                <strong>CASE</strong>
+                <label class="inputs"><input type="radio" name="case" id="case_1">graph measures &#x2192; hemodynamic properties</label>
+                <label class="inputs"><input type="radio" name="case" id="case_2">hemodynamic properties &#x2192; emergent metrics </label>
+                <label class="inputs"><input type="radio" name="case" id="case_3">graph measures &#x2192; emergent metrics</label>
+                <label class="inputs"><input type="radio" name="case" id="case_4">graph measures + hemodynamic properties &#x2192; emergent metrics</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "linear_regression"
+            var SIZE = { "width": 600, "height": 300 }
+            var OPTIONS = ["cases"]
+            var SELECTED = {
+                "radios": {
+                    "case": "1",
+                }  
+            }
+
+            initialize()
+
+            function PROCESSOR() {
+                let selected = {
+                    "case": SELECTED.radios.case,
+                    "order": ["C_EXACT~HEMODYNAMICS", "C_VASCULAR~FUNCTION", "CH_EXACT~HEMODYNAMICS", "CH_VASCULAR~FUNCTION"]
+                }
+    
+                if (selected.case == "1") { selected.x = ["PRESSURE", "RADIUS", "WALL", "SHEAR", "CIRCUM", "FLOW"] }
+                else { selected.x = ["GROWTH", "CYCLES", "SYMMETRY", "ACTIVITY", "GLUCOSE", "OXYGEN"] }
+
+                return {
+                    "selected": selected,
+                    "layout": [],
+                    "files": [ { "x": 0, "y": 0, "i": [0], "file": "_/LINEAR_REGRESSION.csv" } ],
+                    "margin": { "left": 5, "top": 5, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": 1,
+                    "rows": 1,
+                    "axis": {
+                        "x": {
+                            "bounds": [0, 5],
+                            "n": 6,
+                            "labels": function(e) {
+                                let labels = selected.x
+                                return labels[e]
+                            },
+                            "padding": 0.5
+                        },
+                        "y": {
+                            "bounds": [-0.2, 1],
+                            "n": 13,
+                            "padding": 0.05,
+                            "title": "Adjusted r" + EXP(2)
+                        }
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+                let d = D.data.filter(e => e.case == S.selected.case)
+                let bandwidth = 0.85
+                let barwidth = bandwidth/4
+            
+                S.selected.x.map(function(response, i) {
+                    let dd = d.filter(e => e.response == response)
+                    
+                    dd.map(function(e, j) {
+                        let color = COLORS["context"][(e.context == "C" ? 0 : 1)]
+                        let y = (e.r2adj < 0 ? [0] : [e.r2adj])
+                        
+                        data.push({
+                            "*": "rect",
+                            "width": [barwidth],
+                            "height": [Math.abs(e.r2adj)],
+                            "x": [i - bandwidth/2 + barwidth*j],
+                            "y": y,
+                            "fill": (e.name == "EXACT_HEMODYNAMICS" ? color : "url(#xstripe-" + e.context + ")")
+                        })
+                    })
+                })
+               
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelGrid(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                decorateTicks(g, S, i, p)
+                addLine(g, 0, S.subpanel.w, S.yscale(0), S.yscale(0), "#ccc", 0.5)
+                
+                let defs = S.G.append("defs")
+                defs.append("pattern")
+                    .attr("id",  "xstripe-C")
+                    .attr("width", 3)
+                    .attr("height", 3)
+                    .attr("patternTransform", "rotate(45)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 3)
+                        .attr("height", 2)
+                        .attr("fill", shadeColor("#086885", 0.2))
+                defs.append("pattern")
+                    .attr("id",  "xstripe-CHX")
+                    .attr("width", 3)
+                    .attr("height", 3)
+                    .attr("patternTransform", "rotate(45)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 3)
+                        .attr("height", 2)
+                        .attr("fill", shadeColor("#9d9181", 0.2))
+            }
+        </script>
+    </body>
+</html>

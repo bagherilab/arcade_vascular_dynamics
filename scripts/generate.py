@@ -736,3 +736,52 @@ def make_graph_measures(file):
 
     full_header = ",".join(["context", "graph"] + header[2:]) + "\n"
     save_csv(f"{file}_/GRAPH_MEASURES", full_header, zip(*out), "")
+
+# EDGE COUNTS ==================================================================
+
+def make_edge_counts(tar, timepoints, keys, outfile, code):
+    """Count number of edges over time."""
+    seeds = 10
+    arr = np.zeros((10, 31))
+
+    for member in tar.getmembers():
+        seed = int(re.findall(r'_([0-9]{2})\.GRAPH\.json', member.name)[0])
+        json = load_json(member, tar=tar)
+        timepoints = json['timepoints']
+        t = [tp['time'] for tp in timepoints]
+        e = [len(tp['graph']) for tp in timepoints]
+        arr[seed,:] = e
+
+    starting = arr[:,0]
+    relative = (starting[:,None] - arr)/(starting[:,None])
+
+    out = {
+        "time": t,
+        "_": {
+            "seeds": arr.tolist(),
+            "mean": np.mean(relative, axis=0).tolist(),
+            "std":  np.std(relative, axis=0, ddof=1).tolist(),
+            "min":  np.min(relative, axis=0).tolist(),
+            "max":  np.max(relative, axis=0).tolist(),
+        }
+    }
+
+    save_json(f"{outfile}{code}", out, ".EDGES")
+
+def merge_edge_counts(file, out, keys, extension, code, tar=None):
+    """Merge edge count files across conditions."""
+    filepath = f"{file}{code.replace('CHX', 'CH')}{extension}.json"
+
+    if tar:
+        D = load_json(filepath.split("/")[-1], tar=tar)
+    else:
+        D = load_json(filepath)
+
+    keys["_"] = D["_"]
+    keys.pop('time', None)
+    out['data'].append(keys)
+    out['time'] = D['time']
+
+def save_edge_counts(file, extension, out):
+    """Save merged edge counts file."""
+    save_json(file, out, extension)

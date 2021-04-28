@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="js/general.js"></script>
+        <script type="text/javascript" src="js/options.js"></script>
+        <script type="text/javascript" src="js/processors.js"></script>
+        <script type="text/javascript" src="js/plotters.js"></script>
+        <script type="text/javascript" src="js/labelers.js"></script>
+        <script type="text/javascript" src="js/decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div>
+            <div id="cases">
+                <strong>CASE</strong>
+                <label class="inputs"><input type="radio" name="case" id="case_GRAPHS">by graph</label>
+                <label class="inputs"><input type="radio" name="case" id="case_CONTEXT">by context</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "edge_counts"
+            var SIZE = { "width": 800, "height": 400 }
+            var OPTIONS = ["cases"]
+            var SELECTED = {
+                "radios": {
+                    "case": "GRAPHS",
+                }  
+            }
+            var LABELS = {
+                "context": {
+                    "C": "colony",
+                    "CHX": "tissue",
+                },
+                "graphs": {
+                    "PATTERN": "Pattern",
+                    "Lav": "L11",
+                    "Lava": "L21",
+                    "Lvav": "L12",
+                    "Sav": "S11",
+                    "Savav": "S22",
+                }
+            }
+
+            initialize()
+
+            function PROCESSOR() {
+                let selected = {
+                    "case": SELECTED.radios.case,
+                    "graphs": ["PATTERN", "Lav", "Lava", "Lvav", "Sav", "Savav"],
+                    "context": ["C", "CHX"]
+                }
+
+                let layout = [selected.case.toLowerCase()]
+                let name = function(arr) { return "VASCULAR_FUNCTION/VASCULAR_FUNCTION.EDGES.json" }
+                let make = processMake(layout, selected, [0], name)
+                let p = processGrid(layout, selected, make)
+                
+                return {
+                    "selected": selected,
+                    "layout": layout,
+                    "files": p.files,
+                    "margin": { "left": p.marginLeft, "top": p.marginTop, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": p.nCols,
+                    "rows": p.nRows,
+                    "axis": {
+                        "x": {
+                            "bounds": [1, 15],
+                            "title": "Time (days)",
+                            "n": 3,
+                            "padding": 0.5
+                        },
+                        "y": {
+                            "bounds": [0, 1.0],
+                            "padding": 0.02,
+                            "n": 6,
+                            "title": "Fraction"
+                        },
+                    }
+                };
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+                let option = S.selected.case
+                let t = D.data.time
+
+                data.push({
+                    "*": "path",
+                    "x": [0, 15.5],
+                    "y": [0.8, 0.8],
+                    "stroke": "#ccc",
+                    "width": 0.5,
+                    "dash": "2,1"
+                })
+                
+                if (option == "GRAPHS") {
+                    graph = S.selected.graphs[D.i[0]]
+                    let contexts = ["C", "CHX"]
+                
+                    contexts.map(function(context) {
+                        let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                        let d = D.data.data
+                            .filter(e => e.context == context)
+                            .filter(e => e.graphs == graph)
+                
+                        d[0]["_"]["seeds"].map(function(e) {
+                            let y0 = e[0]
+                            let y = e.map(f => (y0 - f)/y0)
+                                .map(f => (f <= 0.4 ? f*2 : (f - 0.4)/3 + 0.8))
+                
+                            data.push({
+                                "*": "path",
+                                "x": t,
+                                "y": y,
+                                "stroke": color
+                            })
+                        })
+                    })
+                } else if (option == "CONTEXT") {
+                    context = S.selected.context[D.i[0]]
+                    let graphs = ["PATTERN", "Lav", "Lava", "Lvav", "Sav", "Savav"]
+                    let dashes = ["3,1.5", null, null, null, null, null]
+                    let widths = [0.5, 0.25, 0.25, 0.25, 0.25, 0.25]      
+                
+                    graphs.map(function(graph, j) {
+                        let d = D.data.data
+                            .filter(e => e.context == context)
+                            .filter(e => e.graphs == graph)
+                
+                        d[0]["_"]["seeds"].map(function(e) {
+                            let y0 = e[0]
+                            let y = e.map(f => (y0 - f)/y0)
+                                .map(f => (f <= 0.4 ? f*2 : (f - 0.4)/3 + 0.8))
+                
+                            data.push({
+                                "*": "path",
+                                "x": t,
+                                "y": y,
+                                "width": widths[j],
+                                "stroke": "#000",
+                                "dash": dashes[j]
+                            })
+                        })
+                    })
+                }
+                
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelGrid(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                addBorder(g, S.subpanel.w, S.subpanel.h, "#ccc")
+
+                // Create and align groups for ticks.
+                let dx = alignHorzAxis(S, i)
+                let dy = alignVertAxis(S, i)
+                
+                // Create group to hold ticks.
+                let G = S.G.append("g")
+                    .attr("id", "ticks")
+                    .attr("transform", "translate(" + dx + "," + dy + ")")
+                
+                let A = S.axis
+                
+                // Create ticks.
+                let ticks = [];
+                ticks.push(makeHorzTicks(S, 0, S.subpanel.h, A.x))
+                
+                // Make custom y ticks
+                let bounds = A.y.bounds
+                let padding = A.y.padding ? A.y.padding : 0;
+                let yticks = linspace(bounds[0], bounds[1], 11)
+                    .map(function(d) { return (Math.abs(d) < 10E-10 ? 0 : d); })
+                let t = []
+                let yscale = d3.scaleLinear().range([S.panel.h - SUBPANEL_PADDING - AXIS_PADDING.bottom, 0]).domain([bounds[0] - padding, bounds[1] + padding])
+                
+                for (let i = 0; i < yticks.length; i++) {
+                    let ytick = (yticks[i] <= 0.4 ? yticks[i]*2 : (yticks[i] - 0.4)/3 + 0.8)
+                    
+                    if (yticks[i] == 0.5 || yticks[i] == 0.7 || yticks[i] == 0.9) { continue }
+                    
+                    t.push({
+                        "tx": -(FONT_SIZE - 2) - 3 - FONT_PADDING,
+                        "ty": yscale(ytick) + (FONT_SIZE - 2)/2,
+                        "y1": yscale(ytick),
+                        "y2": yscale(ytick),
+                        "x1": 0,
+                        "x2": -3,
+                        "text": yticks[i],
+                    });
+                }
+                
+                ticks.push(t)
+                
+                // Create axis labels.
+                let labels = []
+                labels.push(makeHorzLabel(S.subpanel.w, 0, alignHorzText(S), A.x.title, "none"))
+                labels.push(makeVertLabel(S.subpanel.h, alignVertText(S), 0, A.y.title, "none"))
+                
+                addTicks(G, ticks)
+                addLabels(G, labels)
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="js/general.js"></script>
+        <script type="text/javascript" src="js/options.js"></script>
+        <script type="text/javascript" src="js/processors.js"></script>
+        <script type="text/javascript" src="js/plotters.js"></script>
+        <script type="text/javascript" src="js/labelers.js"></script>
+        <script type="text/javascript" src="js/decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div>
+            <div id="metrics">
+                <strong>METRIC</strong>
+                <label class="inputs"><input type="radio" name="metric" id="metric_RADIUS-PRESSURE">radius / pressure</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_RADIUS-VELOCITY">radius / velocity</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_RADIUS-SHEAR">radius / shear</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_RADIUS-FLOW">radius / flow</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_RADIUS-RESISTANCE">radius / resistance</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_DIAMETER-RATIO">diameter / ratio</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_PRESSURE-CIRCUM">pressure / circumferential</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "layout_scatter"
+            var SIZE = { "width": 400, "height": 600 }
+            var OPTIONS = ["metrics"]
+            var SELECTED = {
+                "radios": {
+                    "metric": "RADIUS-PRESSURE",
+                }  
+            }
+            var LABELS = {
+                "layout": {
+                    "PATTERN": "pattern",
+                    "ROOT": "root",
+                },
+                "context": {
+                    "UNCOUPLED": "-",
+                    "COUPLED-C": "+ (colony)",
+                    "COUPLED-CH": "+ (tissue)",
+                },
+            }
+
+            initialize()
+           
+            var Y_AXIS = {
+                "PRESSURE": {
+                    "scale": 0.133322, // mmHg => kPa
+                    "bounds": [0, 12], // kPa
+                    "log": false,
+                    "bandwidth": 2,
+                    "n": 4,
+                    "title": 'Pressure (kPa)',
+                    "padding": 0.2
+                },
+                "VELOCITY": {
+                    "scale": 1,
+                    "bounds": [-3, 2], // log[mm/sec]
+                    "log": true,
+                    "bandwidth": 2,
+                    "n": 6,
+                    "title": 'Blood Velocity (mm/s)',
+                    "labels": (e, i) => (10 + EXP(e)),
+                    "padding": 0.1
+                },
+                "SHEAR": {
+                    "scale": 133.322, // mmHg => Pa
+                    "bounds": [-4, 2], // log[Pa]
+                    "log": true,
+                    "bandwidth": 2,
+                    "n": 4,
+                    "title": 'Shear Stress (Pa)',
+                    "labels": (e, i) => (10 + EXP(e)),
+                    "padding": 0.5
+                },
+                "FLOW": {
+                    "scale": 1,
+                    "bounds": [3, 11], // log[um^3/min]
+                    "log": true,
+                    "bandwidth": 2,
+                    "n": 5,
+                    "title": 'Flow Rate (um' + EXP(3) + '/min)',
+                    "labels": (e, i) => (10 + EXP(e)),
+                    "padding": 0.2
+                },
+                "RESISTANCE": {
+                    "scale": 1,
+                    "bounds": [-2, 4], // log[mmHg/(mm^3/sec)]
+                    "log": true,
+                    "bandwidth": 2,
+                    "n": 4,
+                    "title": 'Resistance (mmHg/(mm' + EXP(3) + '/s)/um)',
+                    "labels": (e, i) => (10 + EXP(e)),
+                    "padding": 0.5
+                },
+                "RATIO": {
+                    "scale": 1,
+                    "bounds": [0, 0.6], // unitless
+                    "log": false,
+                    "bandwidth": 0.05,
+                    "n": 4,
+                    "padding": 0.05,
+                    "title": 'Wall Thickness / Radius'
+                },
+                "CIRCUM": {
+                    "scale": 133.322, // mmHg => Pa
+                    "bounds": [3, 6], // log[Pa]
+                    "log": true,
+                    "bandwidth": 1,
+                    "n": 4,
+                    "title": 'Circumferential Stress (Pa)',
+                    "labels": (e, i) => (10 + EXP(e)),
+                    "padding": 0.1
+                }
+            }
+
+            var X_AXIS = {
+                "RADIUS": {
+                    "scale": 1,
+                    "bounds": [-40, 40], // um
+                    "log": false,
+                    "n": 5,
+                    "title": 'Radius (\u03BCm)',
+                    "padding": 5
+                },
+                "DIAMETER": {
+                    "scale": 1,
+                    "bounds": [0, 3], // um
+                    "log": true,
+                    "padding": 0.2,
+                    "n": 4,
+                    "title": 'Vessel Diameter (\u03BCm)',
+                    "labels": (e, i) => (10 + EXP(e))
+                },
+                "PRESSURE": {
+                    "scale": 1,
+                    "bounds": [0, 100], // mmHg
+                    "log": false,
+                    "bandwidth": 2,
+                    "n": 6,
+                    "title": 'Pressure (mmHg)',
+                    "padding": 2
+                }  
+            }
+
+            function PROCESSOR() {
+                let selected = {
+                    "layout": ["PATTERN", "ROOT"],
+                    "context": ["UNCOUPLED", "COUPLED-C", "COUPLED-CH"],
+                    "metric": SELECTED.radios.metric,
+                }
+
+                let name = function(arr) { return "_/LAYOUT_SCATTER." + arr[0] + "." + arr[1].split("-")[0] + ".csv" }
+
+                let layout = ["layout", "context"]
+                let make = processMake(layout, selected, [0, 1], name)
+                let p = processGrid(layout, selected, make)
+                
+                return {
+                    "selected": selected,
+                    "layout": layout,
+                    "files": p.files,
+                    "margin": { "left": p.marginLeft, "top": p.marginTop, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": p.nCols,
+                    "rows": p.nRows,
+                    "axis": {
+                        "x": X_AXIS[SELECTED.radios.metric.split("-")[0]],
+                        "y": Y_AXIS[SELECTED.radios.metric.split("-")[1]],
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let metric = S.selected.metric.split("-")
+                let xmetric = metric[0]
+                let ymetric = metric[1]
+
+                let ax = S.axis
+                let layout = S.selected.layout[D.i[0]]
+                let context = S.selected.context[D.i[1]]
+                
+                let data = []
+                
+                let filterData = function(context) {
+                    return D.data
+                        .filter(e => e.context == context)
+                        .filter(function(e) {
+                            let nans = (isNaN(Number(e.frompressure)) || isNaN(Number(e.topressure)))
+                            return !nans
+                        })
+                        .map(function(e) {
+                            let f = e
+                            let pressure = (Number(e.frompressure) + Number(e.topressure))/2
+                            f.PRESSURE = pressure
+                            return f
+                        })
+                }
+                
+                let processY = function(d) {
+                    return d.map(function(f) {
+                        if (ymetric == "VELOCITY") {
+                            let r = Number(f.RADIUS)
+                            let area = Math.PI*r*r
+                            let flow = Number(f.FLOW)/area
+                            return flow*1E-3/60 // convert um/min to mm/s
+                        }
+                        else if (ymetric == "RESISTANCE") {
+                            let pressure_in = f.frompressure // mmHg
+                            let pressure_out = f.topressure // mmHg
+                            let flow = f.FLOW/60*1E-9 // um^3/min to mm^3/s
+                            let length = f.LENGTH // um
+                            let resistance = (pressure_in - pressure_out)/flow/length
+                            if (pressure_in == pressure_out) { return NaN }
+                            return resistance // mmHg/(mm^3/s)
+                        }
+                        else if (ymetric == "OXYGEN") { return (Number(f.fromoxygen) + Number(f.tooxygen))/2 }
+                        else if (ymetric == "RATIO") { return Number(f.WALL)/Number(f.RADIUS) }
+                        else { return Number(f[ymetric])*ax.y.scale }
+                    })
+                    .map(f => (ax.y.log ? (f == 0 ? NaN : Math.log10(f)) : f))
+                }
+                
+                let processX = function(d, remove) {
+                    return d.map(function(f) {
+                        if (xmetric == "RADIUS") {
+                            if (f.CODE < 0) { return -Number(f[xmetric]) }
+                            else { return Number(f[xmetric]) }
+                        }
+                        if (xmetric == "DIAMETER") { return Number(f.RADIUS)*2 }
+                        else { return Number(f[xmetric]) }
+                    })
+                    .map(function(f) { return (ax.x.log ? Math.log10(f) : f) })
+                }
+                
+                let processNaNs = function(x, y, r) {
+                    v = y.map(e => (Math.random() < r ? e : NaN))
+                    let remove = findNaNs(v)
+                    return { "y": removeNaNs(y, remove), "x": removeNaNs(x, remove) }
+                }
+                
+                let processSmooth = function(x, y) {
+                    let minx = x.reduce((a, b) => Math.min(a, b))
+                    let maxx = x.reduce((a, b) => Math.max(a, b))
+                        
+                    let midpoints = linspace(minx, maxx, 200)
+                    let smooth = kernelSmooth(x, y, ax.y.bandwidth, midpoints)
+                    
+                    let remove = findNaNs(smooth)
+                    let xx = removeNaNs(midpoints, remove)
+                    let yy = removeNaNs(smooth, remove)
+                    
+                    return { "x": xx, "y": yy }
+                }
+
+                let processSplit = function(x, y) {
+                    let negative = []
+                    let xNegative = x.filter(function(e, i) {
+                        if (e <= -2) { negative.push(i) }
+                        return e <= -2
+                    })
+
+                    let positive = []
+                    let xPositive = x.filter(function(e, i) {
+                        if (e >= 2) { positive.push(i) }
+                        return e >= 2
+                    })
+
+                    let yNegative = negative.map(e => y[e])
+                    let yPositive = positive.map(e => y[e])
+
+                    return {
+                        "negative": processSmooth(xNegative, yNegative),
+                        "positive": processSmooth(xPositive, yPositive)
+                    }
+                }
+
+                switch (context.split("-")[0]) {
+                    case "COUPLED":
+                        let con = context.split("-")[1]
+                        let color = COLORS["context"][(con == "C" ? 0 : 1)]
+                        let color2 = shadeColor(COLORS["context"][(con == "C" ? 0 : 1)], -0.2)
+                        let dGraphs = filterData(con)
+                        let xGraphs = processX(dGraphs)
+                        let yGraphs = processY(dGraphs)
+                        let ddGraphs = processNaNs(xGraphs, yGraphs, 0.01) // randomly select 1% of edges
+
+                        data.push(
+                            {
+                                "*": "circle",
+                                "x": ddGraphs.x,
+                                "y": ddGraphs.y,
+                                "r": 0.5,
+                                "fill": color,
+                                "stroke": "none"
+                            }
+                        )
+
+                        if (xmetric == "RADIUS") {
+                            let dsGraphs = processSplit(xGraphs, yGraphs)
+
+                            data.push(
+                                {
+                                    "*": "path",
+                                    "x": dsGraphs.negative.x,
+                                    "y": dsGraphs.negative.y,
+                                    "stroke": color2,
+                                    "width": 2
+                                }
+                            )
+                            
+                            data.push(
+                                {
+                                    "*": "path",
+                                    "x": dsGraphs.positive.x,
+                                    "y": dsGraphs.positive.y,
+                                    "stroke": color2,
+                                    "width": 2
+                                }
+                            )
+                        }
+                        else {
+                            let dsGraphs = processSmooth(xGraphs, yGraphs)
+                            data.push(
+                                {
+                                    "*": "path",
+                                    "x": dsGraphs.x,
+                                    "y": dsGraphs.y,
+                                    "stroke": color,
+                                    "width": 2
+                                }
+                            )
+                        }
+
+                        break
+                    case "UNCOUPLED":
+                        let dPattern = filterData("C")
+                        let xPattern = processX(dPattern)
+                        let yPattern = processY(dPattern)
+                        let ddPattern = processNaNs(xPattern, yPattern, 0.1) // randomly select 10% of edges
+                        
+                        data.push(
+                            {
+                                "*": "circle",
+                                "x": ddPattern.x,
+                                "y": ddPattern.y,
+                                "r": 0.5,
+                                "fill": "#222",
+                                "stroke": "none"
+                            }
+                        )
+                        
+                        if (xmetric == "RADIUS") {
+                            let dsPattern = processSplit(xPattern, yPattern)
+
+                            data.push(
+                                {
+                                    "*": "path",
+                                    "x": dsPattern.negative.x,
+                                    "y": dsPattern.negative.y,
+                                    "stroke": "#000",
+                                    "width": 2
+                                }
+                            )
+                            
+                            data.push(
+                                {
+                                    "*": "path",
+                                    "x": dsPattern.positive.x,
+                                    "y": dsPattern.positive.y,
+                                    "stroke": "#000",
+                                    "width": 2
+                                }
+                            )
+                        }
+                        else {
+                            let dsPattern = processSmooth(xPattern, yPattern)
+                            data.push(
+                                {
+                                    "*": "path",
+                                    "x": dsPattern.x,
+                                    "y": dsPattern.y,
+                                    "stroke": "#000",
+                                    "width": 2
+                                }
+                            )
+                        }
+
+                        break
+                }
+
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelGrid(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                decorateTicks(g, S, i, p)
+
+                // Add pattern and symbols
+                if (i.length == 0 || i.reduce((a, b) => a + b) == 0) {
+                    let DEFS = S.G.append("defs")
+                    
+                    DEFS.append("pattern")
+                        .attr("id",  "stripe")
+                        .attr("width", 4)
+                        .attr("height", 3)
+                        .attr("patternTransform", "rotate(-45)")
+                        .attr("patternUnits", "userSpaceOnUse")
+                        .append("rect")
+                            .attr("width", 4)
+                            .attr("height", 1)
+                            .attr("fill", "rgb(215,215,215)")
+                    
+                    let R = 2
+                    let r = 0.75*R
+                    
+                    let symbols = [
+                        { "id": "triup", "points": [[0, -R], [1.5*R/Math.sqrt(3), R/2], [-1.5*R/Math.sqrt(3), R/2]] },
+                        { "id": "tridown", "points": [[0, R], [1.5*R/Math.sqrt(3), -R/2], [-1.5*R/Math.sqrt(3), -R/2]] },
+                        { "id": "square", "points": [[-r, -r], [r, -r], [r, r], [-r, r]] },
+                        { "id": "diamond", "points": [[0, -R], [R, 0], [0, R], [-R, 0]] }
+                    ]
+                    
+                    symbols.map(function(sym) {
+                        let path = sym.points.map((e,i) => (i == 0 ? "m" : "l") + " " + e[0] + "," + e[1])
+                        DEFS.append("path")
+                            .attr("id", sym.id)
+                            .attr("d", path.join(" ").toUpperCase())
+                    })
+                }
+
+                let metric = S.selected.metric
+                let xscale = S.xscale
+                let yscale = S.yscale
+
+                let plot_area_shaded = function(x, y1, y2, color) {
+                    g.insert("g",":first-child").append("path")
+                        .attr("d", function(d) {
+                            let makeArea = d3.area()
+                                .x(m => S.xscale(m))
+                                .y0((m, i) => S.yscale(y1[i]))
+                                .y1((m, i) => S.yscale(y2[i]))
+                            return makeArea(x)
+                        })
+                        .attr("fill", color)
+                        .attr("stroke", "none")
+                }
+                
+                let plot_area_hatched = function(x, y1, y2) {
+                    g.insert("g",":first-child").append("path")
+                        .attr("d", function(d) {
+                            let makeArea = d3.area()
+                                .x(m => S.xscale(m))
+                                .y0((m, i) => S.yscale(y1[i]))
+                                .y1((m, i) => S.yscale(y2[i]))
+                            return makeArea(x)
+                        })
+                        .attr("fill", "url(#stripe)")
+                        .attr("stroke", "none")
+                }
+                
+                let plot_path_solid = function(x, y, color) {
+                    g.insert("g",":first-child").append("path")
+                        .attr("d", function(d) {
+                            let makePath = d3.line()
+                                .x(m => xscale(m))
+                                .y((m,i) => yscale(y[i]))
+                            return makePath(x)
+                        })
+                        .attr("fill", "none")
+                        .attr("stroke", color)
+                        .attr("stroke-width", "1px")
+                }
+                
+                let plot_path_dashed = function(x, y, color) {
+                    g.insert("g",":first-child").append("path")
+                        .attr("d", function(d) {
+                            let makePath = d3.line()
+                                .x(m => xscale(m))
+                                .y((m,i) => yscale(y[i]))
+                            return makePath(x)
+                        })
+                        .attr("fill", "none")
+                        .attr("stroke", color)
+                        .attr("stroke-dasharray", "4,4")
+                        .attr("stroke-width", "1px")
+                }
+                
+                let plot_path_dotted = function(x, y, color) {
+                    g.insert("g",":first-child").append("path")
+                        .attr("d", function(d) {
+                            let makePath = d3.line()
+                                .x(m => xscale(m))
+                                .y((m,i) => yscale(y[i]))
+                            return makePath(x)
+                        })
+                        .attr("fill", "none")
+                        .attr("stroke", color)
+                        .attr("stroke-dasharray", "1,3")
+                        .attr("stroke-linecap", "round")
+                        .attr("stroke-width", "1px")
+                }
+                
+                let plot_path_alt = function(x, y, color) {
+                    g.insert("g",":first-child").append("path")
+                        .attr("d", function(d) {
+                            let makePath = d3.line()
+                                .x(m => xscale(m))
+                                .y((m,i) => yscale(y[i]))
+                            return makePath(x)
+                        })
+                        .attr("fill", "none")
+                        .attr("stroke", color)
+                        .attr("stroke-dasharray", "1,3,4,3")
+                        .attr("stroke-width", "1px")
+                }
+                
+                let plot_symbols = function(x, y, shape, color) {
+                    g.insert("g",":first-child")
+                        .selectAll("use").data(x).enter().append("use")
+                        .attr("transform", (d, i) => "translate(" + xscale(d) + "," + yscale(y[i]) + ")")
+                        .attr("xlink:href", shape)
+                        .attr("fill", color)
+                        .attr("stroke", "none")
+                }
+
+                switch (metric) {
+                    case "RADIUS-PRESSURE":
+                        {
+                            // from zweifach_1977_quantitative (figure 5)
+                            let x1 = [-56,-48,-40,-32,-24,-16,-8] // diameter, um
+                            let y1 = [88,82,75,65,55,44,34] // pressure, mmHg
+                            let x2 = [8,16,24,32,40,48,56] // diameter, um
+                            let y2 = [34,30,26,24,22,21,21] // pressure, mmHg
+                            plot_path_solid(x1.map(e => e/2), y1.map(e => e*0.133322), "rgb(185,185,185)")
+                            plot_path_solid(x2.map(e => e/2), y2.map(e => e*0.133322), "rgb(185,185,185)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (figure 7)
+                            let x1 = [-48,-40,-32,-24,-16,-8] // diameter, um
+                            let y1 = [43,41,39,36,34,30] // pressure, mmHg
+                            let x2 = [8,16,24,32,40,48] // diameter, um
+                            let y2 = [30,26,22,21,20,19] // pressure, mmHg
+                            plot_path_dotted(x1.map(e => e/2), y1.map(e => e*0.133322), "rgb(200,200,200)")
+                            plot_path_dotted(x2.map(e => e/2), y2.map(e => e*0.133322), "rgb(200,200,200)")
+                        }
+                        {
+                            // from davis_1986_vascular
+                            let x = [-249,-94.1,-79.6,-50,-29.9,-13,-7.3,-6.3,5.9,8,16.3,29,44.5,61.4,82.6,100.2] // diameter, um
+                            let y = [102,72.6,52.3,44,41.3,31.7,26.7,25,22.8,17.4,16.2,15.6,13.4,12.9,8.2,6.4] // pressure, mmHg
+                            plot_path_dashed(x.map(e => e/2), y.map(e => e*0.133322), "rgb(120,120,120)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (table 1)
+                            let x = [-14,16,9.5,18,-50,18,-51,50,-12,11,7.5,14] // diameter, um
+                            let y = [48,25,38,36,55,36,79,24,52,27,30,33] // pressure, mmHg
+                            plot_symbols(x.map(e => e/2), y.map(e => e*0.133322), "#square", "rgb(145,145,145)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (table 2)
+                            let x = [-23,20,13,15,13,17,13,23] // diameter, um
+                            let y = [40,38,33,30,29,28,30,27] // pressure, mmHg
+                            plot_symbols(x.map(e => e/2), y.map(e => e*0.133322), "#diamond", "rgb(160,160,160)")
+                        }
+                        {
+                            // from godde_2001_structural
+                            let x = [-50,-40,-30,-20,-10,2,10,20,30,40,50,60,70,80,90,100] // radius, um
+                            let yTop = [9.5,7.5,5.5,3,1,0,0,0,0,0,0,0,0,0,0,0] // pressure, kPa
+                            let yBottom = [10,10,10,10,10,5,2.75,2,1.5,1,0.5,0.4,0.3,0.2,0.1,0] // pressure, kPa
+                            plot_area_hatched(x, yTop, yBottom)
+                        }
+                        {
+                            // from welter_2009_vascular
+                            let x = [-80,-60,-40,-20,0,20,40,60,80,100] // radius, um
+                            let yTop = [11,11,11,11,9,7.5,4,3.5,3,2.5] // pressure, kPa
+                            let yBottom = [10,7,6,3,2.5,2.5,2.5,2.5,2.5,2.5] // pressure, kPa
+                            plot_area_shaded(x, yTop, yBottom, "rgb(230,230,230)")
+                        }
+                        break
+                    case "RADIUS-VELOCITY":
+                        {
+                            // from arfors_measurements_1975
+                            let x1 = [-40,-36,-32,-29,-25,-23,-19] // diameter, um
+                            let x2 = [19,23,25,29,32,36,49] // diameter, um
+                            let y1 = [9,10,8,5,5,3,3] // velocity, mm/sec
+                            let y2 = [2,3,1.5,2.5,4,3,3.5] // velocity, mm/sec
+                            plot_path_solid(x1.map(e => e/2), y1.map(e => Math.log10(e)), "rgb(160,160,160)")
+                            plot_path_solid(x2.map(e => e/2), y2.map(e => Math.log10(e)), "rgb(160,160,160)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (figure 5)
+                            let x1 = [-48,-40,-32,-24,-16,8] // diameter, um
+                            let y1 = [14,13,11.5,8.5,4.5,2] // diameter, um
+                            let x2 = [8,16,24,32,40,48,56] // velocity, mm/sec
+                            let y2 = [2,2,2.5,5,7,8.5,10] // velocity, mm/sec
+                            plot_path_dashed(x1.map(e => e/2), y1.map(e => Math.log10(e)), "rgb(185,185,185)")
+                            plot_path_dashed(x2.map(e => e/2), y2.map(e => Math.log10(e)), "rgb(185,185,185)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (figure 7)
+                            let x1 = [-48,-40,-32,-24,-16,-8] // diameter, um
+                            let y1 = [9,8,7,6.5,5.5,4.5] // diameter, um
+                            let x2 = [8,16,24,32,40,48] // velocity, mm/sec
+                            let y2 = [4.5,3,2.5,2,2,2.5] // velocity, mm/sec
+                            plot_path_dotted(x1.map(e => e/2), y1.map(e => Math.log10(e)), "rgb(200,200,200)")
+                            plot_path_dotted(x2.map(e => e/2), y2.map(e => Math.log10(e)), "rgb(200,200,200)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (table 1)
+                            let x = [-14,16,9.5,8,12.5,-16,12,-13.5,24,9.5,18,-50,34.5,-11.5,
+                                18,-51,50,-12,9.5,11,7.5,13.5,14] // diameter, um
+                            let y = [3.11,1.66,2.52,1.49,0.51,1.25,1.55,22.85,2.94,3.02,
+                                2.17,1,5.58,5.61,2.17,10.42,9.47,4.28,1.22,1.27,2.2,0.88,1.33] // velocity, mm/sec
+                            plot_symbols(x.map(e => e/2), y.map(e => Math.log10(e)), "#square", "rgb(160, 160, 160)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (table 2)
+                            let x = [-23,20,13,15,13,17,13,23] // diameter, um
+                            let y = [2.74,1.23,1.32,1.1,0.77,0.78,3.31,2.74] // velocity, mm/sec
+                            plot_symbols(x.map(e => e/2), y.map(e => Math.log10(e)), "#diamond", "rgb(200, 200, 200)")
+                        }
+                        {
+                            // from haindl_2016_total
+                            let x = [20,30,40,50,60,70,80] // diameter, um
+                            let y1 = x.map(e => 0.065*e + 3.25) // velocity, mm/sec (veins)
+                            plot_symbols(x.map(e => e/2), y1.map(e => Math.log10(e)), "#triup", "rgb(185, 185, 185)")
+                            let y2 = x.map(e => 0.054*e + 5.1) // velocity, mm/sec (arteries)
+                            plot_symbols(x.map(e => -e/2), y2.map(e => Math.log10(e)), "#triup", "rgb(185, 185, 185)")
+                        }
+                        {
+                            // from godde_2001_structural
+                            let x = [-40,-30,-20,-10,2,10,20,30,40] // radius, um
+                            let yTop = [40,30,25,25,20,10,10,10,10] // velocity, mm/s
+                            let yBottom = [20,15,10,2,0.01,0.1,0.8,1,3] // velocity, mm/s
+                            plot_area_shaded(x, yTop.map(e => Math.log10(e)), yBottom.map(e => Math.log10(e)), "rgb(230,230,230)")
+                        }
+                        break
+                    case "RADIUS-SHEAR":
+                        {
+                            // from lipowsky_1978_distribution, table 1
+                            let x = [(29 + 13.3), (29 - 13.3)] // diameter, um
+                            let y = [(47.1 + 23.4), (47.1 - 23.4)] // dyne/cm^2
+                            let xx = x.map(e => e/2)
+                            let yy = y.map(e => Math.log10(e*0.1))
+                            g.insert("g",":first-child").append("rect")
+                                .attr("width", xscale(xx[0]) - xscale(xx[1]))
+                                .attr("height", yscale(yy[1]) - yscale(yy[0]))
+                                .attr("x", xscale(-xx[0]))
+                                .attr("y", yscale(yy[0]))
+                                .attr("stroke", "#ccc")
+                                .attr("fill", "none")
+                        }
+                        {
+                            // from lipowsky_1978_distribution, table 1
+                            let x = [(31.4 + 16.1), (31.4 - 16.1)] // diameter, um
+                            let y = [(29 + 15.7), (29 - 15.7)] // dyne/cm^2
+                            let xx = x.map(e => e/2)
+                            let yy = y.map(e => Math.log10(e*0.1))
+                            g.insert("g",":first-child").append("rect")
+                                .attr("width", xscale(xx[0]) - xscale(xx[1]))
+                                .attr("height", yscale(yy[1]) - yscale(yy[0]))
+                                .attr("x", xscale(xx[1]))
+                                .attr("y", yscale(yy[0]))
+                                .attr("stroke", "#ccc")
+                                .attr("fill", "none")
+                        }
+                        {
+                            // from godde_2001_structural
+                            let x = [-40,-30,-20,-10,-4,2,10,20,30,40] // radius, um
+                            let yTop = [4,4.5,5,10,30,40,6,3,2,1.5] // shear stress, Pa
+                            let yBottom = [3,2.5,2,1,0.7,0.1,0.1,0.3,0.4,0.4] // shear stress, Pa
+                            plot_area_hatched(x, yTop.map(e => Math.log10(e)), yBottom.map(e => Math.log10(e)))
+                        }
+                        {
+                            // from welter_2009_vascular
+                            let x = [-40,-30,-20,-10,5,10,20,30,40] // radius, um
+                            let yTop = [5,6,9,20,50,10,5,3.5,3] // shear, Pa
+                            let yBottom = [5,4,2,0.2,0.02,1,1.5,2,2] // shear, Pa
+                            plot_area_shaded(x, yTop.map(e => Math.log10(e)), yBottom.map(e => Math.log10(e)), "rgb(230,230,230)")
+                        }
+                        break
+                    case "RADIUS-FLOW":
+                        {
+                            // from zweifach_1977_quantitative (figure 6)
+                            let x1 = [-52,-44,-36,-28,-20,-12,-8] // diameter, um
+                            let y1 = [280,190,115,60,20,5,1.66] // diameter, um
+                            let x2 = [8,12,20,28,36,44,52] // flow, mm^3/sec * 10^4
+                            let y2 = [1.66,5,10,25,50,95,170] // flow, mm^3/sec * 10^4
+                            plot_path_dashed(x1.map(e => e/2), y1.map(e => Math.log10(e*1E-4*60*1E9)), "rgb(185,185,185)")
+                            plot_path_dashed(x2.map(e => e/2), y2.map(e => Math.log10(e*1E-4*60*1E9)), "rgb(185,185,185)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (figure 8)
+                            let x1 = [-52,-44,-36,-28,-20,-12,-8] // diameter, um
+                            let y1 = [200,140,90,45,10,5,2.64] // diameter, um
+                            let x2 = [8,12,20,28,36,44,52] // flow, mm^3/sec * 10^4
+                            let y2 = [2.64,3,5,10,30,50,80] // flow, mm^3/sec * 10^4
+                            plot_path_dotted(x1.map(e => e/2), y1.map(e => Math.log10(e*1E-4*60*1E9)), "rgb(215,215,215)")
+                            plot_path_dotted(x2.map(e => e/2), y2.map(e => Math.log10(e*1E-4*60*1E9)), "rgb(215,215,215)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (table 1)
+                            let x = [-14,16,9.5,8,12.5,-16,12,-13.5,24,9.5,18,-50,34.5,-11.5,
+                                18,-51,50,-12,9.5,11,7.5,13.5,14] // diameter, um
+                            let y = [0.48,0.33,0.18,0.07,0.06,0.24,0.17,3.27,1.31,0.21,0.56,1.96,5.21,
+                                0.58,0.56,20.53,18.66,0.49,0.09,0.125,0.1,0.13,0.21] // flow, 10^-3 mm^3/sec
+                            plot_symbols(x.map(e => e/2), y.map(e => Math.log10(e*60*1E-3*1E9)), "#square", "rgb(160,160,160)")
+                        }
+                        {
+                            // from zweifach_1977_quantitative (table 2)
+                            let x = [-23,20,13,15,13,17,13,23] // diameter, um
+                            let y = [1.14,0.39,0.18,0.19,0.10,0.18,0.44,.14]  // flow, 10^-3 mm^3/sec
+                            plot_symbols(x.map(e => e/2), y.map(e => Math.log10(e*60*1E-3*1E9)), "#diamond", "rgb(200,200,200)")
+                        }
+                        {
+                            // from haindl_2016_total
+                            let x = [30,40,50,60,70,80] // diameter, um
+                            let y1 = x.map(e => Math.pow(10, 2.54*Math.log10(e) - 3.79)) // flow, uL/min (veins)
+                            plot_path_alt(x.map(e => e/2), y1.map(e => Math.log10(e*1E9)), "rgb(145,145,145)")
+                            let y2 = x.map(e => Math.pow(10, 2.49*Math.log10(e) - 3.69)) // flow, uL/min (arteries)
+                            plot_path_alt(x.map(e => -e/2), y2.map(e => Math.log10(e*1E9)), "rgb(145,145,145)")
+                        }
+                        {
+                            // from doblhoff_2014_measurement
+                            let x = [30,40,50,60,65,70,80] // diameter, um
+                            let y1 = x.map(function(e) { // flow, uL/min (veins)
+                                if (x < 65) { return Math.pow(10, 1.7*Math.log10(e) - 3.1) }
+                                else { return Math.pow(10, 2.8*Math.log10(e) - 5) }
+                            })
+                            plot_path_solid(x.map(e => e/2), y1.map(e => Math.log10(e*1E9)), "rgb(160,160,160)")
+                            let y2 = x.map(function(e) { // flow, uL/min (arteries)
+                                if (x < 65) { return Math.pow(10, 2.3*Math.log10(e) - 4) }
+                                else { return Math.pow(10, 3.7*Math.log10(e) - 6.4) }
+                            })
+                            plot_path_solid(x.map(e => -e/2),  y2.map(e => Math.log10(e*1E9)), "rgb(160,160,160)")
+                        }
+                        {
+                            // from welter_2009_vascular
+                            let x = [-40,-30,-20,-10,-5,5,10,20,30,40] // radius, um
+                            let yTop = [25,10,3,1,0.01,0.01,1,4,10,15] // flow, um^3/s * 10^6
+                            let yBottom = [20,4,0.4,0.1,0.001,0.001,0.1,1,2,10] // um^3/s * 10^6
+                            plot_area_shaded(x, yTop.map(e => Math.log10(e*60*1E6)), yBottom.map(e => Math.log10(e*60*1E6)), "rgb(230,230,230)")
+                        }
+                        break
+                    case "RADIUS-RESISTANCE":
+                        {
+                            // from lipowsky_1978_distribution
+                            let x = [7,10,18,26,34,42,50,58] // diameter, um
+                            let y1 = x.map(e => 1.07E6*Math.pow(e, -3.94))// resistance, mmHg/(mm^3/sec)/um
+                            plot_path_solid(x.map(e => e/2), y1.map(e => Math.log10(e)), "rgb(200,200,200)")
+                            let y2 = x.map(e => 1.02E6*Math.pow(e, -4.04))// resistance, mmHg/(mm^3/sec)/um
+                            plot_path_solid(x.map(e => -e/2), y2.map(e => Math.log10(e)), "rgb(200,200,200)")
+                        }
+                        break
+                    case "DIAMETER-RATIO":
+                        {
+                            // from welter_2013_interstitial
+                            let x = [1,10,100,1000]
+                            let y = x.map(e => e*(0.267 - 0.084*Math.log10(e)))
+                            plot_path_solid(x.map(e => Math.log10(e)), y.map((e, i) => e/(x[i]/2)), "rgb(215,215,215)")
+                        }
+                        {
+                            // from rakusan_1990_morphometry, figure 3
+                            let x = [1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2,2.15,2.35,2.55] // log(diameter), um
+                            let y1 = [2.2,2.5,2.8,3.2,3.5,4,5,6,7,11,11,15,20,24] // wall, um (control)
+                            plot_symbols(x.map(e => e), y1.map((e, i) => e/(Math.pow(10, x[i])/2)), "#square", "rgb(160,160,160)")
+                            let y2 = [2.2,2.5,3,3.4,4,5,6.2,8,11,13,17,17,25,34] // wall, um (hypertrophy)
+                            plot_symbols(x.map(e => e), y2.map((e, i) => e/(Math.pow(10, x[i])/2)), "#diamond", "rgb(185,185,185)")
+                        }
+                        {
+                            // from tomanek_1986_morphometry, figure 3
+                            let x = [4.95,14.95,29.95,59.95,119.95,239.95,479.95] // diameter, um
+                            let y1 = [0.26,0.13,0.09,0.08,0.095,0.05,0.045] // ratio (wall/diameter) (normotensive)
+                            plot_symbols(x.map(e => Math.log10(e)), y1.map(e => 2*e), "#triup", "rgb(200,200,200)") // multiply by 2 to get per radius
+                            let y2 = [0.21,0.14,0.1,0.09,0.07,0.07,0.06] // ratio (wall/diameter) (hypertensive)
+                            plot_symbols(x.map(e => Math.log10(e)), y2.map(e => 2*e), "#tridown", "rgb(200,200,200)") // multiply by 2 to get per radius
+                        }
+                        break
+                    case "PRESSURE-CIRCUM":
+                        {
+                            // from harper_1984_microvascular
+                            let x = [55.6,51.8,34.6,27.2] // pressure, mmHg
+                            let y = [29.8,19.8,11.9,5.1] // circumferential stress, 10^4 dyn/cm^2 (WKY)
+                            plot_symbols(x.map(e => e), y.map(e => Math.log10(e*1E4*0.1)), "#square", "rgb(160,160,160)")
+                        }
+                        {
+                            // from harper_1984_microvascular
+                            let x = [96,79.8,68.9,34] // pressure, mmHg
+                            let y = [35.5,24,19.7,5.5] // circumferential stress, 10^4 dyn/cm^2 (SHR)
+                            plot_symbols(x.map(e => e), y.map(e => Math.log10(e*1E4*0.1)), "#diamond", "rgb(200,200,200)")
+                        }
+                }
+            }
+        </script>
+    </body>
+</html>

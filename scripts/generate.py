@@ -586,3 +586,43 @@ def make_layout_merged(file, metric):
 
     out["_T"] = list(np.arange(0, 15.5, 0.5))
     save_json(f"{file}_/LAYOUT_MERGED", out, f".{metric}")
+
+# LAYOUT SCATTER ===============================================================
+
+def make_layout_scatter(file):
+    """Merge layout graph files for scatter."""
+    out = {}
+
+    codes = [
+        ("PATTERN", "pattern"),
+        ("Lav", "graphs"),
+        ("Lava", "graphs"),
+        ("Lvav", "graphs"),
+        ("Sav", "graphs"),
+        ("Savav", "graphs"),
+    ]
+
+    for name, couple in [("EXACT_HEMODYNAMICS", "UNCOUPLED"), ("VASCULAR_FUNCTION", "COUPLED")]:
+        outfile = f"{file}{name}/{name}"
+        tar = load_tar(outfile, ".GRAPH")
+
+        out = {}
+        out["pattern"] = []
+        out["graphs"] = []
+
+        for context in ["C", "CH"]:
+            for code, cat in codes:
+                filepath = f"{outfile}_{context}_{code}.GRAPH.150.csv"
+
+                if tar:
+                    D = load_csv(filepath.split("/")[-1], tar=tar)
+                else:
+                    D = load_csv(filepath)
+
+                header = D[0]
+                contents = [[context] + row[4:6] + row[9:] for row in D[1:]]
+                out[cat] = out[cat] + contents
+
+        full_header = ",".join(["context"] + header[4:6] + header[9:]) + "\n"
+        save_csv(f"{file}_/LAYOUT_SCATTER", full_header, zip(*out["graphs"]), f".ROOT.{couple}")
+        save_csv(f"{file}_/LAYOUT_SCATTER", full_header, zip(*out["pattern"]), f".PATTERN.{couple}")

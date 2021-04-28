@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="js/general.js"></script>
+        <script type="text/javascript" src="js/options.js"></script>
+        <script type="text/javascript" src="js/processors.js"></script>
+        <script type="text/javascript" src="js/plotters.js"></script>
+        <script type="text/javascript" src="js/labelers.js"></script>
+        <script type="text/javascript" src="js/decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div>
+            <div id="measures">
+                <strong>MEASURES</strong>
+                <label class="inputs"><input type="radio" name="measure" id="measure_gradius">radius</label>
+                <label class="inputs"><input type="radio" name="measure" id="measure_gdiameter">diameter</label>
+                <label class="inputs"><input type="radio" name="measure" id="measure_eccentricity">eccentricity</label>
+                <label class="inputs"><input type="radio" name="measure" id="measure_shortpath">shortest path</label>
+                <label class="inputs"><input type="radio" name="measure" id="measure_betweenness">betweenness</label>
+                <label class="inputs"><input type="radio" name="measure" id="measure_closeness">closeness</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "measure_ladder"
+            var SIZE = { "width": 300, "height": 300 }
+            var OPTIONS = ["measures"]
+            var SELECTED = {
+                "radios": {
+                    "measure": "eccentricity",
+                }  
+            }
+
+            initialize()
+
+            var Y_AXIS = {
+                "gradius": {
+                    "bounds": [50, 90],
+                    "title": "Graph Radius",
+                    "n": 5,
+                    "padding": 1
+                },
+                "gdiameter": {
+                    "bounds": [90, 140],
+                    "title": "Graph Diameter",
+                    "n": 6,
+                    "padding": 1
+                },
+                "eccentricity": {
+                    "bounds": [70, 110],
+                    "title": "Graph Average Eccentricity",
+                    "n": 5,
+                    "padding": 2
+                },
+                "shortpath": {
+                   "bounds": [0, 15],
+                    "title": "Graph Average Shortest Path",
+                    "n": 4,
+                    "padding": 0.5
+                },
+                "closeness": {
+                    "bounds": [0.002, 0.007],
+                    "title": "Graph Average Closeness Centrality",
+                    "n": 6,
+                    "padding": 0.0001
+                },
+                "betweenness": {
+                    "bounds": [0, 0.012],
+                    "title": "Graph Average Betweenness Centrality",
+                    "n": 5,
+                    "padding": 0.0005
+                },
+            }
+
+            function PROCESSOR() {
+                let selected = {
+                    "contexts": ["C/CH", "C", "CH"],
+                    "graphs": ["Lav", "Lava", "Lvav", "Sav", "Savav"],
+                    "measure": SELECTED.radios.measure,
+                }
+
+                return {
+                    "selected": selected,
+                    "layout": [],
+                    "files": [{ "x": 0, "y": 0, "i": [0], "file": "_/GRAPH_MEASURES.csv" }],
+                    "margin": { "left": 5, "top": 5, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": 1,
+                    "rows": 1,
+                    "axis": {
+                        "x": {
+                            "bounds": [0, 4],
+                            "n": 5,
+                            "labels": function(e) {
+                                let labels = ["L11", "L21", "L12", "S11", "S22"]
+                                return labels[e]
+                            },
+                            "padding": 0.5
+                        },
+                        "y": Y_AXIS[selected.measure]
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+                let measure = S.selected.measure
+                
+                let offsets = [
+                    {
+                        "left": -0.5,
+                        "right": -0.1667,
+                        "center": -0.333
+                    },
+                    {
+                        "left": -0.1667,
+                        "right": 0.1667,
+                        "center": 0
+                    },
+                    {
+                        "left": 0.1667,
+                        "right": 0.5,
+                        "center": 0.333
+                    },
+                ]
+
+                let colors = {
+                    "C/CH": "#000000",
+                    "C": COLORS["context"][0],
+                    "CH": COLORS["context"][1],
+                }
+
+                let getValues = function(D, measure, context, graph) {
+                    let d = D.data
+                        .filter(f => f.context == context)
+                        .filter(f => f.graph == graph)
+                    let y = d.map(e => Number(e[measure]))
+
+                    if (Math.max.apply(null, y) > S.axis.y.bounds[1]) { console.log(Math.max.apply(null, y)) }
+                    if (Math.min.apply(null, y) < S.axis.y.bounds[0]) { console.log(Math.min.apply(null, y)) }
+
+                    return y
+                }
+                
+                S.selected.contexts.map(function(context, contextIndex) {
+                    S.selected.graphs.map(function(graph, graphIndex) {
+                        let y = getValues(D, measure, context, graph)
+
+                        y.map(function(v) {
+                            data.push({
+                                "*": "path",
+                                "x": [graphIndex + offsets[contextIndex].left, graphIndex + offsets[contextIndex].right],
+                                "y": [v, v],
+                                "stroke": shadeColor(colors[context], 0.5),
+                                "width": 0.5
+                            })
+                        })
+                    })
+                })
+
+                // Draw mean and confidence interval
+                S.selected.contexts.map(function(context, contextIndex) {
+                    S.selected.graphs.map(function(graph, graphIndex) {
+                        let y = getValues(D, measure, context, graph)
+
+                        let stats = calcStats(y)
+                        let mean = stats.mean
+                        let interval = stats.interval
+                        let center = offsets[contextIndex].center
+
+                        data.push({
+                            "*": "path",
+                            "y": [mean - interval, mean + interval],
+                            "x": [graphIndex + center, graphIndex + center],
+                            "width": 2,
+                            "stroke": colors[context]
+                        })
+
+                        data.push({
+                            "*": "circle",
+                            "r": 2,
+                            "x": [graphIndex + center],
+                            "y": [mean],
+                            "fill": colors[context],
+                            "stroke": null
+                        })
+                    })
+                })
+
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelGrid(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                addBorder(g, S.subpanel.w, S.subpanel.h, "#ccc")
+
+                // Create and align groups for ticks.
+                let dx = alignHorzAxis(S, i)
+                let dy = alignVertAxis(S, i)
+
+                // Create group to hold ticks.
+                let G = S.G.append("g")
+                    .attr("id", "ticks")
+                    .attr("transform", "translate(" + dx + "," + dy + ")")
+
+                let A = S.axis
+
+                // Create ticks.
+                let ticks = []
+                ticks.push(makeHorzTicks(S, 0, S.subpanel.h, A.x))
+                ticks.push(makeVertTicks(S, 0, 0, A.y))
+
+                // Create axis labels.
+                let labels = []
+                labels.push(makeHorzLabel(S.subpanel.w, 0, alignHorzText(S), A.x.title, "none"))
+                labels.push(makeVertLabel(S.subpanel.h, alignVertText(S), 0, A.y.title, "none"))
+
+                addTicks(G, ticks)
+                addLabels(G, labels)
+
+                // Add dividing lines.
+                let gg = g.insert("g",":first-child")
+                
+                for (let i = 0; i < 5; i++) { addLine(gg, S.xscale(i + 0.5), S.xscale(i + 0.5), 0, S.subpanel.h, "#ccc", 0.5) }
+            }
+        </script>
+    </body>
+</html>

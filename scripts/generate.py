@@ -705,3 +705,34 @@ def make_property_distribution(file):
 
     for prop in properties:
         save_json(f"{file}_/PROPERTY_DISTRIBUTION", out[prop], f".{prop}")
+
+# GRAPH MEASURES ===============================================================
+
+def make_graph_measures(file):
+    """Extract graph measures."""
+    codes = ["Lav", "Lava", "Lvav", "Sav", "Savav"]
+    names = [
+        ("EXACT_HEMODYNAMICS", "C", "C/CH"),
+        ("VASCULAR_FUNCTION", "C", "C"),
+        ("VASCULAR_FUNCTION", "CH", "CH"),
+    ]
+    out = []
+
+    for name, context, context_code in names:
+        outfile = f"{file}{name}/{name}"
+        tar = load_tar(outfile, ".MEASURES")
+
+        for graph_code in codes:
+            filepath = f"{outfile}_{context}_{graph_code}.MEASURES.csv"
+
+            if tar:
+                D = load_csv(filepath.split("/")[-1], tar=tar)
+            else:
+                D = load_csv(filepath)
+
+            header = D[0]
+            content = [[context_code, graph_code] + row[2:] for row in D[1:] if row[0] == "150"]
+            out = out + content
+
+    full_header = ",".join(["context", "graph"] + header[2:]) + "\n"
+    save_csv(f"{file}_/GRAPH_MEASURES", full_header, zip(*out), "")

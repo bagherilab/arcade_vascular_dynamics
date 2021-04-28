@@ -395,3 +395,74 @@ def get_pattern_compare_concentrations(tar, out, keys, name):
         entry = dict(keys)
         entry["_Y"] = np.divide(arr[:,c], seeds).tolist()
         out[conc][name].append(entry)
+
+# PATTERN TYPES ================================================================
+
+def make_pattern_types_locations(file, names, contexts, cases):
+    """Compiles locations for pattern types."""
+    out = []
+
+    for name in names:
+        outfile = f"{file}{name}/{name}"
+        tar = load_tar(outfile, ".LOCATIONS")
+        
+        for context in contexts:
+            for case in cases[name]:
+                code, a, b = case
+                filepath = f"{outfile}_{context}_{code}.LOCATIONS.150.csv"
+
+                # Try loading from tar.
+                if tar:
+                    D = load_csv(filepath.split("/")[-1], tar=tar)
+                else:
+                    D = load_csv(filepath)
+
+                if context == "C":
+                    contents = [[context, a, b] + row[:6] + ["nan"] + row[6:] for row in D[1:]]
+                else:
+                    contents = [[context, a, b] + row for row in D[1:]]
+                out = out + contents
+
+    header = ["context", "dynamics", "coupling"] + D[0]
+    save_csv(f"{file}_/PATTERN_TYPES", ','.join(header) + "\n", zip(*out), ".LOCATIONS")
+
+def make_pattern_types_borders(input_path, output_path, names, contexts, cases):
+    """Compiles borders for pattern types."""
+    out = []
+
+    for name in names:
+        outfile = f"{input_path}{name}/{name}"
+        
+        for context in contexts:
+            exclude = [-1] if context == "C" else [-1, 1]
+
+            for case in cases[name]:
+                code, a, b = case
+                add = "damage" if name == "VASCULAR_DAMAGE" else ""
+                filepath = f"{outfile}_{context.replace('CHX','CH')}_{add}{code}.pkl"
+
+                D, R, H, T, N, C, POPS, TYPES = load(filepath)
+
+                dd = np.take(D["agents"], [30], axis=1)
+                TT = [T[i] for i in [30]]
+
+                inds = [[get_inds(dd, j, i, H, exclude)
+                    for j in range(0, N)]
+                    for i in range(0, len(TT))]
+
+                all_inds = [x for ind in inds[0] for x in ind]
+                lines = lin = get_spatial_outlines(C, 1, R, H, [all_inds])
+                outline = []
+                xy, offx, offy, L, W = convert(C, R)
+
+                for z, li in zip(range(1 - H, H), lin):
+                    outline = outline + [[context, a, b, i - offx, j - offy, z, k, C]
+                        for i, A in enumerate(li)
+                        for j, B in enumerate(A)
+                        for k, C in enumerate(B) if C != 0]
+
+                out = out + outline
+
+
+    header = "context,dynamics,coupling,x,y,z,DIRECTION,WEIGHT\n"
+    save_csv(f"{output_path}_/PATTERN_TYPES", header, zip(*out), ".BORDERS")

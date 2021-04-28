@@ -463,6 +463,126 @@ def make_pattern_types_borders(input_path, output_path, names, contexts, cases):
 
                 out = out + outline
 
-
     header = "context,dynamics,coupling,x,y,z,DIRECTION,WEIGHT\n"
     save_csv(f"{output_path}_/PATTERN_TYPES", header, zip(*out), ".BORDERS")
+
+# LAYOUT MERGED ================================================================
+
+def make_layout_merged_metrics(D, R, H, T, N, C, POPS, TYPES, outfile, code, exclude=[-1], timepoints=[], seeds=[]):
+    """Compile emergent metrics for different layouts."""
+    start = time.time()
+    inds = [[get_inds(D["agents"], j, i, H, exclude)
+        for i in range(0, len(T))]
+        for j in range(0, N)]
+    end = time.time()
+    print(end - start)
+
+    cycles = get_temporal_cycles(D["agents"], T, N, inds)
+
+    offset = 4
+    growth = get_temporal_growths(T, N, C, inds, offset)
+    nan_growth = [np.nan] * (offset + 2)
+
+    symmetry = get_temporal_symmetries(T, N, C, R, inds)
+
+    activity = get_temporal_activity(D["agents"], T, N, inds, TYPES)
+
+    out = {
+        "cycles": cycles,
+        "growth": [nan_growth + grow for grow in growth],
+        "symmetry": symmetry,
+        "activity": activity.tolist()
+    }
+
+    save_json(f"{outfile}{code}", out, ".MERGED.METRICS")
+
+def make_layout_merged_concentrations(tar, timepoints, keys, outfile, code):
+    """Compile center concentrations for different layouts."""
+    seeds = 10
+    out = {}
+    arr = np.zeros((seeds, 31, 2))
+
+    i = 0
+    for member in tar.getmembers():
+        seed = int(re.findall(r'_([0-9]{2})\.json', member.name)[0])
+        json = load_json(member, tar=tar)
+
+        for t, timepoint in enumerate(json['timepoints']):
+            glucose = timepoint['molecules']['glucose'][0][0]
+            oxygen = timepoint['molecules']['oxygen'][0][0]
+
+            arr[i,t,0] = glucose
+            arr[i,t,1] = oxygen
+
+        i = i + 1
+
+    out = {
+        "glucose": arr[:,:,0].tolist(),
+        "oxygen": arr[:,:,1].tolist()
+    }
+
+    save_json(f"{outfile}{code}", out, ".MERGED.CONCENTRATIONS")
+
+def make_layout_merged(file, metric):
+    """Merge layout files for given metric."""
+    out = {}
+
+    codes = [
+        ("PATTERN", "pattern"),
+        ("Lav", "graphs"),
+        ("Lava", "graphs"),
+        ("Lvav", "graphs"),
+        ("Sav", "graphs"),
+        ("Savav", "graphs"),
+    ] 
+
+    for name in ["EXACT_HEMODYNAMICS", "VASCULAR_FUNCTION"]:
+        outfile = f"{file}{name}/{name}"
+        out[name] = {}
+
+        for context in ["C", "CHX"]:
+            tar = load_tar(outfile, ".MERGED")
+
+            contents = {}
+            contents["pattern"] = []
+            contents["graphs"] = []
+
+            for code, cat in codes:
+                extension = "CONCENTRATIONS" if metric in ["GLUCOSE", "OXYGEN"] else "METRICS"
+                file_context = context.replace("CHX", "CH") if metric in ["GLUCOSE", "OXYGEN"] else context
+                filepath = f"{outfile}_{file_context}_{code}.MERGED.{extension}.json"
+
+                if tar:
+                    D = load_json(filepath.split("/")[-1], tar=tar)
+                else:
+                    D = load_json(filepath)
+
+                contents[cat] = contents[cat] + D[metric.lower()]
+
+            # replace nan with np.nan
+            pattern = np.array([[np.nan if tp == "nan" else tp for tp in seed] for seed in contents["pattern"]])
+            graphs = np.array([[np.nan if tp == "nan" else tp for tp in seed] for seed in contents["graphs"]])
+
+            pattern_mean = np.mean(pattern, axis=0)
+            pattern_std = np.std(pattern, axis=0, ddof=1)
+            pattern_int = 2.262*pattern_std/sqrt(len(pattern))
+
+            graphs_mean = np.mean(graphs, axis=0)
+            graphs_std = np.std(graphs, axis=0, ddof=1)
+            graphs_int = 2.262*graphs_std/sqrt(len(graphs))
+
+            out[name][context] = {
+                "pattern": {
+                    "mean": pattern_mean.tolist(),
+                    "std": pattern_std.tolist(),
+                    "int": pattern_int.tolist()
+                },
+                "graphs": {
+                    "mean": graphs_mean.tolist(),
+                    "std": graphs_std.tolist(),
+                    "int": graphs_int.tolist()
+                }
+            }
+
+    out["_T"] = list(np.arange(0, 15.5, 0.5))
+    save_json(f"{file}_/LAYOUT_MERGED", out, f".{metric}")

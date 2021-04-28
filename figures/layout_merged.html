@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="js/general.js"></script>
+        <script type="text/javascript" src="js/options.js"></script>
+        <script type="text/javascript" src="js/processors.js"></script>
+        <script type="text/javascript" src="js/plotters.js"></script>
+        <script type="text/javascript" src="js/labelers.js"></script>
+        <script type="text/javascript" src="js/decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div>
+            <div id="metrics">
+                <strong>METRIC</strong>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GROWTH">growth rate</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_SYMMETRY">symmetry</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_CYCLES">cycle length</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_ACTIVITY">activity</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_GLUCOSE">glucose</label>
+                <label class="inputs"><input type="radio" name="metric" id="metric_OXYGEN">oxygen</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "layout_merged"
+            var SIZE = { "width": 600, "height": 300 }
+            var OPTIONS = ["metrics"]
+            var SELECTED = {
+                "radios": {
+                    "metric": "GROWTH",
+                }  
+            }
+            var LABELS = {
+                "case": {
+                    "EXACT_HEMODYNAMICS": "-",
+                    "VASCULAR_FUNCTION": "+",
+                },
+            }
+
+            initialize()
+           
+            var Y_AXIS = {
+                "GROWTH": {
+                    "scale": 30, // hexagon/day => um/day
+                    "bounds": [0, 60], // mm/day
+                    "title": 'Growth Rate (\u03BCm/day)',
+                    "n": 3,
+                    "padding": 10
+                },
+                "SYMMETRY": {
+                    "scale": 1,
+                    "bounds": [0, 1], // unitless
+                    "title": 'Symmetry',
+                    "n": 3,
+                    "padding": 0.01
+                },
+                "CYCLES": {
+                    "scale": 1/60.0, // min => hours
+                    "bounds": [18, 26], // hours
+                    "title": 'Average Cell Cycle Length (hours)',
+                    "n": 3,
+                    "padding": 0.5
+                },
+                "ACTIVITY": {
+                    "scale": 1,
+                    "bounds": [-1, 1], // unitless
+                    "title": 'Relative Activity',
+                    "n": 3,
+                    "padding": 0.05
+                },
+                "GLUCOSE": {
+                    "scale": 1000, // fmol/um^3 => mmol/L
+                    "bounds": [0, 5], // mmol/L
+                    "title": "Glucose Concentration (mmol/L)",
+                    "n": 3,
+                    "padding": 0.1
+                },
+                "OXYGEN": {
+                    "scale": 1,
+                    "bounds": [0, 100], // mmHg
+                    "title": "Oxygen Concentration (mmHg)",
+                    "n": 3,
+                    "padding": 2
+                },                
+            }
+
+            function PROCESSOR() {
+                let selected = {
+                    "case": ["EXACT_HEMODYNAMICS", "VASCULAR_FUNCTION"],
+                    "metric": SELECTED.radios.metric,
+                }
+
+                let name = function(arr) {
+                    return "_/LAYOUT_MERGED." + selected.metric + ".json"
+                }
+                
+                let layout = ["case"]
+                let make = processMake(layout, selected, [0], name)
+                let p = processGrid(layout, selected, make)
+
+                return {
+                    "selected": selected,
+                    "layout": layout,
+                    "files": p.files,
+                    "margin": { "left": p.marginLeft, "top": p.marginTop, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": p.nCols,
+                    "rows": p.nRows,
+                    "axis": {
+                        "x": {
+                            "scale": 1.0/7,
+                            "bounds": [0, 2],
+                            "title": "Time (weeks)",
+                            "n": 3,
+                            "padding": 0.05
+                        },
+                        "y": Y_AXIS[selected.metric]
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let contexts = ["C", "CHX"]
+                let name = S.selected.case[D.i[0]]
+                let data = []
+
+                let getData = function(name, context) {
+                    let x = D.data["_T"].map(e => (e - 1)*S.axis.x.scale)
+                    let pattern_mean = D.data[name][context].pattern.mean
+                    let pattern_interval = D.data[name][context].pattern.int
+
+                    let removep = findNaNs(pattern_mean)
+                    let yp = removeNaNs(pattern_mean, removep).map(e => e*S.axis.y.scale)
+                    let xp = removeNaNs(x, removep)
+
+                    let pattern_plus = removeNaNs(pattern_mean.map((e, i) => e + pattern_interval[i]), removep)
+                        .map(e => e*S.axis.y.scale)
+                    let pattern_minus = removeNaNs(pattern_mean.map((e, i) => e - pattern_interval[i]), removep)
+                        .map(e => e*S.axis.y.scale)
+
+                    let graphs_mean = D.data[name][context].graphs.mean
+                    let graphs_interval = D.data[name][context].graphs.int
+                    
+                    let removeg = findNaNs(graphs_mean)
+                    let yg = removeNaNs(graphs_mean, removeg).map(e => e*S.axis.y.scale)
+                    let xg = removeNaNs(x, removeg)
+
+                    let graphs_plus = removeNaNs(graphs_mean.map((e, i) => e + graphs_interval[i]), removeg)
+                        .map(e => e*S.axis.y.scale)
+                    let graphs_minus = removeNaNs(graphs_mean.map((e, i) => e - graphs_interval[i]), removeg)
+                        .map(e => e*S.axis.y.scale)
+
+                    return {
+                        "pattern": {
+                            "x": xp,
+                            "y": yp,
+                            "plus": pattern_plus,
+                            "minus": pattern_minus
+                        },
+                        "graph": {
+                            "x": xg,
+                            "y": yg,
+                            "plus": graphs_plus,
+                            "minus": graphs_minus
+                        }
+                    }
+                }
+
+                contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                    let d = getData(name, context)
+                    
+                    data.push({
+                        "*": "area",
+                        "x": d.pattern.x,
+                        "min": d.pattern.minus,
+                        "max": d.pattern.plus,
+                        "fill": "url(#stripe-" + context + ")"
+                    })
+
+                    data.push({
+                        "*": "area",
+                        "x": d.pattern.x,
+                        "min": d.pattern.minus,
+                        "max": d.pattern.plus,
+                        "width": 0.5,
+                        "stroke": shadeColor(color, 0.5),
+                        "fill": "none"
+                    })
+                })
+
+                contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                    let d = getData(name, context)
+
+                    data.push({
+                        "*": "area",
+                        "x": d.graph.x,
+                        "min": d.graph.minus,
+                        "max": d.graph.plus,
+                        "fill": "url(#shade-" + (context == "C" ? "C" : "CHX") + ")"
+                    })
+                })
+
+                contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                    let d = getData(name, context)
+                    
+                    data.push({
+                        "*": "path",
+                        "y": d.pattern.y,
+                        "x": d.pattern.x,
+                        "width": 1,
+                        "stroke": shadeColor(color, 0.1),
+                        "dash": "3,1.5"
+                    })
+                })
+
+                contexts.map(function(context) {
+                    let color = COLORS["context"][(context == "C" ? 0 : 1)]
+                    let d = getData(name, context)
+                    
+                    data.push({
+                        "*": "path",
+                        "y": d.graph.y,
+                        "x": d.graph.x,
+                        "width": 1.5,
+                        "stroke": shadeColor(color, -0.1)
+                    })
+                })  
+                
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelGrid(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                decorateTicks(g, S, i, p)
+                
+                let colors = COLORS["context"]
+                let defs = S.G.append("defs")
+
+                defs.append("pattern")
+                    .attr("id",  "stripe-C")
+                    .attr("width", 3)
+                    .attr("height", 3)
+                    .attr("patternTransform", "rotate(45)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 3)
+                        .attr("height", 0.5)
+                        .attr("fill", shadeColor(colors[0], 0.6))
+                
+                defs.append("pattern")
+                    .attr("id",  "stripe-CHX")
+                    .attr("width", 3)
+                    .attr("height", 3)
+                    .attr("patternTransform", "rotate(45)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 3)
+                        .attr("height", 0.5)
+                        .attr("y", 1.5)
+                        .attr("fill", shadeColor(colors[1], 0.6))
+
+                defs.append("pattern")
+                    .attr("id",  "shade-C")
+                    .attr("width", 1)
+                    .attr("height", 1)
+                    .attr("patternTransform", "rotate(90)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 1)
+                        .attr("height", 0.5)
+                        .attr("fill", shadeColor(colors[0], 0.4))
+
+                defs.append("pattern")
+                    .attr("id",  "shade-CHX")
+                    .attr("width", 1)
+                    .attr("height", 1)
+                    .attr("patternTransform", "rotate(90)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 1)
+                        .attr("height", 0.5)
+                        .attr("y", 0.5)
+                        .attr("fill", shadeColor(colors[1], 0.4))
+            }
+        </script>
+    </body>
+</html>

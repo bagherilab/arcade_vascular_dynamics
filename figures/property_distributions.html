@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="js/general.js"></script>
+        <script type="text/javascript" src="js/options.js"></script>
+        <script type="text/javascript" src="js/processors.js"></script>
+        <script type="text/javascript" src="js/plotters.js"></script>
+        <script type="text/javascript" src="js/labelers.js"></script>
+        <script type="text/javascript" src="js/decorators.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="generate" onclick="generate()">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div>
+            <div id="props">
+                <strong>PROPERTY</strong>
+                <label class="inputs"><input type="radio" name="prop" id="prop_RADIUS">vessel radius</label>
+                <label class="inputs"><input type="radio" name="prop" id="prop_WALL">wall thickness</label>
+                <label class="inputs"><input type="radio" name="prop" id="prop_SHEAR">shear stress</label>
+                <label class="inputs"><input type="radio" name="prop" id="prop_CIRCUM">circumferential stress</label>
+                <label class="inputs"><input type="radio" name="prop" id="prop_FLOW">flow rate</label>
+                <label class="inputs"><input type="radio" name="prop" id="prop_PRESSURE">pressure</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var PREFIX = "property_distributions"
+            var SIZE = { "width": 300, "height": 300 }
+            var OPTIONS = ["props"]
+            var SELECTED = {
+                "radios": {
+                    "prop": "RADIUS",
+                }  
+            }
+            var LABELS = {
+                "case": {
+                    "EXACT_HEMODYNAMICS": "-",
+                    "VASCULAR_FUNCTION": "+",
+                },
+            }
+
+            initialize()
+           
+            var Y_AXIS = {
+                "RADIUS": {
+                    "bounds": [0, 200], // um
+                    "title": 'Radius (\u03BCm)',
+                    "n": 5,
+                    "padding": 10
+                },
+                "WALL": {
+                    "bounds": [0, 30], // um
+                    "title": 'Wall Thickness (\u03BCm)',
+                    "n": 4,
+                    "padding": 1
+                },
+                "SHEAR": {
+                    "bounds": [-3, 3], // log[Pa]
+                    "title": 'Shear Stress (Pa)',
+                    "labels": (e, i) => (10 + EXP(e)),
+                    "n": 4,
+                    "padding": 0.2
+                },
+                "CIRCUM": {
+                    "bounds": [4, 6], // log[Pa]
+                    "title": 'Circumferential Stress (Pa)',
+                    "labels": (e, i) => (10 + EXP(e)),
+                    "n": 3,
+                    "padding": 0.2
+                },
+                "FLOW": {
+                    "bounds": [2, 14], // log[um^3/min]
+                    "title": 'Flow Rate (um' + EXP(3) + '/min)',
+                    "labels": (e, i) => (10 + EXP(e)),
+                    "n": 4,
+                    "padding": 0.5
+                },
+                "PRESSURE": {
+                    "bounds": [0, 15], // kPa
+                    "title": 'Pressure (kPa)',
+                    "n": 4
+                }
+            }
+
+            function PROCESSOR() {
+                let selected = {
+                    "prop": SELECTED.radios.prop,
+                    "context": ["C", "CH"],
+                    "graphs": ["PATTERN", "Lav", "Lava", "Lvav", "Sav", "Savav"]
+                }
+
+                let file = "_/PROPERTY_DISTRIBUTION." + selected.prop + ".json"
+                
+                return {
+                    "selected": selected,
+                    "layout": [],
+                    "files": [{ "x": 0, "y": 0, "i": [0], "file": file }],
+                    "margin": { "left": 5, "top": 5, "right": 5, "bottom": 5, "axis": AXIS_PADDING },
+                    "cols": 1,
+                    "rows": 1,
+                    "axis": {
+                        "x": xaxis = {
+                            "bounds": [0, 1],
+                            "n": 2,
+                            "labels": function(e) {
+                                let labels = ["-", "+"]
+                                return labels[e]
+                            },
+                            "padding": 0.6
+                        },
+                        "y": Y_AXIS[selected.prop]
+                    }
+                }
+            }
+
+            function PARSER(code, S, D) {
+                let data = []
+                let contexts = ["C/CH", "C", "CH"]
+                let outline_colors = ["#999", shadeColor(COLORS["context"][0], 0.4), shadeColor(COLORS["context"][1], 0.4)]
+                let stroke_colors = ["#000", COLORS["context"][0], COLORS["context"][1]]
+                let graphs = ["PATTERN", "Lav", "Lava", "Lvav", "Sav", "Savav"]
+
+                contexts.map(function(context, i) {
+                    graphs.map(function(graph) {
+                        let d = D.data[context + "_" + graph]
+                        let offset = (context == "C/CH" ? - 0.5 : 0.5)
+                        let total = d.hist.reduce((a, b) => a + b)
+                        let max = d.hist.reduce((a, b) => Math.max(a, b))
+                        let rescale = d3.scaleLinear().range([0, 0.45]).domain([0, max])
+                        let midpoints = d.hist.map((hist, i) => (d.bins[i] + d.bins[i + 1])/2)
+                        let mean = midpoints.map((e, i) => e*d.hist[i]).reduce((a, b) => a + b)/total
+
+                        if (graph == "PATTERN") {
+                            let y = [0]
+                            let x = [0]
+                            
+                            d.hist.map(e => y.push(rescale(e)))
+                            midpoints.map(e => x.push(e))
+
+                            data.push({
+                                "*": "violin",
+                                "y": y,
+                                "x": x,
+                                "offset": offset,
+                                "fill": "url(#shade-" + context + ")",
+                                "stroke": outline_colors[i],
+                                "width": 0.5
+                            })
+                        } else {
+                            data.push({
+                                "*": "violin",
+                                "y": d.hist.map(e => rescale(e)),
+                                "x": midpoints,
+                                "width": 0.5,
+                                "offset": offset,
+                                "fill": "none",
+                                "stroke": stroke_colors[i]
+                            })
+                        }
+                    })
+                })
+                
+                return { "data": [{ "id": "X", "x": 0, "y": 0, "data": data }], "rows": 1, "cols": 1 }
+            }
+
+            function LABELLER(S, P) { return labelGrid(S, P) }
+
+            function DECORATOR(g, S, i, p) {
+                addBorder(g, S.subpanel.w, S.subpanel.h, "#ccc")
+
+                // Create and align groups for ticks.
+                let dx = alignHorzAxis(S, i)
+                let dy = alignVertAxis(S, i)
+                
+                // Create group to hold ticks.
+                let G = S.G.append("g")
+                    .attr("id", "ticks")
+                    .attr("transform", "translate(" + dx + "," + dy + ")")
+                
+                let A = S.axis
+                
+                // Create ticks.
+                let ticks = []
+                ticks.push(makeHorzTicks(S, 0, S.subpanel.h, A.x))
+                ticks.push(makeVertTicks(S, 0, 0, A.y))
+                
+                // Create axis labels.
+                let labels = []
+                labels.push(makeHorzLabel(S.subpanel.w, 0, alignHorzText(S), A.x.title, "none"))
+                labels.push(makeVertLabel(S.subpanel.h, alignVertText(S), 0, A.y.title, "none"))
+                
+                addTicks(G, ticks)
+                addLabels(G, labels)
+
+                let colors = COLORS["context"]
+                let defs = S.G.append("defs")
+
+                defs.append("pattern")
+                    .attr("id",  "shade-C/CH")
+                    .attr("width", 1)
+                    .attr("height", 1)
+                    .attr("patternTransform", "rotate(90)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 1)
+                        .attr("height", 0.5)
+                        .attr("y", 0.5)
+                        .attr("fill", "#999")
+
+                defs.append("pattern")
+                    .attr("id",  "shade-C")
+                    .attr("width", 1)
+                    .attr("height", 1)
+                    .attr("patternTransform", "rotate(90)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 1)
+                        .attr("height", 0.5)
+                        .attr("fill", shadeColor(colors[0], 0.4))
+
+                defs.append("pattern")
+                    .attr("id",  "shade-CH")
+                    .attr("width", 1)
+                    .attr("height", 1)
+                    .attr("patternTransform", "rotate(90)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 1)
+                        .attr("height", 0.5)
+                        .attr("y", 0.5)
+                        .attr("fill", shadeColor(colors[1], 0.4))
+            }
+        </script>
+    </body>
+</html>

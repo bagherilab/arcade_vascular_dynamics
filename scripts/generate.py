@@ -4,6 +4,7 @@ from .utilities import *
 from .analyze import *
 from collections import Counter
 from math import sqrt
+from scipy.stats import iqr
 
 # GENERAL ANALYSIS FUNCTIONS ===================================================
 
@@ -626,3 +627,81 @@ def make_layout_scatter(file):
         full_header = ",".join(["context"] + header[4:6] + header[9:]) + "\n"
         save_csv(f"{file}_/LAYOUT_SCATTER", full_header, zip(*out["graphs"]), f".ROOT.{couple}")
         save_csv(f"{file}_/LAYOUT_SCATTER", full_header, zip(*out["pattern"]), f".PATTERN.{couple}")
+
+# PROPERTY DISTRIBUTION ========================================================
+
+def bin_property_values(data, name, lower, upper):
+    """Bins data between given bounds."""
+    filtered_data = [d for d in data if not np.isnan(d) and not np.isinf(d)]
+
+    if len(filtered_data) == 0:
+        return { "hist": [], "bins": [] }
+
+    data_iqr = iqr(filtered_data)
+    bandwidth = 2*data_iqr/(len(filtered_data)**(1./3.))
+
+    min_value = np.min(filtered_data)
+    max_value = np.max(filtered_data)
+
+    if min_value < lower:
+        lower = min_value*0.5
+        print(f"\t\t> Changed lower bound for {name} to {lower}")
+
+    if max_value > upper:
+        upper = max_value*1.5
+        print(f"\t\t> Change upper bound for {name} to {upper}")
+
+    print(f"{name:>10} = [{min_value}, {max_value}]")
+
+    hist, bins = np.histogram(filtered_data, bins=np.arange(lower, upper, bandwidth))
+    return { "hist": hist.tolist(), "bins": bins.tolist() }
+
+def make_property_distribution(file):
+    """Bin and merge graph properties."""
+    codes = ["PATTERN", "Lav", "Lava", "Lvav", "Sav", "Savav"]
+    properties = ["RADIUS", "PRESSURE", "WALL", "SHEAR", "FLOW", "CIRCUM"]
+    names = [
+        ("EXACT_HEMODYNAMICS", "C", "C/CH"),
+        ("VASCULAR_FUNCTION", "C", "C"),
+        ("VASCULAR_FUNCTION", "CH", "CH"),
+    ]
+    out = { prop: {} for prop in properties }
+
+    for name, context, context_code in names:
+        outfile = f"{file}{name}/{name}"
+        tar = load_tar(outfile, ".GRAPH")
+
+        for graph_code in codes:
+            filepath = f"{outfile}_{context}_{graph_code}.GRAPH.150.csv"
+
+            if tar:
+                D = load_csv(filepath.split("/")[-1], tar=tar)
+            else:
+                D = load_csv(filepath)
+
+            header = D[0]
+            ind_pressure_from = header.index('frompressure')
+            ind_pressure_to = header.index('topressure')
+            ind_radius = header.index("RADIUS")
+            ind_wall = header.index("WALL")
+            ind_shear = header.index("SHEAR")
+            ind_flow = header.index("FLOW")
+            ind_circum = header.index("CIRCUM")
+
+            pressure = [(float(dd[ind_pressure_to]) + float(dd[ind_pressure_from]))/2*0.133322 for dd in D[1:]] # mmHg -> kPa
+            radius = [float(dd[ind_radius]) for dd in D[1:]]
+            wall = [float(dd[ind_wall]) for dd in D[1:]]
+            shear = [np.log10(float(dd[ind_shear])*133.322) for dd in D[1:]] # mmHg -> Pa
+            flow = [np.log10(float(dd[ind_flow])) for dd in D[1:]]
+            circum = [np.log10(float(dd[ind_circum])*133.322) for dd in D[1:]] # mmHg -> Pa
+
+            key = f"{context_code}_{graph_code}"
+            out["RADIUS"][key] = bin_property_values(radius, "RADIUS", 0, 50)
+            out["PRESSURE"][key] = bin_property_values(pressure, "PRESSURE", 0, 10)
+            out["WALL"][key] = bin_property_values(wall, "WALL", 0, 10)
+            out["SHEAR"][key] = bin_property_values(shear, "SHEAR", -4, 3)
+            out["FLOW"][key] = bin_property_values(flow, "FLOW", 2, 12)
+            out["CIRCUM"][key] = bin_property_values(circum, "CIRCUM", 3, 6)
+
+    for prop in properties:
+        save_json(f"{file}_/PROPERTY_DISTRIBUTION", out[prop], f".{prop}")

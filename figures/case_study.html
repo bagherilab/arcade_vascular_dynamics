@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script type="text/javascript" src="js/browser.js"></script>
+        <script type="text/javascript" src="js/utilities.js"></script>
+    </head>
+    <body>
+        <h1>case study</h1>
+        <div id="buttons">
+            <button id="generate">GENERATE</button>
+            <button id="save">SAVE</button>
+        </div>
+        <div id="options">
+            <div id="cases">
+                <strong>CASE</strong>
+                <label class="inputs"><input type="radio" name="case" id="case_DEGRADATION">degradation rate</label>
+                <label class="inputs"><input type="radio" name="case" id="case_STABILIZED">stabilization fraction</label>
+            </div>
+        </div>
+        <div id="canvas"></div>
+        <script>
+            var POSITIVE = ["#b2182b", "#F2D9DC"]
+            var NEGATIVE = ["#2166ac", "#DAE6F1"]
+            var ZERO = ["#888", "#eee"]
+
+            var OPTIONS = ["cases"]
+            var SELECTED = {
+                "radios": {
+                    "case": "DEGRADATION",
+                }
+            }
+
+            let LABELS = {
+                "DEGRADATION": "Degradation Rate <tspan font-size=\"8pt\" font-weight=\"normal\">(μm/hr)</tspan>",
+                "STABILIZED": "Stabilization Fraction"
+            }
+
+            initialize()
+
+            function generate() {
+                clear()
+                let id = SELECTED.radios.case
+                let file = "/analysis/_/VESSEL_COLLAPSE." + id + ".csv"
+                d3.csv(file, (error, data) => generate_figure(data, id))
+            }
+
+            function generate_figure(data, id) {
+
+                let SETTINGS = {
+                    "width": 350,
+                    "height": 200,
+                    "margin": {
+                        "left": 40,
+                        "right": 10,
+                        "top": 20,
+                        "bottom": 35
+                    }
+                }
+
+                // Create SVG.
+                let G = create_svg(SETTINGS, id)
+
+                // Add defs.
+                let defs = G[0].append("defs")
+                add_defs(defs)
+                
+                // Create scales.
+                let xpadding = 3
+                let ypadding = 3
+                let xscale = d3.scaleLinear().domain([0, 1]).range([xpadding, SETTINGS.W/2 - xpadding])
+                let yscale = d3.scaleLinear().domain([0, 100]).range([SETTINGS.H - ypadding, ypadding])
+
+                // Add titles.
+                let T1 = G[1].append("g").attr("id", "title1")
+                let T2 = G[2].append("g").attr("id", "title2")
+                make_titles(T1, SETTINGS.H, SETTINGS.W/2, "V<tspan font-size=\"80%\" baseline-shift=\"-4\">T</tspan> <tspan font-size=\"8pt\" font-weight=\"normal\">(delivery)</tspan>")
+                make_titles(T2, SETTINGS.H, SETTINGS.W/2, "V<tspan font-size=\"80%\" baseline-shift=\"-4\">A</tspan> <tspan font-size=\"8pt\" font-weight=\"normal\">(exposure)</tspan>")
+
+                // Add axis ticks and labels.
+                let A1 = G[1].append("g").attr("id", "axes1")
+                let A2 = G[2].append("g").attr("id", "axes2")
+                make_xaxis(A1, SETTINGS.H, SETTINGS.W/2, xscale, LABELS[id], SETTINGS.padding)
+                make_xaxis(A2, SETTINGS.H, SETTINGS.W/2, xscale, false)
+                make_yaxis(A1, SETTINGS.H, SETTINGS.W, yscale)
+
+                // Plot data.
+                let D1 = G[1].append("g").attr("id", "data1")
+                let D2 = G[2].append("g").attr("id", "data2")
+                plot_data(D1, data, id.toUpperCase(), "TUMOR_TOTAL", xscale, yscale)
+                plot_data(D2, data, id.toUpperCase(), "TUMOR_AVERAGE", xscale, yscale)
+
+                // Add annotations
+                if (id == "STABILIZED") {
+                    let L = G[1].append("g").attr("id", "labels")
+                    annotate_plot(L, SETTINGS.W/2, true)
+                } else if (id == "DEGRADATION") {
+                    let L = G[2].append("g").attr("id", "labels")
+                    annotate_plot(L, SETTINGS.W/2, false)
+                }
+                
+                // Set save button.
+                d3.select("#save").on("click", () => saveAs("case_study_" + id))
+            }
+
+            function create_svg(SETTINGS, id) {
+                // Create SVG.
+                let SVG = d3.select("#canvas")
+                    .append("svg")
+                    .attr("id", "download")
+                    .attr("width", SETTINGS.width)
+                    .attr("height", SETTINGS.height)
+
+                // Calculate size of figure.
+                SETTINGS.padding = 10
+                SETTINGS.W = SETTINGS.width - SETTINGS.margin.left - SETTINGS.margin.right- SETTINGS.padding
+                SETTINGS.H = SETTINGS.height - SETTINGS.margin.top - SETTINGS.margin.bottom
+
+                // Add offset group for margin.
+                let offset = "translate(" + SETTINGS.margin.left + "," + SETTINGS.margin.top + ")"
+                let G = SVG.append("g").attr("transform", offset)
+                let G1 = G.append("g").attr("transform", "translate(0,0)")
+                let G2 = G.append("g").attr("transform", "translate(" + (SETTINGS.W/2 + SETTINGS.padding) + ",0)")
+
+                // Add plot border.
+                G1.append("rect")
+                    .attr("width", SETTINGS.W/2)
+                    .attr("height", SETTINGS.H)
+                    .attr("fill", "none")
+                    .attr("stroke", "#ccc")
+
+                G2.append("rect")
+                    .attr("width", SETTINGS.W/2)
+                    .attr("height", SETTINGS.H)
+                    .attr("fill", "none")
+                    .attr("stroke", "#ccc")
+
+                return [SVG, G1, G2]
+            }
+
+            function add_defs(defs) {
+                defs.append("pattern")
+                    .attr("id", "striped")
+                    .attr("width", 3)
+                    .attr("height", 3)
+                    .attr("patternTransform", "rotate(-45)")
+                    .attr("patternUnits", "userSpaceOnUse")
+                    .append("rect")
+                        .attr("width", 3)
+                        .attr("height", 1)
+                        .attr("fill", ZERO[1])
+            }
+
+            function make_titles(g, height, width, title) {
+                g.append("text")
+                    .html(title)
+                    .attr("font-family", "Helvetica")
+                    .attr("font-size", "10pt")
+                    .attr("text-anchor", "middle")
+                    .attr("font-weight", "bold")
+                    .attr("x", width/2)
+                    .attr("y", -8)
+            }
+
+            function make_xaxis(g, height, width, xscale, label, padding) {
+                let xaxis = g.append("g").attr("id", "xaxis")
+                let xticks = ["0.0", 0.2, 0.4, 0.6, 0.8, "1.0"]
+
+                if (label) {
+                    // Add axis label.
+                    xaxis.append("text")
+                        .html(label)
+                        .attr("font-family", "Helvetica")
+                        .attr("font-size", "10pt")
+                        .attr("text-anchor", "middle")
+                        .attr("font-weight", "bold")
+                        .attr("x", width + padding/2)
+                        .attr("y", height + 28)
+
+                }
+
+                // Add tick labels.
+                xaxis.append("g")
+                    .selectAll("text")
+                    .data(xticks).enter()
+                        .append("text")
+                            .text(d => d)
+                            .attr("font-family", "Helvetica")
+                            .attr("font-size", "8pt")
+                            .attr("text-anchor", "middle")
+                            .attr("x", d => xscale(d))
+                            .attr("y", height + 13)
+
+                // Add tick lines.
+                xaxis.append("g")
+                    .selectAll("path")
+                    .data(xticks).enter()
+                        .append("path")
+                            .attr("d", d => `m ${xscale(d)},${height} l 0,3`)
+                            .attr("stroke", "#000")
+                            .attr("fill", "none")
+            }
+
+            function make_yaxis(g, height, width, yscale) {
+                let yaxis = g.append("g").attr("id", "yaxis")
+                let yticks = [0, 20, 40, 60, 80, 100]
+
+                // Add axis label.
+                yaxis.append("text")
+                    .text("No. of Simulations")
+                    .attr("font-family", "Helvetica")
+                    .attr("font-size", "10pt")
+                    .attr("text-anchor", "middle")
+                    .attr("font-weight", "bold")
+                    .attr("x", -28)
+                    .attr("y", height/2)
+                    .attr("transform", `rotate(-90,-28,${height/2})`)
+
+                // Add tick labels.
+                yaxis.append("g")
+                    .selectAll("text")
+                    .data(yticks).enter()
+                        .append("text")
+                            .text(d => d)
+                            .attr("font-family", "Helvetica")
+                            .attr("font-size", "8pt")
+                            .attr("text-anchor", "middle")
+                            .attr("y", d => yscale(d) + 3)
+                            .attr("x", -15)
+
+                // Add tick lines.
+                yaxis.append("g")
+                    .selectAll("path")
+                    .data(yticks).enter()
+                        .append("path")
+                            .attr("d", d => `m 0, ${yscale(d)} l -3,0`)
+                            .attr("stroke", "#000")
+                            .attr("fill", "none")
+            }
+
+            function plot_data(g, data, parameter, metric, xscale, yscale) {
+                // Parse data.
+                let parameterValues = data.map(e => +e[parameter]/100)
+                let negativeValues = data.map(e => +e[metric + "_NEGATIVE"])
+                let positiveValues = data.map(e => +e[metric + "_POSITIVE"])
+
+                // Format data into areas.
+                let negativeArea = negativeValues.map((e, i) => ({
+                    "x": parameterValues[i],
+                    "y0": 0,
+                    "y1": e
+                }))
+
+                let positiveArea = positiveValues.map((e, i) => ({
+                    "x": parameterValues[i],
+                    "y0": 100 - e,
+                    "y1": 100
+                }))
+
+                let zeroArea = parameterValues.map((e, i) => ({
+                    "x": e,
+                    "y0": negativeValues[i],
+                    "y1": 100 - positiveValues[i]
+                }))
+
+                // Add shaded areas.
+                g.append("path")
+                    .attr("d", d3.area()
+                        .x((d, i) => xscale(d.x))
+                        .y0((d, i) => yscale(d.y0))
+                        .y1((d, i) => yscale(d.y1))
+                        (negativeArea))
+                    .attr("stroke", "none")
+                    .attr("fill", NEGATIVE[1])
+
+                g.append("path")
+                    .attr("d", d3.area()
+                        .x((d, i) => xscale(d.x))
+                        .y0((d, i) => yscale(d.y0))
+                        .y1((d, i) => yscale(d.y1))
+                        (positiveArea))
+                    .attr("stroke", "none")
+                    .attr("fill", POSITIVE[1])
+
+                g.append("path")
+                    .attr("d", d3.area()
+                        .x((d, i) => xscale(d.x))
+                        .y0((d, i) => yscale(d.y0))
+                        .y1((d, i) => yscale(d.y1))
+                        (zeroArea))
+                    .attr("stroke", "none")
+                    .attr("fill", "url(#striped)")
+
+                // Add paths.
+                g.append("path")
+                    .attr("d", d3.line()
+                        .x((d, i) => xscale(d.x))
+                        .y((d, i) => yscale(d.y1))
+                        (negativeArea)
+                    )
+                    .attr("stroke", NEGATIVE[0])
+                    .attr("stroke-width", 0.5)
+                    .attr("fill", "none")
+
+                g.append("path")
+                    .attr("d", d3.line()
+                        .x((d, i) => xscale(d.x))
+                        .y((d, i) => yscale(d.y0))
+                        (positiveArea)
+                    )
+                    .attr("stroke", POSITIVE[0])
+                    .attr("stroke-width", 0.5)
+                    .attr("fill", "none")
+
+                // Add points.
+                g.append("g").selectAll("circle")
+                    .data(negativeArea).enter()
+                    .append("circle")
+                        .attr("cx", d => xscale(d.x))
+                        .attr("cy", d => yscale(d.y1))
+                        .attr("r", 1.5)
+                        .attr("fill", NEGATIVE[0])
+
+                g.append("g").selectAll("circle")
+                    .data(positiveArea).enter()
+                    .append("circle")
+                        .attr("cx", d => xscale(d.x))
+                        .attr("cy", d => yscale(d.y0))
+                        .attr("r", 1.5)
+                        .attr("fill", POSITIVE[0])
+            }
+
+            function annotate_plot(g, width, zero) {
+                const xoffset = width - 45
+
+                let g1 = g.append("g")
+                    .attr("transform", `translate(${xoffset},120)`)
+                let g2 = g.append("g")
+                    .attr("transform", `translate(${xoffset},15)`)
+
+                if (zero) {
+                    let g0 = g.append("g")
+                        .attr("transform", `translate(${xoffset},75)`)
+
+                    g0.append("text")
+                        .text("unchanged")
+                        .attr("font-weight", "bold")
+                        .attr("stroke", "none")
+                        .attr("fill", ZERO[0])
+                        .attr("font-family", "Helvetica")
+                        .attr("font-size", "6pt")
+                        .attr("text-anchor", "middle")
+
+                    g0.append("text")
+                        .text("relative to control")
+                        .attr("stroke", "none")
+                        .attr("fill", ZERO[0])
+                        .attr("y", 10)
+                        .attr("font-family", "Helvetica")
+                        .attr("font-size", "6pt")
+                        .attr("text-anchor", "middle")
+                }
+
+                g1.append("text")
+                    .text("decreased")
+                    .attr("font-weight", "bold")
+                    .attr("stroke", "none")
+                    .attr("fill", NEGATIVE[0])
+                    .attr("font-family", "Helvetica")
+                    .attr("font-size", "6pt")
+                    .attr("text-anchor", "middle")
+
+                g1.append("text")
+                    .text("relative to control")
+                    .attr("stroke", "none")
+                    .attr("fill", NEGATIVE[0])
+                    .attr("y", 10)
+                    .attr("font-family", "Helvetica")
+                    .attr("font-size", "6pt")
+                    .attr("text-anchor", "middle")
+
+                g2.append("text")
+                    .text("increased")
+                    .attr("font-weight", "bold")
+                    .attr("stroke", "none")
+                    .attr("fill", POSITIVE[0])
+                    .attr("font-family", "Helvetica")
+                    .attr("font-size", "6pt")
+                    .attr("text-anchor", "middle")
+
+                g2.append("text")
+                    .text("relative to control")
+                    .attr("stroke", "none")
+                    .attr("fill", POSITIVE[0])
+                    .attr("y", 10)
+                    .attr("font-family", "Helvetica")
+                    .attr("font-size", "6pt")
+                    .attr("text-anchor", "middle")
+            }
+        </script>
+    </body>
+</html>

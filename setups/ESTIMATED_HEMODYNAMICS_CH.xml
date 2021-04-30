@@ -1,0 +1,1955 @@
+<set prefix="ESTIMATED_HEMODYNAMICS_" path="/path/for/outputs/">
+    <series name="CH_weight_gradient_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="0" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="0" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="0" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_010" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="1" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_010" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="1" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_010" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="1" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_020" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="2" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_020" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="2" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_020" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="2" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_030" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="3" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_030" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="3" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_030" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="3" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_040" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="4" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_040" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="4" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_040" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="4" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_050" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="5" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_050" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="5" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_050" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="5" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_060" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="6" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_060" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="6" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_060" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="6" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_070" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="7" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_070" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="7" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_070" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="7" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_080" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="8" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_080" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="8" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_080" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="8" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_090" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="9" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_090" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="9" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_090" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="9" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="10" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="10" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="10" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_110" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="11" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_110" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="11" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_110" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="11" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_120" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="12" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_120" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="12" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_120" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="12" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_130" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="13" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_130" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="13" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_130" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="13" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_140" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="14" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_140" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="14" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_140" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="14" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_150" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="15" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_150" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="15" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_150" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="15" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_160" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="16" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_160" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="16" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_160" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="16" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_170" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="17" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_170" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="17" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_170" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="17" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_180" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="18" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_180" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="18" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_180" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="18" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_190" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="19" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_190" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="19" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_190" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="19" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_gradient_200" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_GRADIENT" value="20" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_local_200" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_LOCAL" value="20" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_weight_flow_200" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="WEIGHT_FLOW" value="20" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+</set>

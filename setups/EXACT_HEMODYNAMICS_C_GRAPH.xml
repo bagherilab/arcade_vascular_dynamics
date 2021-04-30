@@ -1,0 +1,192 @@
+<set prefix="EXACT_HEMODYNAMICS_" path="/path/for/outputs/">
+    <series name="C_GRAPH_Lav" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+                <profiler type="graph" interval="720" suffix=".GRAPH" />
+            </profilers>
+            <checkpoints>
+                <checkpoint type="graph" class="load" name="Lav" path="/path/for/checkpoints/" day="0" />
+            </checkpoints>
+        </simulation>
+        <agents initialization="0">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="graph">
+                    <specifications>
+                        <specification id="GRAPH_LAYOUT" value="(L)" />
+                        <specification id="ROOTS_LEFT" value="20A80" />
+                        <specification id="ROOTS_RIGHT" value="80V80" />
+                        <specification id="ROOTS_TOP" value="x" />
+                        <specification id="ROOTS_BOTTOM" value="x" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="C_GRAPH_Lava" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+                <profiler type="graph" interval="720" suffix=".GRAPH" />
+            </profilers>
+            <checkpoints>
+                <checkpoint type="graph" class="load" name="Lava" path="/path/for/checkpoints/" day="0" />
+            </checkpoints>
+        </simulation>
+        <agents initialization="0">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="graph">
+                    <specifications>
+                        <specification id="GRAPH_LAYOUT" value="(L)" />
+                        <specification id="ROOTS_LEFT" value="20A80,80A80" />
+                        <specification id="ROOTS_RIGHT" value="50V80" />
+                        <specification id="ROOTS_TOP" value="x" />
+                        <specification id="ROOTS_BOTTOM" value="x" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="C_GRAPH_Lvav" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+                <profiler type="graph" interval="720" suffix=".GRAPH" />
+            </profilers>
+            <checkpoints>
+                <checkpoint type="graph" class="load" name="Lvav" path="/path/for/checkpoints/" day="0" />
+            </checkpoints>
+        </simulation>
+        <agents initialization="0">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="graph">
+                    <specifications>
+                        <specification id="GRAPH_LAYOUT" value="(L)" />
+                        <specification id="ROOTS_LEFT" value="20V80,80V80" />
+                        <specification id="ROOTS_RIGHT" value="50A80" />
+                        <specification id="ROOTS_TOP" value="x" />
+                        <specification id="ROOTS_BOTTOM" value="x" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="C_GRAPH_Sav" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+                <profiler type="graph" interval="720" suffix=".GRAPH" />
+            </profilers>
+            <checkpoints>
+                <checkpoint type="graph" class="load" name="Sav" path="/path/for/checkpoints/" day="0" />
+            </checkpoints>
+        </simulation>
+        <agents initialization="0">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="graph">
+                    <specifications>
+                        <specification id="GRAPH_LAYOUT" value="(S)" />
+                        <specification id="ROOTS_LEFT" value="50A" />
+                        <specification id="ROOTS_RIGHT" value="50V" />
+                        <specification id="ROOTS_TOP" value="x" />
+                        <specification id="ROOTS_BOTTOM" value="x" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="C_GRAPH_Savav" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+                <profiler type="graph" interval="720" suffix=".GRAPH" />
+            </profilers>
+            <checkpoints>
+                <checkpoint type="graph" class="load" name="Savav" path="/path/for/checkpoints/" day="0" />
+            </checkpoints>
+        </simulation>
+        <agents initialization="0">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="graph">
+                    <specifications>
+                        <specification id="GRAPH_LAYOUT" value="(S)" />
+                        <specification id="ROOTS_LEFT" value="50A" />
+                        <specification id="ROOTS_RIGHT" value="50A" />
+                        <specification id="ROOTS_TOP" value="50V" />
+                        <specification id="ROOTS_BOTTOM" value="50V" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+</set>

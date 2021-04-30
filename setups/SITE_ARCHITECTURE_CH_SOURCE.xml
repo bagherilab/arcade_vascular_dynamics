@@ -1,0 +1,2114 @@
+<set prefix="SITE_ARCHITECTURE_" path="/path/for/outputs/">
+    <series name="CH_SOURCE_constant" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*" />
+                        <specification id="Y_SPACING" value="*" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point0" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="78:79" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point2" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="74:75" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point4" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="70:71" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point6" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="66:67" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point8" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="62:63" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point10" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="58:59" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point12" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="54:55" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point14" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="50:51" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point16" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="46:47" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point18" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="42:43" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point20" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="38:39" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point22" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="34:35" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point24" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="30:31" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point26" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="26:27" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point28" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="22:23" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point30" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="18:19" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point32" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="14:15" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point34" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="10:11" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point36" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="6:7" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_point38" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="117:119" />
+                        <specification id="Y_SPACING" value="2:3" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid2" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:2" />
+                        <specification id="Y_SPACING" value="*:2" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid3" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:3" />
+                        <specification id="Y_SPACING" value="*:3" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid4" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:4" />
+                        <specification id="Y_SPACING" value="*:4" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid5" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:5" />
+                        <specification id="Y_SPACING" value="*:5" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid6" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:6" />
+                        <specification id="Y_SPACING" value="*:6" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid7" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:7" />
+                        <specification id="Y_SPACING" value="*:7" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid8" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:8" />
+                        <specification id="Y_SPACING" value="*:8" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid9" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:9" />
+                        <specification id="Y_SPACING" value="*:9" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid10" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:10" />
+                        <specification id="Y_SPACING" value="*:10" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid11" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:11" />
+                        <specification id="Y_SPACING" value="*:11" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid12" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:12" />
+                        <specification id="Y_SPACING" value="*:12" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid13" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:13" />
+                        <specification id="Y_SPACING" value="*:13" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid14" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:14" />
+                        <specification id="Y_SPACING" value="*:14" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid15" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:15" />
+                        <specification id="Y_SPACING" value="*:15" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid16" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:16" />
+                        <specification id="Y_SPACING" value="*:16" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid17" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:17" />
+                        <specification id="Y_SPACING" value="*:17" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid18" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:18" />
+                        <specification id="Y_SPACING" value="*:18" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid19" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:19" />
+                        <specification id="Y_SPACING" value="*:19" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid20" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:20" />
+                        <specification id="Y_SPACING" value="*:20" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid30" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:30" />
+                        <specification id="Y_SPACING" value="*:30" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid40" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:40" />
+                        <specification id="Y_SPACING" value="*:40" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid50" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:50" />
+                        <specification id="Y_SPACING" value="*:50" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:100" />
+                        <specification id="Y_SPACING" value="*:100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_grid200" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:200" />
+                        <specification id="Y_SPACING" value="*:200" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x1y2" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:1" />
+                        <specification id="Y_SPACING" value="*:2" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x1y3" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:1" />
+                        <specification id="Y_SPACING" value="*:3" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x1y4" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:1" />
+                        <specification id="Y_SPACING" value="*:4" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x1y5" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:1" />
+                        <specification id="Y_SPACING" value="*:5" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x2y1" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:2" />
+                        <specification id="Y_SPACING" value="*:1" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x2y3" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:2" />
+                        <specification id="Y_SPACING" value="*:3" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x2y4" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:2" />
+                        <specification id="Y_SPACING" value="*:4" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x2y5" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:2" />
+                        <specification id="Y_SPACING" value="*:5" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x3y1" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:3" />
+                        <specification id="Y_SPACING" value="*:1" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x3y2" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:3" />
+                        <specification id="Y_SPACING" value="*:2" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x3y4" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:3" />
+                        <specification id="Y_SPACING" value="*:4" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x3y5" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:3" />
+                        <specification id="Y_SPACING" value="*:5" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x4y1" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:4" />
+                        <specification id="Y_SPACING" value="*:1" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x4y2" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:4" />
+                        <specification id="Y_SPACING" value="*:2" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x4y3" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:4" />
+                        <specification id="Y_SPACING" value="*:3" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x4y5" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:4" />
+                        <specification id="Y_SPACING" value="*:5" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x5y1" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:5" />
+                        <specification id="Y_SPACING" value="*:1" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x5y2" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:5" />
+                        <specification id="Y_SPACING" value="*:2" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x5y3" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:5" />
+                        <specification id="Y_SPACING" value="*:3" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_x5y4" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="*:5" />
+                        <specification id="Y_SPACING" value="*:4" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_SOURCE_nosite" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+       <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="source">
+                    <specifications>
+                        <specification id="X_SPACING" value="x" />
+                        <specification id="Y_SPACING" value="x" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+</set>

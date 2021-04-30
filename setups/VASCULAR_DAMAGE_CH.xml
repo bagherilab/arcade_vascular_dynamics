@@ -1,0 +1,706 @@
+<set prefix="VASCULAR_DAMAGE_" path="/path/for/outputs/">
+    <series name="CH_damage000_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.0" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage000_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.0" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage010_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.1" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage010_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.1" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage020_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.2" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage020_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.2" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage030_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.3" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage030_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.3" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage040_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.4" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage040_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.4" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage050_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.5" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage050_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.5" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage060_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.6" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage060_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.6" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage070_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.7" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage070_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.7" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage080_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.8" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage080_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.8" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage090_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.9" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage090_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="0.9" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage100_000" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="1.0" />
+                        <specification id="RELATIVE_FRACTION" value="0.0" NAME="000" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+    <series name="CH_damage100_100" start="0" end="10" days="15">
+        <simulation type="growth">
+            <profilers>
+                <profiler type="growth" interval="720" suffix="" />
+            </profilers>
+        </simulation>
+        <agents initialization="FULL">
+            <populations>
+                <population type="C" fraction="0.0">
+                    <variables>
+                        <variable id="max_height" scale="1.5" />
+                        <variable id="meta_pref" scale="1.5" />
+                        <variable id="migra_threshold" scale="0.5" />
+                    </variables>
+                </population>
+                <population type="H" fraction="1.0" />
+            </populations>
+            <helpers>
+                <helper type="insert" delay="1440" populations="0" bounds="0.05"/>
+            </helpers>
+        </agents>
+        <environment>
+            <components>
+                <component type="sites" class="pattern">
+                    <specifications>
+                        <specification id="PATTERN_DAMAGE" value="1.0" />
+                        <specification id="RELATIVE_FRACTION" value="1.0" NAME="100" />
+                    </specifications>
+                </component>
+            </components>
+        </environment>
+    </series>
+</set>

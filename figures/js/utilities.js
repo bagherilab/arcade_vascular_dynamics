@@ -1,11 +1,11 @@
 function saveAs(filename) {
     var filename = filename.split("/")
     filename = filename[filename.length - 1]
-    var svg = document.getElementById("download")
-    var serializer = new XMLSerializer()
-    var source = serializer.serializeToString(svg)
-    var svgBlob = new Blob([source], {type:"image/svg+xml;charset=utf-8"})
-    var downloadLink = document.createElement("a")
+    let svg = document.getElementById("download")
+    let serializer = new XMLSerializer()
+    let source = serializer.serializeToString(svg)
+    let svgBlob = new Blob([source], {type:"image/svg+xml;charset=utf-8"})
+    let downloadLink = document.createElement("a")
     downloadLink.href = URL.createObjectURL(svgBlob)
     downloadLink.download = filename + ".svg"
     document.body.appendChild(downloadLink)
@@ -17,63 +17,63 @@ function saveAs(filename) {
 
 function shadeColor(color, percent) {
     if (color.slice(0,3) == "rgb") {
-        var split = color.split(",");
-        var R = Number(split[0].split("(")[1]);
-        var G = Number(split[1]);
-        var B = Number(split[2].split(")")[0]);
+        let split = color.split(",")
+        var R = Number(split[0].split("(")[1])
+        var G = Number(split[1])
+        var B = Number(split[2].split(")")[0])
     }
     else {
-        var f = parseInt(color.slice(1), 16);
-        var R = f >> 16;
-        var G = f >> 8&0x00FF;
-        var B = f&0x0000FF;
+        let f = parseInt(color.slice(1), 16)
+        var R = f >> 16
+        var G = f >> 8&0x00FF
+        var B = f&0x0000FF
     }
 
-    var t = percent < 0 ? 0:255;
-    var p = percent < 0 ? percent*-1:percent;
+    let t = percent < 0 ? 0:255
+    let p = percent < 0 ? percent*-1:percent
 
-    var r = (Math.round((t - R)*p)+R)*0x10000;
-    var g = (Math.round((t - G)*p)+G)*0x100;
-    var b = (Math.round((t - B)*p)+B);
+    let r = (Math.round((t - R)*p)+R)*0x10000
+    let g = (Math.round((t - G)*p)+G)*0x100
+    let b = (Math.round((t - B)*p)+B)
 
-    return "#" + (0x1000000 + r + g + b).toString(16).slice(1);
+    return "#" + (0x1000000 + r + g + b).toString(16).slice(1)
 }
 
 function linspace(start, end, n) {
-    var delta = (end - start)/(n - 1);
-    var bins = d3.range(start, end + delta, delta).slice(0, n);
-    return bins.map(function(e) { return Number((parseFloat(e).toPrecision(12))) })
+    let delta = (end - start)/(n - 1)
+    let bins = d3.range(start, end + delta, delta).slice(0, n)
+    return bins.map(e => Number((parseFloat(e).toPrecision(12))))
 }
 
 function linrange(start, n) {
-    var r = []
-    for (var i = 0; i < n; i++) { r.push(start + i) }
+    let r = []
+    for (let i = 0; i < n; i++) { r.push(start + i) }
     return r
 }
 
 // -----------------------------------------------------------------------------
 
 function findNaNs(arr) {
-    return arr.map(function(e, i) { return !(Number.isNaN(e) || e == "nan"); });
+    return arr.map((e, i) => !(Number.isNaN(e) || e == "nan"))
 }
 
 function removeNaNs(arr, remove) {
-    return arr.filter(function(e, i) { return remove[i]; });
+    return arr.filter((e, i) => remove[i])
 }
 
 function kernelSmooth(x, y, b, points) {
     // kernel smoothing using Gaussian kernel and bandwidth b
     function gaussian(x, x0, b) {
-        return Math.exp(-Math.pow(x - x0, 2) / (2*b*b));
+        return Math.exp(-Math.pow(x - x0, 2) / (2*b*b))
     }
 
-    var zipped = x.map(function(a, i) { return [a, y[i]]; });
-    var smooth = points.map(function(x0) {
-        var numer = d3.sum(zipped, function(zip) { return gaussian(zip[0], x0, b)*zip[1]; });
-        var denom = d3.sum(zipped, function(zip) { return gaussian(zip[0], x0, b); });
-        return numer/denom;
+    let zipped = x.map((a, i) => [a, y[i]])
+    let smooth = points.map(function(x0) {
+        let numer = d3.sum(zipped, zip => gaussian(zip[0], x0, b)*zip[1])
+        let denom = d3.sum(zipped, zip => gaussian(zip[0], x0, b))
+        return numer/denom
     })
-    return smooth;
+    return smooth
 }
 
 function calcStats(d) {
@@ -93,23 +93,23 @@ function calcStats(d) {
 // -----------------------------------------------------------------------------
 
 function makeHex() {
-    var points = [0, 1, 2, 3, 4, 5, 0];
-    var theta = points.map(function(e) { return Math.PI*(60*e)/180.0; });
-    var dx = theta.map(function(e) { return 2/Math.sqrt(3)*Math.cos(e); });
-    var dy = theta.map(function(e) { return 2/Math.sqrt(3)*Math.sin(e); });
-    return points.map(function(e, i) { return [dx[i], dy[i]]; });
+    let points = [0, 1, 2, 3, 4, 5, 0]
+    let theta = points.map(e => Math.PI*(60*e)/180.0)
+    let dx = theta.map(e => 2/Math.sqrt(3)*Math.cos(e))
+    let dy = theta.map(e => 2/Math.sqrt(3)*Math.sin(e))
+    return points.map((e, i) => [dx[i], dy[i]])
 }
 
 function makeHexLine(dir) {
-    var cx = 1/Math.sqrt(3);
-    var cy = 1;
+    let cx = 1/Math.sqrt(3)
+    let cy = 1
     switch(dir) {
-        case 0: return [[-cx, -cy], [cx, -cy]];
-        case 1: return [[-cx, cy], [cx, cy]];
-        case 2: return [[-cx, cy], [-2*cx, 0]];
-        case 3: return [[-cx, -cy], [-2*cx, 0]];
-        case 4: return [[cx, cy], [2*cx, 0]];
-        case 5: return [[cx, -cy], [2*cx, 0]];
+        case 0: return [[-cx, -cy], [cx, -cy]]
+        case 1: return [[-cx, cy], [cx, cy]]
+        case 2: return [[-cx, cy], [-2*cx, 0]]
+        case 3: return [[-cx, -cy], [-2*cx, 0]]
+        case 4: return [[cx, cy], [2*cx, 0]]
+        case 5: return [[cx, -cy], [2*cx, 0]]
     }
 }
 
@@ -119,42 +119,42 @@ function makeVertLabel(h, x, y, text, fill) {
     return {
         "w": LABEL_SIZE, "h": h, "x": x - LABEL_SIZE, "y": y, "text": text, "fill": fill,
         "tx": x - LABEL_SIZE + FONT_SIZE + FONT_PADDING, "ty": y + h/2, "rotate": true
-    };
+    }
 }
 
 function makeHorzLabel(w, x, y, text, fill) {
     return {
         "w": w, "h": LABEL_SIZE, "x": x, "y": y - LABEL_SIZE, "text": text, "fill": fill,
         "tx": x + w/2, "ty": y - FONT_PADDING, "rotate": false
-    };
+    }
 }
 
 function makeInnerXLabels(S, P, L, labels, ind, layout) {
-    var len = L[ind].length;
-    var label = layout[ind];
+    let len = L[ind].length
+    let label = layout[ind]
     if (len == 1) {
-        var W = S.panel.dw*P.cols - PANEL_PADDING;
-        labels.push(makeHorzLabel(W, PANEL_PADDING/2, 0, LABELS[label][L[ind][0]], "#cccccc"));
+        let W = S.panel.dw*P.cols - PANEL_PADDING
+        labels.push(makeHorzLabel(W, PANEL_PADDING/2, 0, LABELS[label][L[ind][0]], "#cccccc"))
     } else {
-        var dW = S.panel.dw;
-        for (var i = 0; i < P.cols; i++) {
+        let dW = S.panel.dw
+        for (let i = 0; i < P.cols; i++) {
             labels.push(makeHorzLabel(dW - PANEL_PADDING, PANEL_PADDING/2 + i*dW, 0,
-                LABELS[label][L[ind][i%len]], shadeColor("#cccccc", i%len/L[ind].length)));
+                LABELS[label][L[ind][i%len]], shadeColor("#cccccc", i%len/L[ind].length)))
         }
     }
 }
 
 function makeInnerYLabels(S, P, L, labels, ind, layout) {
-    var len = L[ind].length;
-    var label = layout[ind];
+    let len = L[ind].length
+    let label = layout[ind]
     if (len == 1) {
-        var H = S.panel.dh*P.rows - PANEL_PADDING;
-        labels.push(makeVertLabel(H, 0, PANEL_PADDING/2, LABELS[label][L[ind][0]], "#cccccc"));
+        let H = S.panel.dh*P.rows - PANEL_PADDING
+        labels.push(makeVertLabel(H, 0, PANEL_PADDING/2, LABELS[label][L[ind][0]], "#cccccc"))
     } else {
-        var dH = S.panel.dh;
-        for (var i = 0; i < P.rows; i++) {
+        let dH = S.panel.dh
+        for (let i = 0; i < P.rows; i++) {
             labels.push(makeVertLabel(dH - PANEL_PADDING, 0, PANEL_PADDING/2 + i*dH,
-                LABELS[label][L[ind][i%len]], shadeColor("#cccccc", i%len/L[ind].length)));
+                LABELS[label][L[ind][i%len]], shadeColor("#cccccc", i%len/L[ind].length)))
         }
     }
 }
@@ -180,7 +180,7 @@ function makeVertTicks(S, x, y, axis, scale) {
             "x1": x,
             "x2": x - 3,
             "text": (axis.labels ? axis.labels(ticks[i], i) : ticks[i]),
-        });
+        })
     }
 
     return t
@@ -236,32 +236,32 @@ function alignHorzText(S) {
 // -----------------------------------------------------------------------------
 
 function compileSingleFiles(layout, selected, make) {
-    var files = [];
-    var len = layout.map(function(d) { return selected[d].length; })
-    var A = selected[layout[0]];
+    let files = []
+    let len = layout.map(d => selected[d].length)
+    let A = selected[layout[0]]
 
-    for (var a = 0; a < len[0]; a++) {
-        var f = make(A[a], a);
+    for (let a = 0; a < len[0]; a++) {
+        let f = make(A[a], a)
         files.push({
             "file": f.file,
             "x": f.x,
             "y": f.y,
             "i": [a]
-        });
+        })
     }
 
-    return files;
+    return files
 }
 
 function compileDoubleFiles(layout, selected, make) {
-    var files = []
-    var len = layout.map(d => selected[d].length)
-    var A = selected[layout[0]]
-    var B = selected[layout[1]]
+    let files = []
+    let len = layout.map(d => selected[d].length)
+    let A = selected[layout[0]]
+    let B = selected[layout[1]]
 
-    for (var a = 0; a < len[0]; a++) {
-        for (var b = 0; b < len[1]; b++) {
-            var ab = make(A[a], B[b], a, b);
+    for (let a = 0; a < len[0]; a++) {
+        for (let b = 0; b < len[1]; b++) {
+            let ab = make(A[a], B[b], a, b)
             files.push({
                 "file": ab.file,
                 "x": ab.x,
@@ -275,26 +275,26 @@ function compileDoubleFiles(layout, selected, make) {
 }
 
 function compileTripleFiles(layout, selected, make) {
-    var files = [];
-    var len = layout.map(function(d) { return selected[d].length; })
-    var A = selected[layout[0]];
-    var B = selected[layout[1]];
-    var C = selected[layout[2]];
+    let files = []
+    let len = layout.map(d => selected[d].length)
+    let A = selected[layout[0]]
+    let B = selected[layout[1]]
+    let C = selected[layout[2]]
 
-    for (var a = 0; a < len[0]; a++) {
-        for (var b = 0; b < len[1]; b++) {
-            for (var c = 0; c < len[2]; c++) {
-                var abc = make(A[a], B[b], C[c], a, b, c);
+    for (let a = 0; a < len[0]; a++) {
+        for (let b = 0; b < len[1]; b++) {
+            for (let c = 0; c < len[2]; c++) {
+                let abc = make(A[a], B[b], C[c], a, b, c)
                 files.push({
                     "file": abc.file,
                     "x": abc.x,
                     "y": abc.y,
-                    "i": [a, b, c] });
+                    "i": [a, b, c] })
             }
         }
     }
 
-    return files;
+    return files
 }
 
 // -----------------------------------------------------------------------------
@@ -305,7 +305,7 @@ function addBorder(g, width, height, stroke) {
         .attr("height", height)
         .attr("fill", "none")
         .attr("stroke", stroke)
-        .attr("stroke-width", "1px");
+        .attr("stroke-width", "1px")
 }
 
 function addLine(g, x1, x2, y1, y2, stroke, width) {
@@ -315,7 +315,7 @@ function addLine(g, x1, x2, y1, y2, stroke, width) {
         .attr("y1", y1)
         .attr("y2", y2)
         .attr("stroke", stroke)
-        .attr("stroke-width", width);
+        .attr("stroke-width", width)
 }
 
 function addLabels(g, labels) {
@@ -332,9 +332,7 @@ function addLabels(g, labels) {
     G.selectAll("text").data(labels)
         .enter().append("text")
         .html(d => d.text)
-        .attr("transform", function(d) {
-            if (d.rotate) { return "rotate(-90," + d.tx + "," + d.ty + ")"; }
-            else { return null; } })
+        .attr("transform", d => d.rotate ? "rotate(-90," + d.tx + "," + d.ty + ")" : null)
         .attr("font-size", FONT_SIZE + "pt")
         .attr("font-weight", "bold")
         .attr("font-family", "Helvetica")

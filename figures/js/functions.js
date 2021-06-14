@@ -1,50 +1,50 @@
 // PROCESSORS ==================================================================
 
 function processMake(layout, selected, order, name) {
-    var file = function(order, inds) {
-        var f = (layout.length > 0 ? order.map(function(e) { return inds[e]; }) : []);
-        return name(f);
+    let file = function(order, inds) {
+        let f = (layout.length > 0 ? order.map(e => inds[e]) : [])
+        return name(f)
     }
 
     switch(layout.length) {
         case 0:
             return function() {
                 return { "x": 0, "y": 0, "i": [], "file": file([]) }
-            };
+            }
         case 1:
             return function(A, iA) {
-                return { "x": iA, "y": 0, "file": file(order, [A]) };
-            };
+                return { "x": iA, "y": 0, "file": file(order, [A]) }
+            }
         case 2:
             return function(A, B, iA, iB) {
-                return { "x": iA, "y": iB, "file": file(order, [A, B]) };
-            };
+                return { "x": iA, "y": iB, "file": file(order, [A, B]) }
+            }
         case 3:
             return function(A, B, C, iA, iB, iC) {
-                var cn = selected[layout[2]].length;
-                return { "x": iA*cn + iC, "y": iB, "file": file(order, [A, B, C]) };
-            };
+                let cn = selected[layout[2]].length
+                return { "x": iA*cn + iC, "y": iB, "file": file(order, [A, B, C]) }
+            }
         case 4:
             return function(A, B, C, D, iA, iB, iC, iD) {
-                var cn = selected[layout[2]].length;
-                var dn = selected[layout[3]].length;
-                return { "x": iA*cn + iC, "y": iB*dn + iD, "file": file(order, [A, B, C, D]) };
-            };
+                let cn = selected[layout[2]].length
+                let dn = selected[layout[3]].length
+                return { "x": iA*cn + iC, "y": iB*dn + iD, "file": file(order, [A, B, C, D]) }
+            }
         case 5:
             return function(A, B, C, D, E, iA, iB, iC, iD, iE) {
-                var cn = selected[layout[2]].length;
-                var dn = selected[layout[3]].length;
-                var en = selected[layout[4]].length;
-                return { "x": iA*cn*en + iC*en + iE, "y": iB*dn + iD, "file": file(order, [A, B, C, D, E]) };
-            };
+                let cn = selected[layout[2]].length
+                let dn = selected[layout[3]].length
+                let en = selected[layout[4]].length
+                return { "x": iA*cn*en + iC*en + iE, "y": iB*dn + iD, "file": file(order, [A, B, C, D, E]) }
+            }
         case 6:
             return function(A, B, C, D, E, F, iA, iB, iC, iD, iE, iF) {
-                var cn = selected[layout[2]].length;
-                var dn = selected[layout[3]].length;
-                var en = selected[layout[4]].length;
-                var fn = selected[layout[5]].length;
-                return { "x": iA*cn*en + iC*en + iE, "y": iB*dn*fn + iD*fn + iF, "file": file(order, [A, B, C, D, E, F]) };
-            };
+                let cn = selected[layout[2]].length
+                let dn = selected[layout[3]].length
+                let en = selected[layout[4]].length
+                let fn = selected[layout[5]].length
+                return { "x": iA*cn*en + iC*en + iE, "y": iB*dn*fn + iD*fn + iF, "file": file(order, [A, B, C, D, E, F]) }
+            }
     }
 }
 
@@ -114,49 +114,49 @@ function processGrid(layout, selected, make) {
 function plotPath(g, S) {
     g.append("path")
         .attr("d", function(d) {
-            var xscale = (d.scale ? S.xscale[d.scale.x] : S.xscale);
-            var yscale = (d.scale ? S.yscale[d.scale.y] : S.yscale);
-            var makePath = d3.line()
-                .x(function(m) { return xscale(m); })
-                .y(function(m,i) { return yscale(d.y[i]); })
-            return makePath(d.x);
+            let xscale = (d.scale ? S.xscale[d.scale.x] : S.xscale)
+            let yscale = (d.scale ? S.yscale[d.scale.y] : S.yscale)
+            let makePath = d3.line()
+                .x(m => xscale(m))
+                .y((m,i) => yscale(d.y[i]))
+            return makePath(d.x)
         })
         .attr("fill", "none")
-        .attr("stroke", function(d) { return (d.stroke ? d.stroke : "#555"); })
-        .attr("stroke-width", function(d) { return (d.width ? d.width : 1); })
-        .attr("opacity", function(d) { return (d.opacity ? d.opacity : null); })
-        .attr("stroke-linecap", function(d) { return (d.linecap ? d.linecap : null); })
-        .attr("stroke-dasharray", function(d) { return (d.dash ? d.dash : null); })
-        .attr("stroke-dashoffset", function(d) { return (d.offset ? d.offset : null); });
+        .attr("stroke", d => (d.stroke ? d.stroke : "#555"))
+        .attr("stroke-width", d => (d.width ? d.width : 1))
+        .attr("opacity", d => (d.opacity ? d.opacity : null))
+        .attr("stroke-linecap", d => (d.linecap ? d.linecap : null))
+        .attr("stroke-dasharray", d => (d.dash ? d.dash : null))
+        .attr("stroke-dashoffset", d => (d.offset ? d.offset : null))
 }
 
 function plotArea(g, S) {
     g.append("path")
         .attr("d", function(d) {
-            var xscale = (d.scale ? S.xscale[d.scale.x] : S.xscale);
-            var yscale = (d.scale ? S.yscale[d.scale.y] : S.yscale);
+            let xscale = (d.scale ? S.xscale[d.scale.x] : S.xscale)
+            let yscale = (d.scale ? S.yscale[d.scale.y] : S.yscale)
             return d3.area()
-                .x(function(m) { return xscale(m); })
-                .y0(function(m, i) { return yscale(d.max[i]); })
-                .y1(function(m, i) { return yscale(d.min[i]); })(d.x);
+                .x(m => xscale(m))
+                .y0((m, i) => yscale(d.max[i]))
+                .y1((m, i) =>yscale(d.min[i]))(d.x)
         })
-        .attr("fill", function(d) { return (d.fill ? d.fill : "#555"); })
-        .attr("stroke", function(d) { return (d.stroke ? d.stroke : "none"); })
-        .attr("stroke-width", function(d) { return (d.width ? d.width : "none"); })
-        .attr("opacity", function(d) { return (d.opacity ? d.opacity : null); })
+        .attr("fill", d => (d.fill ? d.fill : "#555"))
+        .attr("stroke", d => (d.stroke ? d.stroke : "none"))
+        .attr("stroke-width", d => (d.width ? d.width : "none"))
+        .attr("opacity", d => (d.opacity ? d.opacity : null))
 }
 
 function plotViolin(g, S) {
-    var lineForward = d3.line()
+    let lineForward = d3.line()
         .x(d => S.xscale(d.fx + d.dx))
         .y(d => S.yscale(d.fy + d.dy))
-        .curve(d3.curveCardinal.tension(0.7));
-    var lineBackward = d3.line()
+        .curve(d3.curveCardinal.tension(0.7))
+    let lineBackward = d3.line()
         .x(d => S.xscale(d.rx + d.dx))
         .y(d => S.yscale(d.ry + d.dy))
-        .curve(d3.curveCardinal.tension(0.7));
+        .curve(d3.curveCardinal.tension(0.7))
 
-    var makeViolin = function(d) {
+    let makeViolin = function(d) {
         if (d.direction == "horizontal") {
             var hist = d.x.map(function(e, i) { return {
                 "v": e,
@@ -173,35 +173,35 @@ function plotViolin(g, S) {
             }})
         }
 
-        var splits = [];
-        var ind = 0;
+        let splits = []
+        let ind = 0
 
-        for (var i = 1; i < hist.length - 1; i++) {
-            if (hist[i - 1].v == 0 && hist[i].v != 0) { ind = i; }
+        for (let i = 1; i < hist.length - 1; i++) {
+            if (hist[i - 1].v == 0 && hist[i].v != 0) { ind = i }
             if (hist[i + 1].v == 0 && hist[i].v != 0) {
-                var sub = hist.slice(ind - 1, i + 2);
+                let sub = hist.slice(ind - 1, i + 2)
                 splits.push(lineForward(sub) +  lineBackward(sub.reverse()).replace("M", "L") + "z")
             }
         }
 
-        return splits.join(" ");
-    };
+        return splits.join(" ")
+    }
 
     g.append("path")
-        .attr("d", function(d) { return makeViolin(d); })
-        .attr("fill", function(d) { return (d.fill ? d.fill : "none"); })
-        .attr("stroke", function(d) { return (d.stroke ? d.stroke : "#555"); })
-        .attr("stroke-width", function(d) { return (d.width ? d.width : 1); })
-        .attr("stroke-dasharray", function(d) { return (d.dash ? d.dash : null); })
-        .attr("opacity", function(d) { return (d.opacity ? d.opacity : null); });
+        .attr("d", d => makeViolin(d))
+        .attr("fill", d => (d.fill ? d.fill : "none"))
+        .attr("stroke", d => (d.stroke ? d.stroke : "#555"))
+        .attr("stroke-width", d => (d.width ? d.width : 1))
+        .attr("stroke-dasharray", d => (d.dash ? d.dash : null))
+        .attr("opacity", d => (d.opacity ? d.opacity : null))
 }
 
 function plotSymbol(g, S) {
     g.selectAll("use")
         .data(function(d) {
             if (d.scale) {
-                var xscale = typeof S.xscale === "object" ? S.xscale[d.scale.x] : S.xscale;
-                var yscale = typeof S.yscale === "object" ? S.yscale[d.scale.y] : S.yscale;
+                let xscale = typeof S.xscale === "object" ? S.xscale[d.scale.x] : S.xscale
+                let yscale = typeof S.yscale === "object" ? S.yscale[d.scale.y] : S.yscale
 
                 return d.cx.map(function(e, i) {
                     return {
@@ -214,8 +214,8 @@ function plotSymbol(g, S) {
                     }
                 })
             } else {
-                var diam = S.axis.x.bounds[1]*2;
-                var scale = Math.min(S.subpanel.h/(diam + 1)/2, S.subpanel.w/(diam + 1)/2);
+                let diam = S.axis.x.bounds[1]*2
+                let scale = Math.min(S.subpanel.h/(diam + 1)/2, S.subpanel.w/(diam + 1)/2)
                 return d.cx.map(function(e, i) {
                     return {
                         "link": d.link[i],
@@ -229,19 +229,19 @@ function plotSymbol(g, S) {
             }
         })
         .enter().append("use")
-        .attr("transform", function(d) { return "translate(" + d.cx + "," + d.cy + ")"; })
-        .attr("xlink:href", function(d) { return d.link; })
-        .attr("fill", function(d) { return d.fill; })
-        .attr("stroke", function(d) { return d.stroke; })
-        .attr("stroke-width", function(d) { return d.width; })
+        .attr("transform", d => "translate(" + d.cx + "," + d.cy + ")")
+        .attr("xlink:href", d => d.link)
+        .attr("fill", d => d.fill)
+        .attr("stroke", d => d.stroke)
+        .attr("stroke-width", d => d.width)
 }
 
 function plotCircle(g, S) {
-    var R = Math.min(5, Math.max(2, Math.min(S.subpanel.dw, S.subpanel.dh)/100));
+    let R = Math.min(5, Math.max(2, Math.min(S.subpanel.dw, S.subpanel.dh)/100))
     g.selectAll("circle")
         .data(function(d) {
-            var xscale = (d.scale ? S.xscale[d.scale.x] : S.xscale);
-            var yscale = (d.scale ? S.yscale[d.scale.y] : S.yscale);
+            let xscale = (d.scale ? S.xscale[d.scale.x] : S.xscale)
+            let yscale = (d.scale ? S.yscale[d.scale.y] : S.yscale)
 
             return d.x.map(function(e, i) {
                 return {
@@ -255,19 +255,19 @@ function plotCircle(g, S) {
             })
         })
         .enter().append("circle")
-            .attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; })
-            .attr("r", function(d) { return d.r; })
-            .attr("fill", function(d) { return d.fill; })
-            .attr("stroke", function(d) { return d.stroke; })
-            .attr("opacity", function(d) { return d.opacity; })
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", d => d.r)
+            .attr("fill", d => d.fill)
+            .attr("stroke", d => d.stroke)
+            .attr("opacity", d => d.opacity)
 }
 
 function plotRect(g, S) {
     g.selectAll("rect")
         .data(function(d) {
-            var xscale = (d.scale ? S.xscale[d.scale.x] : S.xscale);
-            var yscale = (d.scale ? S.yscale[d.scale.y] : S.yscale);
+            let xscale = (d.scale ? S.xscale[d.scale.x] : S.xscale)
+            let yscale = (d.scale ? S.yscale[d.scale.y] : S.yscale)
 
             return d.x.map(function(e, i) {
                 return {
@@ -283,14 +283,14 @@ function plotRect(g, S) {
             })
         })
         .enter().append("rect")
-            .attr("x", function(d) { return d.x; })
-            .attr("y", function(d) { return d.y; })
-            .attr("width", function(d) { return d.w; })
-            .attr("height", function(d) { return d.h; })
-            .attr("fill", function(d) { return d.fill; })
-            .attr("stroke", function(d) { return d.stroke; })
-            .attr("opacity", function(d) { return d.opacity; })
-            .attr("stroke-dasharray", function(d) { return d.dash; })
+            .attr("x", d => d.x)
+            .attr("y", d => d.y)
+            .attr("width", d => d.w)
+            .attr("height", d => d.h)
+            .attr("fill", d => d.fill)
+            .attr("stroke", d => d.stroke)
+            .attr("opacity", d => d.opacity)
+            .attr("stroke-dasharray", d => d.dash)
 }
 
 // LABELERS ====================================================================
@@ -307,98 +307,95 @@ function labelGrid(S, P) {
 function labelNone(S, P) { return [] }
 
 function labelOne(S, P) {
-    var labels = [];
-    var layout = S.layout;
+    let labels = []
+    let layout = S.layout
 
-    var L = layout.map(function(e) {
-        return S.selected[e].filter(function(f) { return f != ""; }); });
+    let L = layout.map(e => S.selected[e].filter(f => f != ""))
 
-    var outerX = function(e, i) {
+    let outerX = function(e, i) {
         return makeHorzLabel(S.panel.w, PANEL_PADDING/2 + S.panel.dw*i, 0,
-            LABELS[layout[0]][e], shadeColor("#aaaaaa", i/L[0].length));
+            LABELS[layout[0]][e], shadeColor("#aaaaaa", i/L[0].length))
     }
 
-    L[0].map(function(e, i) { labels.push(outerX(e, i)); });
+    L[0].map((e, i) => labels.push(outerX(e, i)))
 
-    return labels;
+    return labels
 }
 
 function labelTwo(S, P) {
-    var labels = [];
-    var layout = S.layout;
-    if (Array.isArray(S.layout[0])) { layout = S.selected.ordering; }
+    let labels = []
+    let layout = S.layout
+    if (Array.isArray(S.layout[0])) { layout = S.selected.ordering }
 
-    var L = layout.map(function(e) {
-        return S.selected[e].filter(function(f) { return f != ""; }); });
+    let L = layout.map(e => S.selected[e].filter(f => f != ""))
 
-    var outerX = function(e, i) {
+    let outerX = function(e, i) {
         return makeHorzLabel(S.panel.w, PANEL_PADDING/2 + S.panel.dw*i, 0,
-            LABELS[layout[0]][e], shadeColor("#aaaaaa", i/L[0].length));
+            LABELS[layout[0]][e], shadeColor("#aaaaaa", i/L[0].length))
     }
 
-    var outerY = function(e, i) {
+    let outerY = function(e, i) {
         return makeVertLabel(S.panel.h, 0, PANEL_PADDING/2 + S.panel.dh*i,
-            LABELS[layout[1]][e], shadeColor("#aaaaaa", i/L[1].length));
+            LABELS[layout[1]][e], shadeColor("#aaaaaa", i/L[1].length))
     }
 
-    L[0].map(function(e, i) { labels.push(outerX(e, i)); });
-    L[1].map(function(e, i) { labels.push(outerY(e, i)); });
+    L[0].map((e, i) => labels.push(outerX(e, i)))
+    L[1].map((e, i) => labels.push(outerY(e, i)))
 
-    return labels;
+    return labels
 }
 
 function labelThree(S, P) {
-    var labels = [];
-    var layout = S.layout;
-    if (Array.isArray(S.layout[0])) { layout = S.selected.ordering; }
+    let labels = []
+    let layout = S.layout
+    if (Array.isArray(S.layout[0])) { layout = S.selected.ordering }
 
-    var L = layout.map(function(e) {
-        return S.selected[e].filter(function(f) { return f != ""; }); });
+    let L = layout.map(e => S.selected[e].filter(f => f != ""))
 
-    var outerX = function(e, i) {
-        var W = S.panel.dw*L[2].length;
+    let outerX = function(e, i) {
+        let W = S.panel.dw*L[2].length
         return makeHorzLabel(W - PANEL_PADDING, PANEL_PADDING/2 + W*i, -LABEL_SIZE - LABEL_PADDING,
-            LABELS[layout[0]][e], shadeColor("#aaaaaa", i/L[0].length));
+            LABELS[layout[0]][e], shadeColor("#aaaaaa", i/L[0].length))
     }
 
-    var outerY = function(e, i) {
+    let outerY = function(e, i) {
         return makeVertLabel(S.panel.h, 0, PANEL_PADDING/2 + S.panel.dh*i,
-            LABELS[layout[1]][e], shadeColor("#aaaaaa", i/L[1].length));
+            LABELS[layout[1]][e], shadeColor("#aaaaaa", i/L[1].length))
     }
 
-    L[0].map(function(e, i) { labels.push(outerX(e, i)); });
-    L[1].map(function(e, i) { labels.push(outerY(e, i)); });
-    if (L[2].length > 0) { makeInnerXLabels(S, P, L, labels, 2, layout); }
+    L[0].map((e, i) => labels.push(outerX(e, i)))
+    L[1].map((e, i) => labels.push(outerY(e, i)))
+    if (L[2].length > 0) { makeInnerXLabels(S, P, L, labels, 2, layout) }
 
-    return labels;
+    return labels
 }
 
 // DECORATORS ==================================================================
 
 function decorateTicks(g, S, i, p) {
-    addBorder(g, S.subpanel.w, S.subpanel.h, "#ccc");
+    addBorder(g, S.subpanel.w, S.subpanel.h, "#ccc")
 
     // Create and align groups for ticks.
-    var dx = alignHorzAxis(S, i);
-    var dy = alignVertAxis(S, i);
+    let dx = alignHorzAxis(S, i)
+    let dy = alignVertAxis(S, i)
 
     // Create group to hold ticks.
-    var G = S.G.append("g")
+    let G = S.G.append("g")
         .attr("id", "ticks")
         .attr("transform", "translate(" + dx + "," + dy + ")")
 
-    var A = S.axis;
+    let A = S.axis
 
     // Create ticks.
-    var ticks = [];
-    ticks.push(makeHorzTicks(S, 0, S.subpanel.h, A.x));
-    ticks.push(makeVertTicks(S, 0, 0, A.y));
+    let ticks = []
+    ticks.push(makeHorzTicks(S, 0, S.subpanel.h, A.x))
+    ticks.push(makeVertTicks(S, 0, 0, A.y))
 
     // Create axis labels.
-    var labels = [];
-    labels.push(makeHorzLabel(S.subpanel.w, 0, alignHorzText(S), A.x.title, "none"));
-    labels.push(makeVertLabel(S.subpanel.h, alignVertText(S), 0, A.y.title, "none"));
+    let labels = []
+    labels.push(makeHorzLabel(S.subpanel.w, 0, alignHorzText(S), A.x.title, "none"))
+    labels.push(makeVertLabel(S.subpanel.h, alignVertText(S), 0, A.y.title, "none"))
 
-    addTicks(G, ticks);
-    addLabels(G, labels);
+    addTicks(G, ticks)
+    addLabels(G, labels)
 }

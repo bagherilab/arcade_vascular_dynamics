@@ -28,7 +28,7 @@ var AXIS_PADDING = {
     "right": 0
 }
 
-var EXP = function(e) { return '<tspan baseline-shift="super" font-size="70%">' + e + '</tspan>'; }
+var EXP = function(e) { return '<tspan baseline-shift="super" font-size="70%">' + e + '</tspan>' }
 
 var COLORMAPS = {
     "burgyl": ["#ffffff","#fbe6c5","#f5ba98","#ee8a82","#dc7176","#c8586c","#9c3f5d","#70284a"],
@@ -43,20 +43,20 @@ var COLORS = {
 
 function initialize(id, plot) {
     // Attach event listeners to all inputs.
-    for (var i = 0; i < OPTIONS.length; i++) {
-        var e = document.getElementById(OPTIONS[i]).getElementsByTagName("INPUT")
-        for (var j = 0; j < e.length; j++) { e[j].addEventListener("click", listen) }
+    for (let i = 0; i < OPTIONS.length; i++) {
+        let e = document.getElementById(OPTIONS[i]).getElementsByTagName("INPUT")
+        for (let j = 0; j < e.length; j++) { e[j].addEventListener("click", listen) }
         update(OPTIONS[i], e)
     }
 
     // Add event listeners for buttons.
-    document.getElementById("generate").addEventListener("click", generate);
+    document.getElementById("generate").addEventListener("click", generate)
 }
 
 function listen() {
-    var input = this.type
-    var name = this.name
-    var id = this.id.split("_")
+    let input = this.type
+    let name = this.name
+    let id = this.id.split("_")
     if (id.length == 3) { id[1] = id[1] + "_" + id[2] }
 
     // Update selection dictionary.
@@ -66,7 +66,7 @@ function listen() {
 
 function update(id, e) {
     for (let i = 0; i < e.length; i++) {
-        let eid = e[i].id.split("_");
+        let eid = e[i].id.split("_")
         if (eid.length == 3) { eid[1] = eid[1] + "_" + eid[2] }
 
         if (e[i].type == "checkbox") {
@@ -81,10 +81,10 @@ function update(id, e) {
 
 function generate() {
     clear()
-    var P = PROCESSOR()
+    let P = PROCESSOR()
 
     // Create settings object.
-    var S = {
+    let S = {
         "id": "download",
         "width": SIZE.width,
         "height": SIZE.height,
@@ -106,9 +106,9 @@ function generate() {
     S.G = S.SVG.append("g").attr("transform", translate(S.margin.left, S.margin.top))
 
     // Calculate panel layout.
-    var pad = PANEL_PADDING
-    var dw = S.W/P.cols
-    var dh = S.H/P.rows
+    let pad = PANEL_PADDING
+    let dw = S.W/P.cols
+    let dh = S.H/P.rows
     S.panel = updateSettings(P, pad, dw, dh)
 
     // Call subgenerate on each subpanel.
@@ -139,8 +139,8 @@ function generate() {
                             if (error1) { empty(g, file1, S.panel.w, S.panel.h) }
                             if (error2) { empty(g, file2, S.panel.w, S.panel.h) }
                             else { subgenerate(g, S, { "data1": data1, "data2": data2, "i": P.files[i].i }) }
-                        });
-                    });
+                        })
+                    })
 
                     return
                 }
@@ -152,12 +152,12 @@ function generate() {
 
                 if (extension == "json") {
                     d3.json(file, function(error, data) {
-                        if (error) { empty(g, file, S.panel.w, S.panel.h); }
+                        if (error) { empty(g, file, S.panel.w, S.panel.h) }
                         else { subgenerate(g, S, { "data": data, "i": P.files[i].i }) }
                     })
                 } else if (extension == "csv") {
                     d3.csv(file, function(error, data) {
-                        if (error) { empty(g, file, S.panel.w, S.panel.h); }
+                        if (error) { empty(g, file, S.panel.w, S.panel.h) }
                         else { subgenerate(g, S, { "data": data, "i": P.files[i].i }) }
                     })
                 }
@@ -167,42 +167,42 @@ function generate() {
 }
 
 function subgenerate(g, S, d) {
-    var id = g.attr("id")
-    var P = PARSER(id, S, d)
+    let id = g.attr("id")
+    let P = PARSER(id, S, d)
 
     // Calculate subpanel layout.
-    var pad = SUBPANEL_PADDING
-    var dw = S.panel.w/P.cols - S.margin.axis.left - S.margin.axis.right
-    var dh = S.panel.h/P.rows - S.margin.axis.top - S.margin.axis.bottom
+    let pad = SUBPANEL_PADDING
+    let dw = S.panel.w/P.cols - S.margin.axis.left - S.margin.axis.right
+    let dh = S.panel.h/P.rows - S.margin.axis.top - S.margin.axis.bottom
     S.subpanel = updateSettings(P, pad, dw, dh)
 
     if (typeof S.axis.x === "function") {
-        var keys = S.axis.keys
+        let keys = S.axis.keys
         S.xscale = {}
         keys.forEach(function(e) {
-            var bounds = S.axis.x(e).bounds.map(e => e)
+            let bounds = S.axis.x(e).bounds.map(e => e)
             bounds[0] = bounds[0] - (S.axis.x(e).padding ? S.axis.x(e).padding : 0)
             bounds[1] = bounds[1] + (S.axis.x(e).padding ? S.axis.x(e).padding : 0)
             S.xscale[e] = d3.scaleLinear().range([0, dw - pad]).domain(bounds)
-        });
+        })
     } else {
-        var bounds = S.axis.x.bounds.map(e => e)
+        let bounds = S.axis.x.bounds.map(e => e)
         bounds[0] = bounds[0] - (S.axis.x.padding ? S.axis.x.padding : 0)
         bounds[1] = bounds[1] + (S.axis.x.padding ? S.axis.x.padding : 0)
         S.xscale = d3.scaleLinear().range([0, dw - pad]).domain(bounds)
     }
 
     if (typeof S.axis.y === "function") {
-        var keys = S.axis.keys
+        let keys = S.axis.keys
         S.yscale = {}
         keys.forEach(function(e) {
-            var bounds = S.axis.y(e).bounds.map(e => e)
+            let bounds = S.axis.y(e).bounds.map(e => e)
             bounds[0] = bounds[0] - (S.axis.y(e).padding ? S.axis.y(e).padding : 0)
             bounds[1] = bounds[1] + (S.axis.y(e).padding ? S.axis.y(e).padding : 0)
             S.yscale[e] = d3.scaleLinear().range([dh - pad, 0]).domain(bounds)
-        });
+        })
     } else {
-        var bounds = S.axis.y.bounds.map(e => e)
+        let bounds = S.axis.y.bounds.map(e => e)
         bounds[0] = bounds[0] - (S.axis.y.padding ? S.axis.y.padding : 0)
         bounds[1] = bounds[1] + (S.axis.y.padding ? S.axis.y.padding : 0)
         S.yscale = d3.scaleLinear().range([dh - pad, 0]).domain(bounds)
@@ -216,13 +216,13 @@ function subgenerate(g, S, d) {
             .attr("id", d => id + "_" + d.id)
             .attr("clip-path", d => "url(#" + clip(id + "_" + d.id) + ")")
             .each(function(pt, i) {
-                var g = d3.select(this)
+                let g = d3.select(this)
 
                 g.selectAll("g")
                     .data(d => d.data)
                     .enter().append("g")
                         .each(function(d) {
-                            var f = "plot" + d["*"][0].toUpperCase() + d["*"].slice(1)
+                            let f = "plot" + d["*"][0].toUpperCase() + d["*"].slice(1)
                             window[f](d3.select(this), S)
                         })
 
@@ -238,9 +238,9 @@ function subgenerate(g, S, d) {
 // -----------------------------------------------------------------------------
 
 function clear() {
-    var node = document.getElementById("canvas");
+    let node = document.getElementById("canvas")
     while (node.firstChild) {
-        node.removeChild(node.firstChild);
+        node.removeChild(node.firstChild)
     }
 }
 

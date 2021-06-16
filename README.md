@@ -1,3 +1,7 @@
+Supporting code for the article:
+
+> J Yu and N Bagheri. (2021). Modular microenvironment components reproduce vascular dynamics _de novo_ in a multi-scale agent-based model. _Cell Systems_. doi: [10.1016/j.cels.2021.05.007](https://doi.org/10.1016/j.cels.2021.05.007)
+
 ## Setup files
 
 The `setups` directory contains all the setup files used for running simulations.

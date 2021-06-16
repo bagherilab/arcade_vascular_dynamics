@@ -312,8 +312,6 @@ def analyze_metrics(D, R, H, T, N, C, POPS, TYPES, outfile, code, exclude=[-1], 
     end = time.time()
     print(end - start)
 
-    TT = [(T[t], t) for t in timepoints]
-
     counts = get_temporal_counts(T, N, inds)
     _analyze_metrics(counts, T, f"{outfile}{code}", ".METRICS.COUNTS")
 
@@ -382,7 +380,7 @@ def analyze_seeds(D, R, H, T, N, C, POPS, TYPES, outfile, code, exclude=[-1], ti
 
     symmetry = get_temporal_symmetries(T, N, C, R, inds)
     _analyze_seeds(symmetry, T, f"{outfile}{code}", TT, ".SEEDS.SYMMETRY")
-    
+
     activity = get_temporal_activity(D["agents"], T, N, inds, TYPES)
     _analyze_seeds(activity, T, f"{outfile}{code}", TT, ".SEEDS.ACTIVITY")
 
@@ -415,7 +413,7 @@ def analyze_locations(D, R, H, T, N, C, POPS, TYPES, outfile, code, exclude=[-1]
         for z, cou, vol, pop, typ in zip(range(1 - H, H), counts[i], volumes[i], pops[i], types[i]):
             joined = [xy[0], xy[1], [z] * len(C), cou, vol] + list(zip(*pop)) + list(zip(*typ))
             out = out + [e for e in zip(*joined) if e[3] != 0]
-        
+
         header = "x,y,z,COUNT,VOLUME," + _pops + "," + _types + "\n"
         save_csv(f"{outfile}{code}", header, list(zip(*out)), f".LOCATIONS.{format_time(t)}")
 

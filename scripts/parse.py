@@ -71,15 +71,15 @@ def parse_simulations(name, data_path, result_path, exclude):
         if is_tar(file):
             # Parse .tar.xz file.
             tar = tarfile.open(file, "r:xz")
-            
+
             # Iterate through all members of the tar.
             for i, member in enumerate(tar.getmembers()):
                 seed = int(member.name.replace(".json", "").split("_")[-1])
-                
+
                 # Skip if seed is in exclude list.
                 if seed in exclude:
                     continue
-                    
+
                 print(f"   > {member.name}")
                 parse_simulation(load_json(member, tar=tar), container)
         else:

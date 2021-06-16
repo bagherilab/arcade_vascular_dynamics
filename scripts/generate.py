@@ -265,11 +265,11 @@ def make_type_grid_borders(D, R, H, T, N, C, POPS, TYPES, outfile, code, exclude
     """Extract type grid borders."""
     d = np.take(D["agents"], timepoints, axis=1)
     TT = [T[i] for i in timepoints]
-    
+
     inds = [[get_inds(d, j, i, H, exclude)
         for j in range(0, N)]
         for i in range(0, len(TT))]
-    
+
     all_inds = [x for ind in inds[0] for x in ind]
     lines = lin = get_spatial_outlines(C, 1, R, H, [all_inds])
     outline = []
@@ -406,7 +406,7 @@ def make_pattern_types_locations(file, names, contexts, cases):
     for name in names:
         outfile = f"{file}{name}/{name}"
         tar = load_tar(outfile, ".LOCATIONS")
-        
+
         for context in contexts:
             for case in cases[name]:
                 code, a, b = case
@@ -433,7 +433,7 @@ def make_pattern_types_borders(input_path, output_path, names, contexts, cases):
 
     for name in names:
         outfile = f"{input_path}{name}/{name}"
-        
+
         for context in contexts:
             exclude = [-1] if context == "C" else [-1, 1]
 
@@ -535,7 +535,7 @@ def make_layout_merged(file, metric):
         ("Lvav", "graphs"),
         ("Sav", "graphs"),
         ("Savav", "graphs"),
-    ] 
+    ]
 
     for name in ["EXACT_HEMODYNAMICS", "VASCULAR_FUNCTION"]:
         outfile = f"{file}{name}/{name}"

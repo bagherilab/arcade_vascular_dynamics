@@ -14,12 +14,12 @@ The case study `VESSEL_COLLAPSE_stabilized.xml` simulations uses modified code; 
 
 Raw simulation data and results are available on Mendeley Data:
 
-- `SITE ARCHITECTURE` . [http://dx.doi.org/10.17632/2n3mnkz7yc.1](http://dx.doi.org/10.17632/2n3mnkz7yc.1)
-- `ESTIMATED HEMODYNAMICS` . [http://dx.doi.org/10.17632/pgzc9f6kn6.1](http://dx.doi.org/10.17632/pgzc9f6kn6.1)
-- `EXACT HEMODYNAMICS` . [http://dx.doi.org/10.17632/8k7f7fcg7t.1](http://dx.doi.org/10.17632/8k7f7fcg7t.1)
-- `VASCULAR DAMAGE` . [http://dx.doi.org/10.17632/grtx87d27y.1](http://dx.doi.org/10.17632/grtx87d27y.1)
-- `VASCULAR FUNCTION` . [http://dx.doi.org/10.17632/rgtddfyp97.1](http://dx.doi.org/10.17632/rgtddfyp97.1)
-- `VESSEL COLLAPSE` . [http://dx.doi.org/10.17632/p8yzkdccg7.1](http://dx.doi.org/10.17632/p8yzkdccg7.1)
+- `SITE ARCHITECTURE` . [http://dx.doi.org/10.17632/2n3mnkz7yc](http://dx.doi.org/10.17632/2n3mnkz7yc)
+- `ESTIMATED HEMODYNAMICS` . [http://dx.doi.org/10.17632/pgzc9f6kn6](http://dx.doi.org/10.17632/pgzc9f6kn6)
+- `EXACT HEMODYNAMICS` . [http://dx.doi.org/10.17632/8k7f7fcg7t](http://dx.doi.org/10.17632/8k7f7fcg7t)
+- `VASCULAR DAMAGE` . [http://dx.doi.org/10.17632/grtx87d27y](http://dx.doi.org/10.17632/grtx87d27y)
+- `VASCULAR FUNCTION` . [http://dx.doi.org/10.17632/rgtddfyp97](http://dx.doi.org/10.17632/rgtddfyp97)
+- `VESSEL COLLAPSE` . [http://dx.doi.org/10.17632/p8yzkdccg7](http://dx.doi.org/10.17632/p8yzkdccg7)
 
 ## Pipeline notebooks
 
